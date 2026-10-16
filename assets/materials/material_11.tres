@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/grass_10.gdshader" id="1_4dyqv"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_4dyqv")
+shader_parameter/base_col = null
+shader_parameter/tip_col = null

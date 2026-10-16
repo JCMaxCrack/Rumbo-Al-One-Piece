@@ -1,0 +1,63 @@
+[gd_scene format=3 uid="uid://bo1ypa23ae2sh"]
+
+[ext_resource type="Script" uid="uid://dvslqx3ppaaar" path="res://scripts/player.gd" id="1_1133y"]
+[ext_resource type="PackedScene" uid="uid://215gmcurqobx" path="res://assets/models/characters/luffy/luffy.fbx" id="2_jq6jn"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/luffy_animations.res" id="3_mnpau"]
+[ext_resource type="AudioStream" uid="uid://ni3siwy7b2h4" path="res://assets/audio/hurt.wav" id="4_0jluy"]
+[ext_resource type="AudioStream" uid="uid://8prhl2by7ce3" path="res://assets/audio/splash.wav" id="5_b83v6"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_bw5bu"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tx8x2"]
+radius = 0.25
+
+[node name="Luffy" type="CharacterBody3D" unique_id=1957699688]
+collision_layer = 2
+floor_max_angle = 0.87266463
+floor_snap_length = 0.4
+script = ExtResource("1_1133y")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1506051840]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_bw5bu")
+
+[node name="Model" parent="." unique_id=1306416195 instance=ExtResource("2_jq6jn")]
+transform = Transform3D(0.0099282805, 0, 0, 0, 0.0099282805, 0, 0, 0, 0.0099282805, 0, 0.054524105, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=603450504]
+root_node = NodePath("../Model")
+libraries/luffy = ExtResource("3_mnpau")
+autoplay = &"luffy/idle"
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1562919498]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=1840690029]
+transform = Transform3D(1, 0, 0, 0, 0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0.5, 0, 0)
+shape = SubResource("SphereShape3D_tx8x2")
+spring_length = 4.8
+margin = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=641840052]
+current = true
+fov = 68.0
+far = 600.0
+
+[node name="HurtSound" type="AudioStreamPlayer3D" parent="." unique_id=1359753180]
+stream = ExtResource("4_0jluy")
+unit_size = 12.0
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="." unique_id=1599227366]
+stream = ExtResource("5_b83v6")
+volume_db = -14.0
+unit_size = 12.0
+
+[node name="InvulnerabilityTimer" type="Timer" parent="." unique_id=567831769]
+wait_time = 1.2
+one_shot = true
+
+[node name="HurtTimer" type="Timer" parent="." unique_id=778341816]
+wait_time = 0.45
+one_shot = true

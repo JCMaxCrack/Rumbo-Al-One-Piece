@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/water_2.gdshader" id="1_ykxiv"]
+[ext_resource type="Texture2D" path="res://assets/generated/shore_mask.res" id="2_bk65v"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ykxiv")
+shader_parameter/deep = null
+shader_parameter/shallow = null
+shader_parameter/shore = ExtResource("2_bk65v")
+shader_parameter/map_size = Vector2(140, 140)

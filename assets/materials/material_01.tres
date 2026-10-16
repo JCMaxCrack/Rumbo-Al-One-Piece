@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/sky_0.gdshader" id="1_jhb6k"]
+
+[resource]
+shader = ExtResource("1_jhb6k")
+shader_parameter/top = null
+shader_parameter/horizon = null
+shader_parameter/below = null
