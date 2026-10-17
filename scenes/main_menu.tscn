@@ -14,7 +14,7 @@ gradient = SubResource("Gradient_tbmy8")
 height = 256
 fill_to = Vector2(0, 1)
 
-[node name="MainMenu" type="Control" unique_id=484761144]
+[node name="MainMenu" type="Control" unique_id=338065027]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
@@ -22,14 +22,14 @@ anchor_bottom = 1.0
 theme = ExtResource("1_wu84c")
 script = ExtResource("2_8ln24")
 
-[node name="Background" type="TextureRect" parent="." unique_id=1490939141]
+[node name="Background" type="TextureRect" parent="." unique_id=1636966687]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 texture = SubResource("GradientTexture2D_jk1qb")
 expand_mode = 1
 
-[node name="TitleSmall" type="Label" parent="." unique_id=2136657029]
+[node name="TitleSmall" type="Label" parent="." unique_id=954402287]
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -42,7 +42,7 @@ theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
 text = "RUMBO AL"
 horizontal_alignment = 1
 
-[node name="Title" type="Label" parent="." unique_id=1429795569]
+[node name="Title" type="Label" parent="." unique_id=152159668]
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -55,7 +55,7 @@ theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
 text = "ONE PIECE"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="." unique_id=638458956]
+[node name="Subtitle" type="Label" parent="." unique_id=1988961804]
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -65,10 +65,10 @@ offset_right = 300.0
 offset_bottom = 235.0
 theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
-text = "BETA · Primera presentación"
+text = "BETA · La misión de Koby"
 horizontal_alignment = 1
 
-[node name="MenuPanel" type="PanelContainer" parent="." unique_id=1327805962]
+[node name="MenuPanel" type="PanelContainer" parent="." unique_id=358167378]
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
@@ -79,71 +79,74 @@ offset_top = 10.0
 offset_right = 150.0
 offset_bottom = 200.0
 
-[node name="VBox" type="VBoxContainer" parent="MenuPanel" unique_id=523695535]
+[node name="VBox" type="VBoxContainer" parent="MenuPanel" unique_id=1603816643]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PlayButton" type="Button" parent="MenuPanel/VBox" unique_id=1411645950]
+[node name="PlayButton" type="Button" parent="MenuPanel/VBox" unique_id=1800050192]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Jugar"
 
-[node name="ControlsButton" type="Button" parent="MenuPanel/VBox" unique_id=1624523515]
+[node name="ControlsButton" type="Button" parent="MenuPanel/VBox" unique_id=497101732]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Controles"
 
-[node name="QuitButton" type="Button" parent="MenuPanel/VBox" unique_id=652598270]
+[node name="QuitButton" type="Button" parent="MenuPanel/VBox" unique_id=1012483671]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Salir"
 
-[node name="ControlsPanel" type="PanelContainer" parent="." unique_id=1943838911]
+[node name="ControlsPanel" type="PanelContainer" parent="." unique_id=14210955]
 visible = false
 layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -10.0
-offset_right = 280.0
-offset_bottom = 330.0
+offset_left = -300.0
+offset_top = -40.0
+offset_right = 300.0
+offset_bottom = 340.0
 
-[node name="VBox" type="VBoxContainer" parent="ControlsPanel" unique_id=2083609742]
+[node name="VBox" type="VBoxContainer" parent="ControlsPanel" unique_id=599061164]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="ControlsPanel/VBox" unique_id=1416491269]
+[node name="Title" type="Label" parent="ControlsPanel/VBox" unique_id=1690797586]
 layout_mode = 2
 theme_override_font_sizes/font_size = 26
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
 text = "Controles"
 
-[node name="Text" type="Label" parent="ControlsPanel/VBox" unique_id=751868214]
+[node name="Text" type="Label" parent="ControlsPanel/VBox" unique_id=1100232707]
+custom_minimum_size = Vector2(540, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 17
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
-text = "Objetivo: recoge toda la carne sin que Buggy te atrape.
+text = "Habla con Koby: te pedirá derrotar a Buggy y recolectar toda la carne (cada carne te cura).
 
-WASD / flechas: mover
-Shift: correr
-Espacio: saltar
-Mouse: mover la cámara
+WASD / flechas: mover  ·  Shift: correr
+Espacio: saltar (en el agua: impulso)
+Clic izquierdo / J: Gomu Gomu no Pistol
+E: hablar  ·  Mouse: cámara  ·  Esc: pausa
 F1: mostrar u ocultar la IA de Buggy
-Esc: pausa"
 
-[node name="BackButton" type="Button" parent="ControlsPanel/VBox" unique_id=385693430]
+En el teléfono: joystick a la izquierda, arrastra a la derecha para la cámara y usa los botones."
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="ControlsPanel/VBox" unique_id=610512963]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Volver"
 
-[node name="MenuMusic" type="AudioStreamPlayer" parent="." unique_id=769059201]
+[node name="MenuMusic" type="AudioStreamPlayer" parent="." unique_id=827540320]
 stream = ExtResource("3_rtw2f")
 volume_db = -8.0
 autoplay = true
 
-[node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=1736498065]
+[node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=1971416732]
 stream = ExtResource("4_oa1go")
 
 [connection signal="pressed" from="MenuPanel/VBox/PlayButton" to="." method="_on_play_button_pressed"]

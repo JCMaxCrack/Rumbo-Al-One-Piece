@@ -36,7 +36,7 @@ void fragment() {
 	float foam = smoothstep(0.75, 0.95, sh + (noise(p * 0.8 + t * 0.4) - 0.5) * 0.35) * (0.6 + 0.4 * sin(t * 2.0 + sh * 12.0));
 	col = mix(col, vec3(0.95), foam * 0.8);
 	ALBEDO = col + fres * 0.08;
-	ALPHA = mix(0.9, 0.6, sh * (1.0 - foam));
+	ALPHA = mix(1.0, 0.6, sh * (1.0 - foam));
 	ROUGHNESS = mix(0.04, 0.6, foam);
 	METALLIC = 0.0;
 	SPECULAR = 0.8;

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://r1oph2co46ga"
 path.s3tc="res://.godot/imported/Hit Reaction_3.png-a424bf146de4561d7cc3dd16c41f6b73.s3tc.ctex"
+path.etc2="res://.godot/imported/Hit Reaction_3.png-a424bf146de4561d7cc3dd16c41f6b73.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/characters/luffy/Hit Reaction_3.png"
-dest_files=["res://.godot/imported/Hit Reaction_3.png-a424bf146de4561d7cc3dd16c41f6b73.s3tc.ctex"]
+dest_files=["res://.godot/imported/Hit Reaction_3.png-a424bf146de4561d7cc3dd16c41f6b73.s3tc.ctex", "res://.godot/imported/Hit Reaction_3.png-a424bf146de4561d7cc3dd16c41f6b73.etc2.ctex"]
 
 [params]
 

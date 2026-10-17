@@ -5,17 +5,21 @@ extends CharacterBody3D
 ##   CHASE  -> the player entered DetectionArea: runs toward him.
 ##   ATTACK -> the player is inside AttackArea: plays the "punch" animation; the
 ##             animation calls _on_punch_impact() at the moment the hand arrives.
-##   RETURN -> the player left ChaseLimitArea for LoseTimer seconds: goes back to the patrol line.
+##   RETURN -> the player left ChaseLimitArea for LoseTimer seconds (or jumped into the sea):
+##             goes back to the patrol line.
+##   DEFEATED -> Luffy's punches took all his health: plays "death" and stays on the ground.
 ## Nodes used (see scenes/enemies/buggy.tscn): AnimationPlayer, DetectionArea, ChaseLimitArea,
 ## AttackArea, PunchHitbox, PatrolPauseTimer, LoseTimer, AttackCooldown, StateLabel,
-## DetectionRing and the sound nodes.
+## DetectionRing, HealthBar (3D bar over his head) and the sound nodes.
 
-enum State { PATROL, CHASE, ATTACK, RETURN }
+enum State { PATROL, CHASE, ATTACK, RETURN, DEFEATED }
 
-const STATE_TEXT := {State.PATROL: "Patrullando", State.CHASE: "¡Persiguiendo!", State.ATTACK: "¡Atacando!", State.RETURN: "Regresando"}
-const STATE_COLOR := {State.PATROL: Color(0.8, 0.95, 1.0), State.CHASE: Color(1, 0.45, 0.3), State.ATTACK: Color(1, 0.2, 0.2), State.RETURN: Color(1, 0.9, 0.4)}
+const STATE_TEXT := {State.PATROL: "Patrullando", State.CHASE: "¡Persiguiendo!", State.ATTACK: "¡Atacando!", State.RETURN: "Regresando", State.DEFEATED: "Derrotado"}
+const STATE_COLOR := {State.PATROL: Color(0.8, 0.95, 1.0), State.CHASE: Color(1, 0.45, 0.3), State.ATTACK: Color(1, 0.2, 0.2), State.RETURN: Color(1, 0.9, 0.4), State.DEFEATED: Color(0.6, 0.6, 0.6)}
 
 signal state_changed(new_state: int)
+signal health_changed(current: float, maximum: float)
+signal defeated
 
 @export var patrol_left: Marker3D
 @export var patrol_right: Marker3D
@@ -23,7 +27,10 @@ signal state_changed(new_state: int)
 @export var patrol_speed := 2.2
 @export var chase_speed := 5.0   # slower than Luffy sprinting (6.8) so he can escape
 @export var return_speed := 3.0
-@export var punch_damage := 34.0
+@export var punch_damage := 25.0
+@export var max_health := 150.0
+## Small push back when Luffy's punch hits him.
+@export var hit_knockback := 4.0
 @export var gravity := 22.0
 @export var show_debug := true
 
@@ -40,16 +47,84 @@ signal state_changed(new_state: int)
 @onready var roar_sound: AudioStreamPlayer3D = $RoarSound
 @onready var swing_sound: AudioStreamPlayer3D = $SwingSound
 @onready var punch_sound: AudioStreamPlayer3D = $PunchSound
+@onready var hit_sound: AudioStreamPlayer3D = $HitSound
+@onready var health_bar: Node3D = $HealthBar
+@onready var health_fill: Node3D = $HealthBar/Fill
 
 var state: int = State.PATROL
 var patrol_target: Marker3D
 var facing := Vector3.RIGHT
 var player_in_attack_range := false
+var health := 150.0
+var knockback := Vector3.ZERO
+var _meshes: Array = []
+var _flash_time := 0.0
+var _flash_mat: StandardMaterial3D
 
 
 func _ready() -> void:
+	add_to_group("enemies")
+	health = max_health
 	patrol_target = patrol_right
+	for mi in $Model.find_children("*", "MeshInstance3D", true, false):
+		_meshes.append(mi)
+	_flash_mat = StandardMaterial3D.new()
+	_flash_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_flash_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_flash_mat.albedo_color = Color(1, 0.3, 0.25, 0.6)
 	_set_state(State.PATROL)
+	health_changed.emit(health, max_health)
+
+
+func is_defeated() -> bool:
+	return state == State.DEFEATED
+
+
+## Called by Luffy's punch.
+func receive_hit(damage: float, from_pos: Vector3) -> void:
+	if state == State.DEFEATED:
+		return
+	health = maxf(0.0, health - damage)
+	health_changed.emit(health, max_health)
+	health_fill.scale.x = maxf(0.001, health / max_health)
+	hit_sound.play()
+	for m in _meshes:
+		(m as MeshInstance3D).material_overlay = _flash_mat
+	_flash_time = 0.15
+	var away := Vector3(global_position.x - from_pos.x, 0, global_position.z - from_pos.z)
+	if away.length() > 0.05:
+		knockback = away.normalized() * hit_knockback
+	if health <= 0.0:
+		_defeat()
+	elif state == State.PATROL or state == State.RETURN:
+		_set_state(State.CHASE)
+
+
+func _defeat() -> void:
+	_set_state(State.DEFEATED)
+	velocity = Vector3.ZERO
+	player_in_attack_range = false
+	lose_timer.stop()
+	patrol_pause_timer.stop()
+	for a in [detection_area, chase_limit_area, attack_area, punch_hitbox]:
+		(a as Area3D).set_deferred("monitoring", false)
+	collision_layer = 0
+	health_bar.visible = false
+	anim.play("buggy/death", 0.1)
+	roar_sound.play()
+	defeated.emit()
+
+
+func _process(delta: float) -> void:
+	# the health bar always faces the camera
+	var cam := get_viewport().get_camera_3d()
+	if cam and health_bar.visible:
+		health_bar.global_basis = cam.global_basis
+	if _flash_time > 0.0:
+		_flash_time -= delta
+		if _flash_time <= 0.0:
+			for m in _meshes:
+				(m as MeshInstance3D).material_overlay = null
 
 
 func set_debug_visible(on: bool) -> void:
@@ -59,6 +134,8 @@ func set_debug_visible(on: bool) -> void:
 
 
 func _set_state(s: int) -> void:
+	if state == State.DEFEATED and s != State.DEFEATED:
+		return
 	state = s
 	state_label.text = STATE_TEXT[s]
 	state_label.modulate = STATE_COLOR[s]
@@ -111,7 +188,7 @@ func _on_patrol_pause_timer_timeout() -> void:
 
 
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	if anim_name == &"buggy/punch":
+	if anim_name == &"buggy/punch" and state != State.DEFEATED:
 		attack_cooldown.start()
 		# if the player escaped while Buggy was punching, he gives up the chase
 		var still_near := _player_ok() and chase_limit_area.overlaps_body(target)
@@ -120,7 +197,7 @@ func _on_animation_player_animation_finished(anim_name: StringName) -> void:
 
 ## Called by the "punch" animation (method track) when the hand reaches its target.
 func _on_punch_impact() -> void:
-	if _player_ok() and punch_hitbox.overlaps_body(target):
+	if state != State.DEFEATED and _player_ok() and punch_hitbox.overlaps_body(target):
 		target.receive_hit(punch_damage, global_position)
 		punch_sound.play()
 
@@ -132,11 +209,15 @@ func _on_punch_start() -> void:
 # ------------------------------------------------------------------ movement
 func _physics_process(delta: float) -> void:
 	var move := Vector3.ZERO
+	if state == State.DEFEATED:
+		velocity = Vector3(0, velocity.y - gravity * delta if not is_on_floor() else 0.0, 0)
+		move_and_slide()
+		return
 	match state:
 		State.PATROL:
 			move = _patrol()
 		State.CHASE:
-			if not _player_ok():
+			if not _player_ok() or target.swimming:
 				_set_state(State.RETURN)
 			elif player_in_attack_range and attack_cooldown.is_stopped():
 				_set_state(State.ATTACK)
@@ -155,8 +236,9 @@ func _physics_process(delta: float) -> void:
 					_set_state(State.CHASE)
 			else:
 				move = _dir_to(back) * return_speed
-	velocity.x = move.x
-	velocity.z = move.z
+	velocity.x = move.x + knockback.x
+	velocity.z = move.z + knockback.z
+	knockback = knockback.move_toward(Vector3.ZERO, 20.0 * delta)
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	move_and_slide()
@@ -176,7 +258,7 @@ func _patrol() -> Vector3:
 
 
 func _update_animation(speed: float) -> void:
-	if state == State.ATTACK:
+	if state == State.ATTACK or state == State.DEFEATED:
 		return
 	var wanted := "buggy/idle"
 	if speed > 3.5:

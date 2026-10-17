@@ -67,45 +67,45 @@ _data = {
 &"float": SubResource("Animation_6gpqr")
 }
 
-[node name="Meat" type="Area3D" unique_id=1456316696]
+[node name="Meat" type="Area3D" unique_id=1125071650]
 collision_layer = 8
 collision_mask = 2
 monitorable = false
 script = ExtResource("1_otts8")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=539075554]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=453846383]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 shape = SubResource("SphereShape3D_drow4")
 
-[node name="Visual" type="Node3D" parent="." unique_id=1898403788]
+[node name="Visual" type="Node3D" parent="." unique_id=753907602]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="MeatMesh" type="MeshInstance3D" parent="Visual" unique_id=2119431306]
+[node name="MeatMesh" type="MeshInstance3D" parent="Visual" unique_id=1083311841]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_a7y7r")
 
-[node name="BoneMesh" type="MeshInstance3D" parent="Visual" unique_id=1062164741]
+[node name="BoneMesh" type="MeshInstance3D" parent="Visual" unique_id=1827989311]
 transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_el8ij")
 
-[node name="BoneEndLeft" type="MeshInstance3D" parent="Visual" unique_id=876388384]
+[node name="BoneEndLeft" type="MeshInstance3D" parent="Visual" unique_id=1504169332]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66, 0, 0)
 mesh = SubResource("SphereMesh_8fwbd")
 
-[node name="BoneEndRight" type="MeshInstance3D" parent="Visual" unique_id=2115568858]
+[node name="BoneEndRight" type="MeshInstance3D" parent="Visual" unique_id=263080181]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0, 0)
 mesh = SubResource("SphereMesh_001y1")
 
-[node name="Glow" type="OmniLight3D" parent="Visual" unique_id=130609102]
+[node name="Glow" type="OmniLight3D" parent="Visual" unique_id=1015235070]
 light_color = Color(1, 0.8, 0.4, 1)
 light_energy = 1.5
 omni_range = 3.0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1058424242]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=362371523]
 libraries/ = SubResource("AnimationLibrary_gwd7y")
 autoplay = &"float"
 
-[node name="PickupSound" type="AudioStreamPlayer3D" parent="." unique_id=569042904]
+[node name="PickupSound" type="AudioStreamPlayer3D" parent="." unique_id=1402646414]
 stream = ExtResource("2_n0k21")
 unit_size = 12.0
 
