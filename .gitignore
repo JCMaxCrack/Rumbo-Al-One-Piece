@@ -1,4 +1,20 @@
+# Godot cache and local data
 .godot/
+.import/
+export_credentials.cfg
+*.translation
+
+# Exported builds
 /builds/
 *.exe
 *.pck
+*.apk
+*.aab
+/android/
+
+# Backups and OS files
+*.bak
+*.tmp
+*~
+.DS_Store
+Thumbs.db

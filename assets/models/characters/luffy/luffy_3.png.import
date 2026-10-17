@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://cc7a474a5osp1"
 path.s3tc="res://.godot/imported/luffy_3.png-47401dbee1cf9452f549858e950c8949.s3tc.ctex"
+path.etc2="res://.godot/imported/luffy_3.png-47401dbee1cf9452f549858e950c8949.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/characters/luffy/luffy_3.png"
-dest_files=["res://.godot/imported/luffy_3.png-47401dbee1cf9452f549858e950c8949.s3tc.ctex"]
+dest_files=["res://.godot/imported/luffy_3.png-47401dbee1cf9452f549858e950c8949.s3tc.ctex", "res://.godot/imported/luffy_3.png-47401dbee1cf9452f549858e950c8949.etc2.ctex"]
 
 [params]
 

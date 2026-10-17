@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dagv0vonq70l1"
 path.s3tc="res://.godot/imported/Walking_2.png-48f4f2f3fa339fce0eb1b7ddc2934a3a.s3tc.ctex"
+path.etc2="res://.godot/imported/Walking_2.png-48f4f2f3fa339fce0eb1b7ddc2934a3a.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/characters/luffy/Walking_2.png"
-dest_files=["res://.godot/imported/Walking_2.png-48f4f2f3fa339fce0eb1b7ddc2934a3a.s3tc.ctex"]
+dest_files=["res://.godot/imported/Walking_2.png-48f4f2f3fa339fce0eb1b7ddc2934a3a.s3tc.ctex", "res://.godot/imported/Walking_2.png-48f4f2f3fa339fce0eb1b7ddc2934a3a.etc2.ctex"]
 
 [params]
 

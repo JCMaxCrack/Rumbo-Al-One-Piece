@@ -7,17 +7,17 @@ extends CanvasLayer
 @onready var retry_button: Button = $Panel/VBox/RetryButton
 
 
-func show_result(won: bool, time_seconds: float, collected: int, total: int) -> void:
+func show_result(won: bool, time_seconds: float, collected: int, total: int, boss_defeated: bool) -> void:
 	visible = true
 	var t := int(time_seconds)
 	if won:
-		title_label.text = "¡Lo lograste!"
+		title_label.text = "¡Misión cumplida!"
 		title_label.modulate = Color(1, 0.85, 0.4)
-		detail_label.text = "Recogiste toda la carne (%d/%d) sin que Buggy te atrapara.\nTiempo: %d:%02d" % [collected, total, t / 60, t % 60]
+		detail_label.text = "Derrotaste a Buggy el Payaso y recolectaste toda la carne (%d/%d).\nTiempo: %d:%02d" % [collected, total, t / 60, t % 60]
 	else:
-		title_label.text = "¡Buggy te atrapó!"
+		title_label.text = "¡Buggy te derrotó!"
 		title_label.modulate = Color(1, 0.45, 0.4)
-		detail_label.text = "Carne recogida: %d/%d\nTiempo: %d:%02d" % [collected, total, t / 60, t % 60]
+		detail_label.text = "Buggy: %s  ·  Carne recogida: %d/%d\nTiempo: %d:%02d" % ["derrotado" if boss_defeated else "sigue en pie", collected, total, t / 60, t % 60]
 	retry_button.grab_focus()
 
 

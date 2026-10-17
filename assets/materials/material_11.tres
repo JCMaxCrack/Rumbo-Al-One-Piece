@@ -5,5 +5,5 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_4dyqv")
-shader_parameter/base_col = null
-shader_parameter/tip_col = null
+shader_parameter/base_col = Color(0.1, 0.19, 0.05, 1)
+shader_parameter/tip_col = Color(0.34, 0.44, 0.16, 1)

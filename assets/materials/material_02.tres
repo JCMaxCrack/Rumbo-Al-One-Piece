@@ -5,11 +5,11 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_b8gqn")
-shader_parameter/grass_a = null
-shader_parameter/grass_b = null
-shader_parameter/dry = null
-shader_parameter/sand = null
-shader_parameter/dirt = null
-shader_parameter/paving = null
-shader_parameter/rock_a = null
-shader_parameter/rock_b = null
+shader_parameter/grass_a = Color(0.15, 0.27, 0.09, 1)
+shader_parameter/grass_b = Color(0.3, 0.38, 0.16, 1)
+shader_parameter/dry = Color(0.55, 0.52, 0.28, 1)
+shader_parameter/sand = Color(0.82, 0.74, 0.54, 1)
+shader_parameter/dirt = Color(0.74, 0.64, 0.45, 1)
+shader_parameter/paving = Color(0.4, 0.39, 0.37, 1)
+shader_parameter/rock_a = Color(0.33, 0.24, 0.17, 1)
+shader_parameter/rock_b = Color(0.6, 0.47, 0.35, 1)
