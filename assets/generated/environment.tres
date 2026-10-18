@@ -1,4 +1,4 @@
-[gd_resource type="Environment" format=3]
+[gd_resource type="Environment" format=3 uid="uid://o83n5kk8b466"]
 
 [ext_resource type="Material" path="res://assets/materials/material_01.tres" id="1_oi1fr"]
 
@@ -17,5 +17,5 @@ ssao_enabled = true
 glow_enabled = true
 fog_enabled = true
 fog_light_color = Color(0.7, 0.8, 0.9, 1)
-fog_density = 0.002
+fog_density = 0.0016
 fog_aerial_perspective = 0.4

@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://dvnjwtp55vvgp"
 path.s3tc="res://.godot/imported/Running_3.png-13b34f6bc4da9d313d4773fb34b55a1e.s3tc.ctex"
+path.etc2="res://.godot/imported/Running_3.png-13b34f6bc4da9d313d4773fb34b55a1e.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/characters/luffy/Running_3.png"
-dest_files=["res://.godot/imported/Running_3.png-13b34f6bc4da9d313d4773fb34b55a1e.s3tc.ctex"]
+dest_files=["res://.godot/imported/Running_3.png-13b34f6bc4da9d313d4773fb34b55a1e.s3tc.ctex", "res://.godot/imported/Running_3.png-13b34f6bc4da9d313d4773fb34b55a1e.etc2.ctex"]
 
 [params]
 

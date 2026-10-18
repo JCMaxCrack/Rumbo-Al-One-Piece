@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://5nsqh5ytv2d2"
 path.s3tc="res://.godot/imported/Jump_3.png-b18992a9c7474cc7c4062545316dbc85.s3tc.ctex"
+path.etc2="res://.godot/imported/Jump_3.png-b18992a9c7474cc7c4062545316dbc85.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/models/characters/luffy/Jump_3.png"
-dest_files=["res://.godot/imported/Jump_3.png-b18992a9c7474cc7c4062545316dbc85.s3tc.ctex"]
+dest_files=["res://.godot/imported/Jump_3.png-b18992a9c7474cc7c4062545316dbc85.s3tc.ctex", "res://.godot/imported/Jump_3.png-b18992a9c7474cc7c4062545316dbc85.etc2.ctex"]
 
 [params]
 

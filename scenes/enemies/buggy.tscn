@@ -1,129 +1,168 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scripts/buggy_boss.gd" id="1_l5a0q"]
-[ext_resource type="PackedScene" path="res://assets/models/characters/buggy/buggy.fbx" id="2_kjbmy"]
-[ext_resource type="AnimationLibrary" path="res://assets/animations/buggy_animations.res" id="3_tv6xx"]
-[ext_resource type="AudioStream" path="res://assets/audio/boss_roar.wav" id="4_hnpy7"]
-[ext_resource type="AudioStream" path="res://assets/audio/stretch.wav" id="5_7l22c"]
-[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="6_k0l4v"]
+[ext_resource type="Script" path="res://scripts/buggy_boss.gd" id="1_kjbmy"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/buggy/buggy.fbx" id="2_tv6xx"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/buggy_animations.res" id="3_hnpy7"]
+[ext_resource type="AudioStream" path="res://assets/audio/boss_roar.wav" id="4_7l22c"]
+[ext_resource type="AudioStream" path="res://assets/audio/stretch.wav" id="5_k0l4v"]
+[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="6_b5ule"]
+[ext_resource type="AudioStream" path="res://assets/audio/hit.wav" id="7_1mvgg"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_b5ule"]
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7pkse"]
 radius = 0.45
 height = 2.1
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_1mvgg"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_7a5ju"]
 radius = 10.0
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_7pkse"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_ilro1"]
 radius = 16.0
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_7a5ju"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_28h8p"]
 radius = 2.4
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_ilro1"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_2gi75"]
 radius = 1.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_28h8p"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ul1ws"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.05, 0.05, 0.08, 0.85)
+
+[sub_resource type="QuadMesh" id="QuadMesh_a25p3"]
+material = SubResource("StandardMaterial3D_ul1ws")
+size = Vector2(1.5, 0.18)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4y1pa"]
+render_priority = 1
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.9, 0.18, 0.15, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_q5x7m"]
+material = SubResource("StandardMaterial3D_4y1pa")
+size = Vector2(1.44, 0.12)
+center_offset = Vector3(0.72, 0, 0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nvgw6"]
 transparency = 1
 shading_mode = 0
 albedo_color = Color(1, 0.85, 0.2, 0.55)
 
-[sub_resource type="TorusMesh" id="TorusMesh_2gi75"]
-material = SubResource("StandardMaterial3D_28h8p")
+[sub_resource type="TorusMesh" id="TorusMesh_mdt0q"]
+material = SubResource("StandardMaterial3D_nvgw6")
 inner_radius = 9.88
 outer_radius = 10.0
 ring_segments = 3
 
-[node name="Buggy" type="CharacterBody3D" unique_id=1247844854]
+[node name="Buggy" type="CharacterBody3D" unique_id=1486968825]
 collision_layer = 4
 floor_snap_length = 0.4
-script = ExtResource("1_l5a0q")
+script = ExtResource("1_kjbmy")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1186334513]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1622797300]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
-shape = SubResource("CapsuleShape3D_b5ule")
+shape = SubResource("CapsuleShape3D_7pkse")
 
-[node name="Model" type="Node3D" parent="." unique_id=327382798]
+[node name="Model" type="Node3D" parent="." unique_id=207472454]
 
-[node name="BuggyModel" parent="Model" unique_id=1759878551 instance=ExtResource("2_kjbmy")]
+[node name="BuggyModel" parent="Model" unique_id=1554901912 instance=ExtResource("2_tv6xx")]
 transform = Transform3D(1.1055268, 0, 0, 0, 1.1055268, 0, 0, 0, 1.1055268, 0, 0.0046514887, 0)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1515657440]
-libraries/buggy = ExtResource("3_tv6xx")
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1865584848]
+libraries/buggy = ExtResource("3_hnpy7")
 autoplay = &"buggy/idle"
 
-[node name="DetectionArea" type="Area3D" parent="." unique_id=2007536581]
+[node name="DetectionArea" type="Area3D" parent="." unique_id=179144034]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1535534424]
-shape = SubResource("SphereShape3D_1mvgg")
-
-[node name="ChaseLimitArea" type="Area3D" parent="." unique_id=1880489172]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_layer = 0
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ChaseLimitArea" unique_id=323356482]
-shape = SubResource("SphereShape3D_7pkse")
-
-[node name="AttackArea" type="Area3D" parent="." unique_id=1558398380]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_layer = 0
-collision_mask = 2
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea" unique_id=2107070826]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1516967389]
 shape = SubResource("SphereShape3D_7a5ju")
 
-[node name="PunchHitbox" type="Area3D" parent="." unique_id=798351548]
+[node name="ChaseLimitArea" type="Area3D" parent="." unique_id=722037262]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ChaseLimitArea" unique_id=944268897]
+shape = SubResource("SphereShape3D_ilro1")
+
+[node name="AttackArea" type="Area3D" parent="." unique_id=252080337]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AttackArea" unique_id=986748775]
+shape = SubResource("SphereShape3D_28h8p")
+
+[node name="PunchHitbox" type="Area3D" parent="." unique_id=1360668178]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 1.8)
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PunchHitbox" unique_id=366923844]
-shape = SubResource("SphereShape3D_ilro1")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PunchHitbox" unique_id=1251348866]
+shape = SubResource("SphereShape3D_2gi75")
 
-[node name="PatrolPauseTimer" type="Timer" parent="." unique_id=224040848]
+[node name="PatrolPauseTimer" type="Timer" parent="." unique_id=2101025684]
 wait_time = 1.2
 one_shot = true
 
-[node name="LoseTimer" type="Timer" parent="." unique_id=2111294782]
+[node name="LoseTimer" type="Timer" parent="." unique_id=2064136925]
 wait_time = 1.2
 one_shot = true
 
-[node name="AttackCooldown" type="Timer" parent="." unique_id=1814006977]
+[node name="AttackCooldown" type="Timer" parent="." unique_id=1292169143]
 wait_time = 1.3
 one_shot = true
 
-[node name="StateLabel" type="Label3D" parent="." unique_id=1656792354]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
+[node name="StateLabel" type="Label3D" parent="." unique_id=398072960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.95, 0)
 pixel_size = 0.006
 billboard = 1
 no_depth_test = true
 text = "Patrullando"
 font_size = 56
 
-[node name="DetectionRing" type="MeshInstance3D" parent="." unique_id=1962616892]
+[node name="HealthBar" type="Node3D" parent="." unique_id=346278570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.55, 0)
+
+[node name="Back" type="MeshInstance3D" parent="HealthBar" unique_id=1897696861]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_a25p3")
+
+[node name="Fill" type="MeshInstance3D" parent="HealthBar" unique_id=1854842874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, 0, 0.01)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_q5x7m")
+
+[node name="DetectionRing" type="MeshInstance3D" parent="." unique_id=1926154534]
 transform = Transform3D(1, 0, 0, 0, 0.05, 0, 0, 0, 1, 0, 0.15, 0)
 cast_shadow = 0
-mesh = SubResource("TorusMesh_2gi75")
+mesh = SubResource("TorusMesh_mdt0q")
 
-[node name="RoarSound" type="AudioStreamPlayer3D" parent="." unique_id=270858038]
-stream = ExtResource("4_hnpy7")
+[node name="RoarSound" type="AudioStreamPlayer3D" parent="." unique_id=401860777]
+stream = ExtResource("4_7l22c")
 volume_db = -4.0
 unit_size = 12.0
 
-[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=782611144]
-stream = ExtResource("5_7l22c")
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=373115387]
+stream = ExtResource("5_k0l4v")
 unit_size = 12.0
 
-[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=667029681]
-stream = ExtResource("6_k0l4v")
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=115624520]
+stream = ExtResource("6_b5ule")
+unit_size = 12.0
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="." unique_id=465147127]
+stream = ExtResource("7_1mvgg")
 unit_size = 12.0
 
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

@@ -6,7 +6,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_ykxiv")
-shader_parameter/deep = null
-shader_parameter/shallow = null
+shader_parameter/deep = Color(0.02, 0.16, 0.3, 1)
+shader_parameter/shallow = Color(0.1, 0.55, 0.6, 1)
 shader_parameter/shore = ExtResource("2_bk65v")
-shader_parameter/map_size = Vector2(140, 140)
+shader_parameter/map_size = Vector2(440, 440)
