@@ -1,0 +1,21 @@
+[gd_resource type="Environment" format=3]
+
+[ext_resource type="Material" path="res://assets/materials/material_01.tres" id="1_oi1fr"]
+
+[sub_resource type="Sky" id="Sky_f0x18"]
+sky_material = ExtResource("1_oi1fr")
+radiance_size = 2
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_f0x18")
+ambient_light_source = 3
+ambient_light_energy = 0.7
+tonemap_mode = 3
+tonemap_white = 6.0
+ssao_enabled = true
+glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.7, 0.8, 0.9, 1)
+fog_density = 0.0016
+fog_aerial_perspective = 0.4

@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://biuexp7wqysje"]
+
+[ext_resource type="PackedScene" uid="uid://bd18mnoen1cvw" path="res://assets/models/ships/going_merry/going_merry.fbx" id="1_ffr75"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qx2lt"]
+size = Vector3(5.6, 2.8, 15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vra4o"]
+size = Vector3(5.6, 0.2, 5.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2wvt1"]
+size = Vector3(4.8, 2, 3.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x8l0w"]
+size = Vector3(5.6, 2, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ni01o"]
+size = Vector3(5.2, 2.9, 3.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h30uk"]
+size = Vector3(2.2, 2.2, 1.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cxvp4"]
+size = Vector3(0.2, 1.6, 5.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8noya"]
+size = Vector3(0.2, 1.6, 5.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sehnh"]
+size = Vector3(1.4, 0.2, 3.25)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1ig4h"]
+size = Vector3(1.4, 0.2, 3.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_40fwl"]
+size = Vector3(1.2, 0.2, 1.95)
+
+[sub_resource type="Gradient" id="Gradient_tj7u7"]
+colors = PackedColorArray(0.385, 0.28, 0.168, 1, 0.595, 0.46, 0.31599998, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_bwfte"]
+seed = 590893256
+frequency = 0.03
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_prj7o"]
+width = 64
+noise = SubResource("FastNoiseLite_bwfte")
+color_ramp = SubResource("Gradient_tj7u7")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_msrwb"]
+seed = 590893263
+frequency = 0.048
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7kdmq"]
+width = 64
+noise = SubResource("FastNoiseLite_msrwb")
+seamless = true
+as_normal_map = true
+bump_strength = 5.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y22do"]
+albedo_texture = SubResource("NoiseTexture2D_prj7o")
+roughness = 0.85
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = SubResource("NoiseTexture2D_7kdmq")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+uv1_world_triplanar = true
+texture_filter = 5
+
+[sub_resource type="BoxMesh" id="BoxMesh_bl0dt"]
+material = SubResource("StandardMaterial3D_y22do")
+size = Vector3(5.1615543, 0.15, 1.4)
+
+[sub_resource type="Gradient" id="Gradient_ucjii"]
+colors = PackedColorArray(0.28, 0.196, 0.111999996, 1, 0.46, 0.352, 0.244, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1kure"]
+seed = -1105298164
+frequency = 0.03
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ou3fl"]
+width = 64
+noise = SubResource("FastNoiseLite_1kure")
+color_ramp = SubResource("Gradient_ucjii")
+seamless = true
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tb74u"]
+seed = -1105298157
+frequency = 0.048
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1f5gs"]
+width = 64
+noise = SubResource("FastNoiseLite_tb74u")
+seamless = true
+as_normal_map = true
+bump_strength = 5.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qdd3n"]
+albedo_texture = SubResource("NoiseTexture2D_ou3fl")
+roughness = 0.85
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = SubResource("NoiseTexture2D_1f5gs")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+uv1_world_triplanar = true
+texture_filter = 5
+
+[sub_resource type="BoxMesh" id="BoxMesh_7cfbs"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(5.1615543, 0.06, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_i3d8f"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(0.06, 0.75, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8gemy"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(0.06, 0.75, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_s1naj"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(0.06, 0.75, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tsfyi"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(5.1615543, 0.06, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4of3f"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(0.06, 0.75, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_k476g"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(0.06, 0.75, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qetsw"]
+material = SubResource("StandardMaterial3D_qdd3n")
+size = Vector3(0.06, 0.75, 0.06)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5bn3l"]
+size = Vector3(5.1615543, 0.15, 1.4)
+
+[node name="GoingMerry" type="Node3D" unique_id=2125988302]
+
+[node name="Model" parent="." unique_id=776043716 instance=ExtResource("1_ffr75")]
+
+[node name="Collision" type="StaticBody3D" parent="." unique_id=974245464]
+collision_mask = 0
+
+[node name="Hull" type="CollisionShape3D" parent="Collision" unique_id=631563998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 0)
+shape = SubResource("BoxShape3D_qx2lt")
+
+[node name="WellDeck" type="CollisionShape3D" parent="Collision" unique_id=1105549699]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 1)
+shape = SubResource("BoxShape3D_vra4o")
+
+[node name="ForeDeck" type="CollisionShape3D" parent="Collision" unique_id=1150895561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5.25)
+shape = SubResource("BoxShape3D_2wvt1")
+
+[node name="MidDeck" type="CollisionShape3D" parent="Collision" unique_id=768068104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -3.1)
+shape = SubResource("BoxShape3D_x8l0w")
+
+[node name="SternDeck" type="CollisionShape3D" parent="Collision" unique_id=1104779619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -6.3)
+shape = SubResource("BoxShape3D_ni01o")
+
+[node name="Cabin" type="CollisionShape3D" parent="Collision" unique_id=909837023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, -3.6)
+shape = SubResource("BoxShape3D_h30uk")
+
+[node name="BulwarkLeft" type="CollisionShape3D" parent="Collision" unique_id=1104127412]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.85, 0.8, 1)
+shape = SubResource("BoxShape3D_cxvp4")
+
+[node name="BulwarkRight" type="CollisionShape3D" parent="Collision" unique_id=1349223319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.85, 0.8, 1)
+shape = SubResource("BoxShape3D_8noya")
+
+[node name="RampFore" type="CollisionShape3D" parent="Collision" unique_id=1944121219]
+transform = Transform3D(1, 0, 0, 0, 0.76822126, 0.6401844, 0, -0.6401844, 0.76822126, -2.1472034, 0.92, 2.4)
+shape = SubResource("BoxShape3D_sehnh")
+
+[node name="RampAft" type="CollisionShape3D" parent="Collision" unique_id=1838720935]
+transform = Transform3D(1, 0, 0, 0, 0.78086877, -0.62469506, 0, 0.62469506, 0.78086877, 2.1307285, 0.92, -1.0213821)
+shape = SubResource("BoxShape3D_1ig4h")
+
+[node name="RampStern" type="CollisionShape3D" parent="Collision" unique_id=277976142]
+transform = Transform3D(1, 0, 0, 0, 0.87157553, -0.49026126, 0, 0.49026126, 0.87157553, 2.05, 2.37, -3.6)
+shape = SubResource("BoxShape3D_40fwl")
+
+[node name="Gangplank" type="Node3D" parent="." unique_id=1639350702]
+transform = Transform3D(0.924068, 0.38222814, 0, -0.38222814, 0.924068, 0, 0, 0, 1, 4.971333, 1.040695, -2.5)
+
+[node name="Plank" type="MeshInstance3D" parent="Gangplank" unique_id=444852206]
+mesh = SubResource("BoxMesh_bl0dt")
+
+[node name="RailLeft" type="MeshInstance3D" parent="Gangplank" unique_id=795823479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, -0.68)
+mesh = SubResource("BoxMesh_7cfbs")
+
+[node name="Post1L" type="MeshInstance3D" parent="Gangplank" unique_id=1801155380]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3807771, 0.38, -0.68)
+mesh = SubResource("BoxMesh_i3d8f")
+
+[node name="Post2L" type="MeshInstance3D" parent="Gangplank" unique_id=1434175767]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, -0.68)
+mesh = SubResource("BoxMesh_8gemy")
+
+[node name="Post3L" type="MeshInstance3D" parent="Gangplank" unique_id=1930840426]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3807771, 0.38, -0.68)
+mesh = SubResource("BoxMesh_s1naj")
+
+[node name="RailRight" type="MeshInstance3D" parent="Gangplank" unique_id=1468766148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0.68)
+mesh = SubResource("BoxMesh_tsfyi")
+
+[node name="Post1R" type="MeshInstance3D" parent="Gangplank" unique_id=1386313752]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3807771, 0.38, 0.68)
+mesh = SubResource("BoxMesh_4of3f")
+
+[node name="Post2R" type="MeshInstance3D" parent="Gangplank" unique_id=1949830317]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.38, 0.68)
+mesh = SubResource("BoxMesh_k476g")
+
+[node name="Post3R" type="MeshInstance3D" parent="Gangplank" unique_id=1109812975]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3807771, 0.38, 0.68)
+mesh = SubResource("BoxMesh_qetsw")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Gangplank" unique_id=29435431]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Gangplank/StaticBody3D" unique_id=1423669243]
+shape = SubResource("BoxShape3D_5bn3l")

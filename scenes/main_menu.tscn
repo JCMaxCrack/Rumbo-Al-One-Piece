@@ -1,0 +1,156 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_wu84c"]
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="2_8ln24"]
+[ext_resource type="AudioStream" path="res://assets/audio/music_menu.wav" id="3_rtw2f"]
+[ext_resource type="AudioStream" path="res://assets/audio/select.wav" id="4_oa1go"]
+
+[sub_resource type="Gradient" id="Gradient_tbmy8"]
+offsets = PackedFloat32Array(0, 0.35, 0.55, 0.56, 1)
+colors = PackedColorArray(0.16, 0.13, 0.3, 1, 0.52, 0.24, 0.38, 1, 0.95, 0.58, 0.35, 1, 0.08, 0.2, 0.38, 1, 0.05, 0.13, 0.27, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_jk1qb"]
+gradient = SubResource("Gradient_tbmy8")
+height = 256
+fill_to = Vector2(0, 1)
+
+[node name="MainMenu" type="Control" unique_id=338065027]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_wu84c")
+script = ExtResource("2_8ln24")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1636966687]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = SubResource("GradientTexture2D_jk1qb")
+expand_mode = 1
+
+[node name="TitleSmall" type="Label" parent="." unique_id=954402287]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 70.0
+offset_right = 300.0
+offset_bottom = 110.0
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "RUMBO AL"
+horizontal_alignment = 1
+
+[node name="Title" type="Label" parent="." unique_id=152159668]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 100.0
+offset_right = 400.0
+offset_bottom = 210.0
+theme_override_font_sizes/font_size = 84
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "ONE PIECE"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="." unique_id=1988961804]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 205.0
+offset_right = 300.0
+offset_bottom = 235.0
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+text = "BETA · La misión de Koby"
+horizontal_alignment = 1
+
+[node name="MenuPanel" type="PanelContainer" parent="." unique_id=358167378]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 200.0
+
+[node name="VBox" type="VBoxContainer" parent="MenuPanel" unique_id=1603816643]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayButton" type="Button" parent="MenuPanel/VBox" unique_id=1800050192]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Jugar"
+
+[node name="ControlsButton" type="Button" parent="MenuPanel/VBox" unique_id=497101732]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Controles"
+
+[node name="QuitButton" type="Button" parent="MenuPanel/VBox" unique_id=1012483671]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Salir"
+
+[node name="ControlsPanel" type="PanelContainer" parent="." unique_id=14210955]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -40.0
+offset_right = 300.0
+offset_bottom = 340.0
+
+[node name="VBox" type="VBoxContainer" parent="ControlsPanel" unique_id=599061164]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="ControlsPanel/VBox" unique_id=1690797586]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "Controles"
+
+[node name="Text" type="Label" parent="ControlsPanel/VBox" unique_id=1100232707]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "Habla con Koby: te pedirá derrotar a Buggy y recolectar toda la carne (cada carne te cura).
+
+WASD / flechas: mover  ·  Shift: correr
+Espacio: saltar (en el agua: impulso)
+Clic izquierdo / J: Gomu Gomu no Pistol
+E: hablar  ·  Mouse: cámara  ·  Esc: pausa
+F1: mostrar u ocultar la IA de Buggy
+
+En el teléfono: joystick a la izquierda, arrastra a la derecha para la cámara y usa los botones."
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="ControlsPanel/VBox" unique_id=610512963]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Volver"
+
+[node name="MenuMusic" type="AudioStreamPlayer" parent="." unique_id=827540320]
+stream = ExtResource("3_rtw2f")
+volume_db = -8.0
+autoplay = true
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=1971416732]
+stream = ExtResource("4_oa1go")
+
+[connection signal="pressed" from="MenuPanel/VBox/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="MenuPanel/VBox/ControlsButton" to="." method="_on_controls_button_pressed"]
+[connection signal="pressed" from="MenuPanel/VBox/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="ControlsPanel/VBox/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="finished" from="MenuMusic" to="MenuMusic" method="play"]
