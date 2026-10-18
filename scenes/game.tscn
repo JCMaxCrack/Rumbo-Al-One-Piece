@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://b44s8vfkkc6p0"]
 
-[ext_resource type="Script" path="res://scripts/game_world.gd" id="1_bt5mj"]
-[ext_resource type="Environment" path="res://assets/generated/environment.tres" id="2_e1j6l"]
+[ext_resource type="Script" uid="uid://brckd7xx2cytl" path="res://scripts/game_world.gd" id="1_bt5mj"]
+[ext_resource type="Environment" uid="uid://o83n5kk8b466" path="res://assets/generated/environment.tres" id="2_e1j6l"]
 [ext_resource type="ArrayMesh" path="res://assets/generated/terrain_mesh.res" id="3_pl11u"]
 [ext_resource type="Shape3D" path="res://assets/generated/terrain_shape.res" id="4_bhx41"]
 [ext_resource type="PlaneMesh" path="res://assets/generated/water_mesh.res" id="5_qnb83"]
@@ -17,12 +17,12 @@
 [ext_resource type="PackedScene" path="res://scenes/player/luffy.tscn" id="15_02fa5"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/koby.tscn" id="16_nepv3"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/buggy.tscn" id="17_7025r"]
-[ext_resource type="PackedScene" path="res://scenes/props/going_merry.tscn" id="18_m4url"]
+[ext_resource type="PackedScene" uid="uid://biuexp7wqysje" path="res://scenes/props/going_merry.tscn" id="18_m4url"]
 [ext_resource type="PackedScene" path="res://scenes/items/meat.tscn" id="19_8ool0"]
-[ext_resource type="AudioStream" path="res://assets/audio/music_island.wav" id="20_pr1ej"]
-[ext_resource type="AudioStream" path="res://assets/audio/music_combat.wav" id="21_05nbr"]
-[ext_resource type="AudioStream" path="res://assets/audio/victory.wav" id="22_0sl42"]
-[ext_resource type="AudioStream" path="res://assets/audio/defeat.wav" id="23_oaba0"]
+[ext_resource type="AudioStream" uid="uid://cyurybgn081ma" path="res://assets/audio/music_island.wav" id="20_pr1ej"]
+[ext_resource type="AudioStream" uid="uid://bu3gfqa7cs2jr" path="res://assets/audio/music_combat.wav" id="21_05nbr"]
+[ext_resource type="AudioStream" uid="uid://bxkkrq87lotxn" path="res://assets/audio/victory.wav" id="22_0sl42"]
+[ext_resource type="AudioStream" uid="uid://c26205a8f2f2q" path="res://assets/audio/defeat.wav" id="23_oaba0"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_458eo"]
 height = 4.844262
@@ -2809,10 +2809,10 @@ texture_filter = 5
 
 [sub_resource type="BoxMesh" id="BoxMesh_ym27d"]
 material = SubResource("StandardMaterial3D_dtjod")
-size = Vector3(3, 0.25, 69.5)
+size = Vector3(3, 0.25, 71.37538)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dd02v"]
-size = Vector3(3, 0.25, 69.5)
+size = Vector3(3, 0.25, 71.76001)
 
 [sub_resource type="Gradient" id="Gradient_nlwe6"]
 colors = PackedColorArray(0.252, 0.175, 0.105000004, 1, 0.42400002, 0.325, 0.23500001, 1)
@@ -5816,14 +5816,14 @@ shape = SubResource("BoxShape3D_lj18o")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 290.22, 1.2, 185.15)
 
 [node name="Planks" type="MeshInstance3D" parent="Island/Dock" unique_id=768174344]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0.9376831)
 mesh = SubResource("BoxMesh_ym27d")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Island/Dock" unique_id=512174560]
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Island/Dock/StaticBody3D" unique_id=1559689956]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.125, 1.1300049)
 shape = SubResource("BoxShape3D_dd02v")
 
 [node name="Post1L" type="MeshInstance3D" parent="Island/Dock" unique_id=536570899]
@@ -6311,6 +6311,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 239.56308, 2.2976663, 324.990
 
 [node name="Koby" parent="." unique_id=659906218 instance=ExtResource("16_nepv3")]
 transform = Transform3D(0.78935224, 0, -0.6139406, 0, 1, 0, 0.6139406, 0, 0.78935224, 243.06308, 2.4342778, 320.49075)
+mission_lines = ["¡Luffy-san! ¡Qué bueno que llegaste a la isla!", "Buggy el Payaso se escondió en el cráter del volcán, en el centro de la isla, y tiene a todos aterrorizados.", "Tu misión: ¡derrota a Buggy y recolecta toda la carne que está repartida por la isla!", "Cada carne te devuelve vida. Y el Going Merry está anclado en la ensenada del noreste: sube por el puente del muelle."]
 
 [node name="Buggy" parent="." unique_id=1486968825 node_paths=PackedStringArray("patrol_left", "patrol_right", "target") instance=ExtResource("17_7025r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.44, 11.2, 240.6)
