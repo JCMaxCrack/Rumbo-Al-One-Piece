@@ -20,6 +20,7 @@ config/icon="res://icon.png"
 [autoload]
 
 SaveManager="*res://scripts/save_manager.gd"
+GraphicsSettings="*res://scripts/graphics_settings.gd"
 
 [display]
 
@@ -128,6 +129,14 @@ interact={
 3d/physics_engine="Jolt Physics"
 
 [rendering]
+
+renderer/rendering_method="forward_plus"
+renderer/rendering_method.mobile="mobile"
+rendering_device/fallback_to_opengl3=true
+occlusion_culling/use_occlusion_culling=true
+limits/opengl/max_renderable_lights=16
+limits/opengl/max_lights_per_object=4
+mesh_lod/lod_change/threshold_pixels=2.0
 
 textures/vram_compression/import_etc2_astc=true
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=3

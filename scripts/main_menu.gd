@@ -8,6 +8,7 @@ extends Control
 @onready var back_button: Button = $ControlsPanel/VBox/BackButton
 @onready var click_sound: AudioStreamPlayer = $ClickSound
 @onready var save_slots: SaveSlots = $SaveSlots
+@onready var options: GraphicsOptions = $GraphicsOptions
 
 
 func _ready() -> void:
@@ -20,6 +21,18 @@ func _on_play_button_pressed() -> void:
 	click_sound.play()
 	menu_panel.visible = false
 	save_slots.open(SaveSlots.Mode.LOAD)
+
+
+func _on_options_button_pressed() -> void:
+	click_sound.play()
+	menu_panel.visible = false
+	options.open()
+
+
+func _on_graphics_options_closed() -> void:
+	click_sound.play()
+	menu_panel.visible = true
+	play_button.grab_focus()
 
 
 func _on_save_slots_closed() -> void:

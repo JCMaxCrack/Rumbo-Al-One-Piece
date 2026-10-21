@@ -37,6 +37,8 @@ func set_active(on: bool, current: bool) -> void:
 	_flag_mat.albedo_color = active_color if on else inactive_color
 	_flag_mat.emission = active_color if current else Color.BLACK
 	_flag_mat.emission_energy_multiplier = 0.8 if current else 0.0
+	# the light is in the group "dynamic_lights": GraphicsSettings turns it on only if it is close
+	glow.set_meta("wanted", current)
 	glow.visible = current
 
 
