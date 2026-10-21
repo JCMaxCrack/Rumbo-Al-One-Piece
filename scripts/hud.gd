@@ -44,6 +44,11 @@ func set_boss_health(current: float, maximum: float) -> void:
 	boss_health_label.text = "%d / %d" % [int(ceil(current)), int(maximum)]
 
 
+## Buggy's name, health and AI state (hidden until Koby gives the mission and after Buggy falls).
+func set_boss_visible(on: bool) -> void:
+	$Root/BossBox.visible = on
+
+
 func set_boss_state(text: String) -> void:
 	boss_state_label.text = "IA: " + text
 
