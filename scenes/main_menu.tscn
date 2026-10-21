@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_wu84c"]
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="2_8ln24"]
+[ext_resource type="PackedScene" path="res://scenes/ui/save_slots.tscn" id="3_8ln24"]
 [ext_resource type="AudioStream" path="res://assets/audio/music_menu.wav" id="3_rtw2f"]
 [ext_resource type="AudioStream" path="res://assets/audio/select.wav" id="4_oa1go"]
 
@@ -16,7 +17,7 @@ fill_to = Vector2(0, 1)
 
 [node name="MainMenu" type="Control" unique_id=338065027]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_wu84c")
@@ -141,6 +142,10 @@ custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Volver"
 
+[node name="SaveSlots" parent="." unique_id=1879231917 instance=ExtResource("3_8ln24")]
+layout_mode = 1
+anchors_preset = 15
+
 [node name="MenuMusic" type="AudioStreamPlayer" parent="." unique_id=827540320]
 stream = ExtResource("3_rtw2f")
 volume_db = -8.0
@@ -153,4 +158,5 @@ stream = ExtResource("4_oa1go")
 [connection signal="pressed" from="MenuPanel/VBox/ControlsButton" to="." method="_on_controls_button_pressed"]
 [connection signal="pressed" from="MenuPanel/VBox/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="ControlsPanel/VBox/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="closed" from="SaveSlots" to="." method="_on_save_slots_closed"]
 [connection signal="finished" from="MenuMusic" to="MenuMusic" method="play"]
