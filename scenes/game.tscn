@@ -2145,171 +2145,171 @@ height = 5.7596016
 radius = 0.3916529
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cfi0v"]
-height = 5.76894
+height = 1.643259
 radius = 1.0384092
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6eyue"]
-height = 7.0585394
+height = 1.6108127
 radius = 1.2705371
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_h4ifg"]
-height = 8.658403
+height = 2.2085695
 radius = 1.5585126
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6eyip"]
-height = 8.489124
+height = 2.2815995
 radius = 1.5280423
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_b1dn8"]
-height = 5.7230096
+height = 1.6639307
 radius = 1.0301417
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_fvmeo"]
-height = 8.535319
+height = 2.2055843
 radius = 1.5363575
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_dlv7b"]
-height = 4.407512
+height = 1.0807092
 radius = 0.7933522
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_m24i3"]
-height = 6.8094625
-radius = 1.2257032
+height = 1.6468066
+radius = 1.3408203
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_utf4h"]
-height = 5.367052
+height = 1.4362454
 radius = 0.96606934
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_or1k2"]
-height = 7.1178656
+height = 1.752282
 radius = 1.2812158
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_cg8v4"]
-height = 5.488513
+height = 1.4800094
 radius = 0.9879324
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_gvfo6"]
-height = 8.888377
+height = 2.3999267
 radius = 1.5999079
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ec7l6"]
-height = 5.82858
+height = 1.5690751
 radius = 1.0491444
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_78xta"]
-height = 5.8566437
+height = 1.5212898
 radius = 1.0541959
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_x35mj"]
-height = 5.1250124
+height = 1.3635269
 radius = 0.9225022
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_sx744"]
-height = 5.7277207
+height = 1.5051724
 radius = 1.0309898
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_5t2uf"]
-height = 8.927229
+height = 2.3255572
 radius = 1.6069012
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7myqg"]
-height = 5.165295
+height = 1.4718077
 radius = 0.9297531
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_28x3w"]
-height = 7.987335
+height = 1.954483
 radius = 1.4377203
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_xktth"]
-height = 8.55422
+height = 2.3414412
 radius = 1.5397596
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_m8y2h"]
-height = 4.485693
+height = 1.4394164
 radius = 0.8074247
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_axump"]
-height = 7.5434303
+height = 1.9835072
 radius = 1.3578174
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_6nec1"]
-height = 6.1268573
+height = 1.8731451
 radius = 1.1028343
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_gt1jm"]
-height = 4.263488
+height = 1.3011775
 radius = 0.7674278
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_eruh0"]
-height = 6.7360744
+height = 1.9238234
 radius = 1.2124934
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_wmruv"]
-height = 4.994385
+height = 1.4581299
 radius = 0.89898926
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_bcab4"]
-height = 8.140984
+height = 1.9251385
 radius = 1.4653771
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_s2vi2"]
-height = 6.22827
+height = 1.8211663
 radius = 1.1210886
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_u3p7t"]
-height = 7.670603
+height = 2.0346422
 radius = 1.3807085
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ycoqu"]
-height = 8.132305
+height = 2.3511868
 radius = 1.463815
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_uw2tj"]
-height = 4.635539
+height = 1.5057578
 radius = 0.834397
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_ak1jt"]
-height = 5.67466
+height = 1.4387705
 radius = 1.0214388
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_mcyfl"]
-height = 6.5881453
+height = 3.0083644
 radius = 1.1858662
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_omc1p"]
-height = 8.2170105
+height = 2.2285004
 radius = 1.4790618
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i47wd"]
-height = 4.3268437
+height = 1.1858828
 radius = 0.7788319
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_36i1p"]
-height = 6.456212
+height = 1.8864312
 radius = 1.1621181
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_qifer"]
-height = 5.9159164
+height = 1.6572628
 radius = 1.064865
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_a0ir0"]
-height = 8.506757
+height = 2.2583518
 radius = 1.5312161
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_aspjh"]
-height = 8.418224
+height = 2.2359037
 radius = 1.5152802
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_j6qfm"]
-height = 5.383583
+height = 1.4762669
 radius = 0.969045
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_qjsdc"]
-height = 7.5226884
+height = 1.9062032
 radius = 1.3540839
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_8nsun"]
-height = 7.729115
+height = 2.195035
 radius = 1.3912407
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_w5vkc"]
@@ -5315,171 +5315,171 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 342.31213, 6.3283634, 258.096
 shape = SubResource("CylinderShape3D_gpiia")
 
 [node name="RockCollider1" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=965881858]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 219.156, 6.0577593, 171.1966)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 219.156, 3.9949188, 171.1966)
 shape = SubResource("CylinderShape3D_cfi0v")
 
 [node name="RockCollider2" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1672040431]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 345.1056, 8.629358, 175.27742)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 345.1056, 5.9054947, 175.27742)
 shape = SubResource("CylinderShape3D_6eyue")
 
 [node name="RockCollider3" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=905260193]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 153.36337, 12.401174, 239.97816)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 153.36337, 9.245798, 239.97816)
 shape = SubResource("CylinderShape3D_h4ifg")
 
 [node name="RockCollider4" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=764910864]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 233.45413, 29.569544, 230.15375)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 233.45413, 26.46578, 230.15375)
 shape = SubResource("CylinderShape3D_6eyip")
 
 [node name="RockCollider5" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=682213930]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 319.68762, 16.556309, 119.94307)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 319.68762, 14.526769, 119.94307)
 shape = SubResource("CylinderShape3D_b1dn8")
 
 [node name="RockCollider6" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=284994719]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 273.29877, 11.368258, 153.25546)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 273.29877, 8.203391, 153.25546)
 shape = SubResource("CylinderShape3D_fvmeo")
 
 [node name="RockCollider7" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1388564150]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 321.86728, 19.118946, 163.80939)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 321.86728, 17.455545, 163.80939)
 shape = SubResource("CylinderShape3D_dlv7b")
 
 [node name="RockCollider8" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=771959993]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 276.13968, 14.382782, 189.98117)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 275.6968, 11.801454, 189.70688)
 shape = SubResource("CylinderShape3D_m24i3")
 
 [node name="RockCollider9" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1335542214]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320.85925, 18.483603, 167.50473)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320.85925, 16.583364, 167.50473)
 shape = SubResource("CylinderShape3D_utf4h")
 
 [node name="RockCollider10" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=31759367]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 158.97607, 7.133155, 190.76944)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 158.97607, 4.4503627, 190.76944)
 shape = SubResource("CylinderShape3D_or1k2")
 
 [node name="RockCollider11" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=904128389]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 235.3905, 13.901792, 274.87723)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 235.3905, 11.89754, 274.87723)
 shape = SubResource("CylinderShape3D_cg8v4")
 
 [node name="RockCollider12" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1600886244]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 243.24475, 22.441261, 239.24641)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 243.24475, 19.197037, 239.24641)
 shape = SubResource("CylinderShape3D_gvfo6")
 
 [node name="RockCollider13" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=5356806]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 255.3168, 5.247859, 158.88382)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 255.3168, 3.1181066, 158.88382)
 shape = SubResource("CylinderShape3D_ec7l6")
 
 [node name="RockCollider14" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1094700727]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 193.15266, 21.172113, 265.43594)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 193.15266, 19.004436, 265.43594)
 shape = SubResource("CylinderShape3D_78xta")
 
 [node name="RockCollider15" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1365500193]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.26698, 16.260609, 248.60924)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 250.26698, 14.379866, 248.60924)
 shape = SubResource("CylinderShape3D_x35mj")
 
 [node name="RockCollider16" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1833793695]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 267.6928, 8.718424, 189.68198)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 267.6928, 6.6071496, 189.68198)
 shape = SubResource("CylinderShape3D_sx744")
 
 [node name="RockCollider17" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1836849560]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 258.22275, 14.397612, 239.47774)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 258.22275, 11.096775, 239.47774)
 shape = SubResource("CylinderShape3D_5t2uf")
 
 [node name="RockCollider18" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=467165576]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 282.14697, 12.333591, 118.49828)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 282.14697, 10.486848, 118.49828)
 shape = SubResource("CylinderShape3D_7myqg")
 
 [node name="RockCollider19" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1991340470]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 230.48045, 29.843193, 224.89487)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 230.48045, 26.826767, 224.89487)
 shape = SubResource("CylinderShape3D_28x3w")
 
 [node name="RockCollider20" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1445611048]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 273.13367, 12.900951, 170.87288)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 273.13367, 9.794561, 170.87288)
 shape = SubResource("CylinderShape3D_xktth")
 
 [node name="RockCollider21" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=910500663]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 321.6943, 15.814797, 159.92792)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 321.6943, 14.291659, 159.92792)
 shape = SubResource("CylinderShape3D_m8y2h")
 
 [node name="RockCollider22" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1849253697]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 229.7491, 27.50983, 210.22925)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 229.7491, 24.72987, 210.22925)
 shape = SubResource("CylinderShape3D_axump")
 
 [node name="RockCollider23" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=207275301]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 201.80759, 12.479195, 285.7727)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 201.80759, 10.352339, 285.7727)
 shape = SubResource("CylinderShape3D_6nec1")
 
 [node name="RockCollider24" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1293276653]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220.81741, 10.286887, 175.41139)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220.81741, 8.805732, 175.41139)
 shape = SubResource("CylinderShape3D_gt1jm")
 
 [node name="RockCollider25" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1964457131]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 313.8124, 9.871202, 126.73317)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 313.8124, 7.465077, 126.73317)
 shape = SubResource("CylinderShape3D_eruh0")
 
 [node name="RockCollider26" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1964478380]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 195.51192, 18.542217, 198.50299)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 195.51192, 16.77409, 198.50299)
 shape = SubResource("CylinderShape3D_wmruv")
 
 [node name="RockCollider27" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=570707829]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 189.70392, 6.3669777, 140.79756)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 189.70392, 3.2590551, 140.79756)
 shape = SubResource("CylinderShape3D_bcab4")
 
 [node name="RockCollider28" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1637658414]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 236.79794, 17.155636, 194.89569)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 236.79794, 14.952084, 194.89569)
 shape = SubResource("CylinderShape3D_s2vi2")
 
 [node name="RockCollider29" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1056904599]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.33, 9.133627, 278.4682)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 249.33, 6.3156466, 278.4682)
 shape = SubResource("CylinderShape3D_u3p7t")
 
 [node name="RockCollider30" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1220910261]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 246.9658, 24.163374, 220.64156)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 246.9658, 21.272816, 220.64156)
 shape = SubResource("CylinderShape3D_ycoqu")
 
 [node name="RockCollider31" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=918678670]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 171.32095, 10.492882, 276.62695)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 171.32095, 8.927991, 276.62695)
 shape = SubResource("CylinderShape3D_uw2tj")
 
 [node name="RockCollider32" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1821258714]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 189.17326, 22.889637, 211.88202)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 189.17326, 20.771692, 211.88202)
 shape = SubResource("CylinderShape3D_ak1jt")
 
 [node name="RockCollider33" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1328313529]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 328.04865, 12.598299, 135.0875)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 328.04865, 10.808409, 135.0875)
 shape = SubResource("CylinderShape3D_mcyfl")
 
 [node name="RockCollider34" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=851720132]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 273.47684, 13.390055, 175.8354)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 273.47684, 10.3958, 175.8354)
 shape = SubResource("CylinderShape3D_omc1p")
 
 [node name="RockCollider35" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1189152663]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 155.2437, 5.124976, 197.13272)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 155.2437, 3.5544958, 197.13272)
 shape = SubResource("CylinderShape3D_i47wd")
 
 [node name="RockCollider36" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=976408976]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 361.61194, 4.088889, 247.40446)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 361.61194, 1.8039987, 247.40446)
 shape = SubResource("CylinderShape3D_36i1p")
 
 [node name="RockCollider37" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1646134560]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 281.00574, 14.379822, 187.30928)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 281.00574, 12.250495, 187.30928)
 shape = SubResource("CylinderShape3D_qifer")
 
 [node name="RockCollider38" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1582877213]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 139.64096, 6.551463, 119.57365)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 139.64096, 3.4272609, 119.57365)
 shape = SubResource("CylinderShape3D_a0ir0")
 
 [node name="RockCollider39" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1033651749]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190.0395, 19.925407, 270.20706)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 190.0395, 16.834246, 270.20706)
 shape = SubResource("CylinderShape3D_aspjh")
 
 [node name="RockCollider40" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=2123575731]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 168.25542, 20.098171, 251.91681)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 168.25542, 18.144512, 251.91681)
 shape = SubResource("CylinderShape3D_j6qfm")
 
 [node name="RockCollider41" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=780011261]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 224.8532, 23.280586, 261.68533)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 224.8532, 20.472343, 261.68533)
 shape = SubResource("CylinderShape3D_qjsdc")
 
 [node name="RockCollider42" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=873311893]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 315.66827, 5.8290234, 207.85999)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 315.66827, 3.0619836, 207.85999)
 shape = SubResource("CylinderShape3D_8nsun")
 
 [node name="RockCollider43" type="CollisionShape3D" parent="Island/VegetationColliders" unique_id=1849382666]
