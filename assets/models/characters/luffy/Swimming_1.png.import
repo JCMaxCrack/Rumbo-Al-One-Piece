@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b4f8p343uwtbx"
-path="res://.godot/imported/Swimming_1.png-6212f9d0928ef3690726f8cc1dca39bc.ctex"
+path.s3tc="res://.godot/imported/Swimming_1.png-6212f9d0928ef3690726f8cc1dca39bc.s3tc.ctex"
+path.etc2="res://.godot/imported/Swimming_1.png-6212f9d0928ef3690726f8cc1dca39bc.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "be52079abb83832b38c695025aae757b"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/characters/luffy/Swimming_1.png"
-dest_files=["res://.godot/imported/Swimming_1.png-6212f9d0928ef3690726f8cc1dca39bc.ctex"]
+dest_files=["res://.godot/imported/Swimming_1.png-6212f9d0928ef3690726f8cc1dca39bc.s3tc.ctex", "res://.godot/imported/Swimming_1.png-6212f9d0928ef3690726f8cc1dca39bc.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +42,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

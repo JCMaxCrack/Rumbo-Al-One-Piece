@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bw1rwclmvy8so"
-path="res://.godot/imported/going_merry_12.png-72cb78af463ba5763aac9cadf2f621e8.ctex"
+path.s3tc="res://.godot/imported/going_merry_12.png-72cb78af463ba5763aac9cadf2f621e8.s3tc.ctex"
+path.etc2="res://.godot/imported/going_merry_12.png-72cb78af463ba5763aac9cadf2f621e8.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "168176e00797b0feac890942e6cb62e1"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/models/ships/going_merry/going_merry_12.png"
-dest_files=["res://.godot/imported/going_merry_12.png-72cb78af463ba5763aac9cadf2f621e8.ctex"]
+dest_files=["res://.godot/imported/going_merry_12.png-72cb78af463ba5763aac9cadf2f621e8.s3tc.ctex", "res://.godot/imported/going_merry_12.png-72cb78af463ba5763aac9cadf2f621e8.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -40,4 +42,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0
