@@ -23,6 +23,7 @@
 [ext_resource type="AudioStream" uid="uid://bu3gfqa7cs2jr" path="res://assets/audio/music_combat.wav" id="21_05nbr"]
 [ext_resource type="AudioStream" uid="uid://bxkkrq87lotxn" path="res://assets/audio/victory.wav" id="22_0sl42"]
 [ext_resource type="AudioStream" uid="uid://c26205a8f2f2q" path="res://assets/audio/defeat.wav" id="23_oaba0"]
+[ext_resource type="PackedScene" path="res://scenes/props/checkpoint.tscn" id="60_ckpt"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_458eo"]
 height = 4.844262
@@ -6373,6 +6374,38 @@ stream = ExtResource("23_oaba0")
 wait_time = 1.5
 one_shot = true
 
+[node name="Checkpoints" type="Node3D" parent="."]
+
+[node name="Checkpoint1" parent="Checkpoints" instance=ExtResource("60_ckpt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 234.5631, 2.376976, 322.9908)
+checkpoint_id = "playa_sur"
+display_name = "Playa del sur"
+
+[node name="Checkpoint2" parent="Checkpoints" instance=ExtResource("60_ckpt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 209.4, 16.08245, 196.0)
+checkpoint_id = "entrada_crater"
+display_name = "Entrada del cráter"
+
+[node name="Checkpoint3" parent="Checkpoints" instance=ExtResource("60_ckpt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 290.22, 1.367783, 224.8377)
+checkpoint_id = "muelle"
+display_name = "Muelle del Going Merry"
+
+[node name="Checkpoint4" parent="Checkpoints" instance=ExtResource("60_ckpt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 92.0, 2.874039, 190.0)
+checkpoint_id = "peninsula_oeste"
+display_name = "Península del oeste"
+
+[node name="Checkpoint5" parent="Checkpoints" instance=ExtResource("60_ckpt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 152.0, 8.755409, 150.0)
+checkpoint_id = "bosque_noroeste"
+display_name = "Bosque del noroeste"
+
+[node name="Checkpoint6" parent="Checkpoints" instance=ExtResource("60_ckpt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 357.0, 2.530136, 224.0)
+checkpoint_id = "costa_este"
+display_name = "Costa este"
+
 [connection signal="look_dragged" from="TouchControls" to="Luffy" method="look"]
 [connection signal="died" from="Luffy" to="." method="_on_player_died"]
 [connection signal="health_changed" from="Luffy" to="HUD" method="set_health"]
@@ -6392,3 +6425,10 @@ one_shot = true
 [connection signal="finished" from="ExploreMusic" to="ExploreMusic" method="play"]
 [connection signal="finished" from="ChaseMusic" to="ChaseMusic" method="play"]
 [connection signal="timeout" from="DefeatTimer" to="." method="_on_defeat_timer_timeout"]
+[connection signal="reached" from="Checkpoints/Checkpoint1" to="." method="_on_checkpoint_reached"]
+[connection signal="reached" from="Checkpoints/Checkpoint2" to="." method="_on_checkpoint_reached"]
+[connection signal="reached" from="Checkpoints/Checkpoint3" to="." method="_on_checkpoint_reached"]
+[connection signal="reached" from="Checkpoints/Checkpoint4" to="." method="_on_checkpoint_reached"]
+[connection signal="reached" from="Checkpoints/Checkpoint5" to="." method="_on_checkpoint_reached"]
+[connection signal="reached" from="Checkpoints/Checkpoint6" to="." method="_on_checkpoint_reached"]
+[connection signal="save_requested" from="PauseMenu" to="." method="_on_pause_menu_save_requested"]

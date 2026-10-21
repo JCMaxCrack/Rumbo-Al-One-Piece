@@ -100,7 +100,16 @@ func receive_hit(damage: float, from_pos: Vector3) -> void:
 		_set_state(State.CHASE)
 
 
-func _defeat() -> void:
+## Used when a saved game is loaded: Buggy keeps the health he had (0 = already defeated).
+func restore(saved_health: float) -> void:
+	health = clampf(saved_health, 0.0, max_health)
+	health_fill.scale.x = maxf(0.001, health / max_health)
+	health_changed.emit(health, max_health)
+	if health <= 0.0:
+		_defeat(true)
+
+
+func _defeat(silent := false) -> void:
 	_set_state(State.DEFEATED)
 	velocity = Vector3.ZERO
 	player_in_attack_range = false
@@ -111,6 +120,9 @@ func _defeat() -> void:
 	collision_layer = 0
 	health_bar.visible = false
 	anim.play("buggy/death", 0.1)
+	if silent:
+		anim.seek(anim.current_animation_length, true)
+		return
 	roar_sound.play()
 	defeated.emit()
 
