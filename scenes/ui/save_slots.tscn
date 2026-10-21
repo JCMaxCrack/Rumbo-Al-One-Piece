@@ -1,0 +1,211 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_yxla0"]
+[ext_resource type="Script" path="res://scripts/save_slots.gd" id="2_xvidk"]
+
+[node name="SaveSlots" type="Control" unique_id=1879231917]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_yxla0")
+script = ExtResource("2_xvidk")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1974864799]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1279847540]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -440.0
+offset_top = -300.0
+offset_right = 440.0
+offset_bottom = 300.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=1089013053]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=1270350068]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "Elige una partida"
+horizontal_alignment = 1
+
+[node name="Slots" type="VBoxContainer" parent="Panel/VBox" unique_id=979838136]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Slot1" type="PanelContainer" parent="Panel/VBox/Slots" unique_id=1937266502]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VBox/Slots/Slot1" unique_id=1856636060]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Info" type="Label" parent="Panel/VBox/Slots/Slot1/HBox" unique_id=1869954978]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "Partida 1  ·  Vacía"
+autowrap_mode = 3
+
+[node name="MainButton" type="Button" parent="Panel/VBox/Slots/Slot1/HBox" unique_id=1219587769]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Cargar"
+
+[node name="NewButton" type="Button" parent="Panel/VBox/Slots/Slot1/HBox" unique_id=1534159371]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Nueva"
+
+[node name="DeleteButton" type="Button" parent="Panel/VBox/Slots/Slot1/HBox" unique_id=1596141381]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Borrar"
+
+[node name="Slot2" type="PanelContainer" parent="Panel/VBox/Slots" unique_id=473302436]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VBox/Slots/Slot2" unique_id=314871272]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Info" type="Label" parent="Panel/VBox/Slots/Slot2/HBox" unique_id=1300151152]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "Partida 2  ·  Vacía"
+autowrap_mode = 3
+
+[node name="MainButton" type="Button" parent="Panel/VBox/Slots/Slot2/HBox" unique_id=1366118887]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Cargar"
+
+[node name="NewButton" type="Button" parent="Panel/VBox/Slots/Slot2/HBox" unique_id=290301227]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Nueva"
+
+[node name="DeleteButton" type="Button" parent="Panel/VBox/Slots/Slot2/HBox" unique_id=1192103098]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Borrar"
+
+[node name="Slot3" type="PanelContainer" parent="Panel/VBox/Slots" unique_id=2050450048]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VBox/Slots/Slot3" unique_id=1150807510]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Info" type="Label" parent="Panel/VBox/Slots/Slot3/HBox" unique_id=865396984]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "Partida 3  ·  Vacía"
+autowrap_mode = 3
+
+[node name="MainButton" type="Button" parent="Panel/VBox/Slots/Slot3/HBox" unique_id=142028181]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Cargar"
+
+[node name="NewButton" type="Button" parent="Panel/VBox/Slots/Slot3/HBox" unique_id=1062514205]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Nueva"
+
+[node name="DeleteButton" type="Button" parent="Panel/VBox/Slots/Slot3/HBox" unique_id=951067519]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Borrar"
+
+[node name="Slot4" type="PanelContainer" parent="Panel/VBox/Slots" unique_id=2010346094]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VBox/Slots/Slot4" unique_id=1884367262]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Info" type="Label" parent="Panel/VBox/Slots/Slot4/HBox" unique_id=1237045012]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "Partida 4  ·  Vacía"
+autowrap_mode = 3
+
+[node name="MainButton" type="Button" parent="Panel/VBox/Slots/Slot4/HBox" unique_id=1853178421]
+custom_minimum_size = Vector2(130, 0)
+layout_mode = 2
+text = "Cargar"
+
+[node name="NewButton" type="Button" parent="Panel/VBox/Slots/Slot4/HBox" unique_id=931839769]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Nueva"
+
+[node name="DeleteButton" type="Button" parent="Panel/VBox/Slots/Slot4/HBox" unique_id=104032613]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Borrar"
+
+[node name="Confirm" type="VBoxContainer" parent="Panel/VBox" unique_id=273143603]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/Confirm" unique_id=1498896626]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "¿Seguro?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/VBox/Confirm" unique_id=712491803]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="YesButton" type="Button" parent="Panel/VBox/Confirm/Buttons" unique_id=1465267431]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "Sí"
+
+[node name="NoButton" type="Button" parent="Panel/VBox/Confirm/Buttons" unique_id=1108387601]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+text = "No"
+
+[node name="Status" type="Label" parent="Panel/VBox" unique_id=76411606]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="Panel/VBox" unique_id=1313233310]
+layout_mode = 2
+text = "Volver"
+
+[connection signal="pressed" from="Panel/VBox/Confirm/Buttons/YesButton" to="." method="_on_yes_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/Confirm/Buttons/NoButton" to="." method="_on_no_button_pressed"]
+[connection signal="pressed" from="Panel/VBox/BackButton" to="." method="_on_back_button_pressed"]

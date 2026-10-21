@@ -1,0 +1,277 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hqnrr"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_bo48s"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qguk"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.05, 0.07, 0.12, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.78, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_136eg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.3, 0.85, 0.4, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oj5la"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.05, 0.07, 0.12, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.78, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gss2c"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.05, 0.07, 0.12, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.78, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h022r"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.9, 0.2, 0.17, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="HUD" type="CanvasLayer" unique_id=1080060577]
+script = ExtResource("1_hqnrr")
+
+[node name="Root" type="Control" parent="." unique_id=897110396]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("2_bo48s")
+
+[node name="PlayerPanel" type="PanelContainer" parent="Root" unique_id=1245543918]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 340.0
+offset_bottom = 86.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8qguk")
+
+[node name="VBox" type="VBoxContainer" parent="Root/PlayerPanel" unique_id=1814636599]
+layout_mode = 2
+
+[node name="Row" type="HBoxContainer" parent="Root/PlayerPanel/VBox" unique_id=193319455]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Root/PlayerPanel/VBox/Row" unique_id=1446674367]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "Luffy"
+
+[node name="HealthLabel" type="Label" parent="Root/PlayerPanel/VBox/Row" unique_id=44929703]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "100 / 100"
+horizontal_alignment = 2
+
+[node name="HealthBar" type="ProgressBar" parent="Root/PlayerPanel/VBox" unique_id=1375543481]
+custom_minimum_size = Vector2(300, 16)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_136eg")
+value = 100.0
+show_percentage = false
+
+[node name="ItemPanel" type="PanelContainer" parent="Root" unique_id=918468354]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 64.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_oj5la")
+
+[node name="ItemLabel" type="Label" parent="Root/ItemPanel" unique_id=522394012]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "Carne: 0 / 10"
+
+[node name="MissionPanel" type="PanelContainer" parent="Root" unique_id=1466234601]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -350.0
+offset_top = 74.0
+offset_right = -16.0
+offset_bottom = 150.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gss2c")
+
+[node name="VBox" type="VBoxContainer" parent="Root/MissionPanel" unique_id=1133880556]
+layout_mode = 2
+
+[node name="MissionTitle" type="Label" parent="Root/MissionPanel/VBox" unique_id=1293861553]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "Misión de Koby"
+
+[node name="MissionText" type="Label" parent="Root/MissionPanel/VBox" unique_id=707929874]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "Habla con Koby"
+autowrap_mode = 3
+
+[node name="BossBox" type="VBoxContainer" parent="Root" unique_id=1797542616]
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230.0
+offset_top = 16.0
+offset_right = 230.0
+offset_bottom = 110.0
+
+[node name="BossName" type="Label" parent="Root/BossBox" unique_id=4143544]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1, 0.6, 0.45, 1)
+text = "Buggy el Payaso"
+horizontal_alignment = 1
+
+[node name="BossHealthBar" type="ProgressBar" parent="Root/BossBox" unique_id=498245571]
+custom_minimum_size = Vector2(400, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/fill = SubResource("StyleBoxFlat_h022r")
+max_value = 150.0
+value = 150.0
+show_percentage = false
+
+[node name="BossHealthLabel" type="Label" parent="Root/BossBox/BossHealthBar" unique_id=49935404]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+text = "150 / 150"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BossState" type="Label" parent="Root/BossBox" unique_id=58846179]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+text = "IA: Patrullando"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="Root" unique_id=728073357]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -500.0
+offset_top = 120.0
+offset_right = 500.0
+offset_bottom = 180.0
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+horizontal_alignment = 1
+
+[node name="DialogPanel" type="PanelContainer" parent="Root" unique_id=34010598]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -420.0
+offset_top = -240.0
+offset_right = 420.0
+offset_bottom = -70.0
+theme = ExtResource("2_bo48s")
+
+[node name="VBox" type="VBoxContainer" parent="Root/DialogPanel" unique_id=1178998731]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Speaker" type="Label" parent="Root/DialogPanel/VBox" unique_id=1336414972]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "Koby"
+
+[node name="Text" type="Label" parent="Root/DialogPanel/VBox" unique_id=1163346024]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 21
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+autowrap_mode = 3
+
+[node name="Hint" type="Label" parent="Root/DialogPanel/VBox" unique_id=418460270]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+text = "Pulsa E para continuar"
+horizontal_alignment = 2
+
+[node name="ControlsHint" type="Label" parent="Root" unique_id=1139240993]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -40.0
+offset_right = 600.0
+offset_bottom = -12.0
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+text = "WASD mover  ·  Shift correr  ·  Espacio saltar/nadar  ·  Clic/J golpe  ·  E hablar  ·  Mouse cámara  ·  F1 ver IA  ·  Esc pausa"
+horizontal_alignment = 1
+
+[node name="MessageTimer" type="Timer" parent="." unique_id=1664139517]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="MessageTimer" to="." method="_on_message_timer_timeout"]
