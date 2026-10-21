@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/save_slots.tscn" id="3_8ln24"]
 [ext_resource type="AudioStream" path="res://assets/audio/music_menu.wav" id="3_rtw2f"]
 [ext_resource type="AudioStream" path="res://assets/audio/select.wav" id="4_oa1go"]
+[ext_resource type="PackedScene" path="res://scenes/ui/graphics_options.tscn" id="6_rtw2f"]
 
 [sub_resource type="Gradient" id="Gradient_tbmy8"]
 offsets = PackedFloat32Array(0, 0.35, 0.55, 0.56, 1)
@@ -20,6 +21,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("1_wu84c")
 script = ExtResource("2_8ln24")
 
@@ -76,9 +79,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = 10.0
+offset_top = -16.0
 offset_right = 150.0
-offset_bottom = 200.0
+offset_bottom = 226.0
 
 [node name="VBox" type="VBoxContainer" parent="MenuPanel" unique_id=1603816643]
 layout_mode = 2
@@ -93,6 +96,11 @@ text = "Jugar"
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
 text = "Controles"
+
+[node name="OptionsButton" type="Button" parent="MenuPanel/VBox" unique_id=2146560129]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Opciones"
 
 [node name="QuitButton" type="Button" parent="MenuPanel/VBox" unique_id=1012483671]
 custom_minimum_size = Vector2(260, 0)
@@ -145,6 +153,8 @@ text = "Volver"
 [node name="SaveSlots" parent="." unique_id=1879231917 instance=ExtResource("3_8ln24")]
 layout_mode = 1
 anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="MenuMusic" type="AudioStreamPlayer" parent="." unique_id=827540320]
 stream = ExtResource("3_rtw2f")
@@ -154,9 +164,15 @@ autoplay = true
 [node name="ClickSound" type="AudioStreamPlayer" parent="." unique_id=1971416732]
 stream = ExtResource("4_oa1go")
 
+[node name="GraphicsOptions" parent="." unique_id=896974404 instance=ExtResource("6_rtw2f")]
+layout_mode = 1
+anchors_preset = 15
+
 [connection signal="pressed" from="MenuPanel/VBox/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="MenuPanel/VBox/ControlsButton" to="." method="_on_controls_button_pressed"]
+[connection signal="pressed" from="MenuPanel/VBox/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed" from="MenuPanel/VBox/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="ControlsPanel/VBox/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="closed" from="SaveSlots" to="." method="_on_save_slots_closed"]
 [connection signal="finished" from="MenuMusic" to="MenuMusic" method="play"]
+[connection signal="closed" from="GraphicsOptions" to="." method="_on_graphics_options_closed"]

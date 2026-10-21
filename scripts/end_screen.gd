@@ -11,6 +11,7 @@ extends CanvasLayer
 
 func show_result(won: bool, time_seconds: float, collected: int, total: int, boss_defeated: bool) -> void:
 	visible = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	var t := int(time_seconds)
 	if won:
 		title_label.text = "¡Misión cumplida!"

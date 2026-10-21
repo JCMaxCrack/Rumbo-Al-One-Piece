@@ -16,6 +16,9 @@ enum Mission { NOT_GIVEN, ACTIVE, DONE }
 @onready var koby: Koby = $Koby
 @onready var collectibles: Node3D = $Collectibles
 @onready var checkpoints: Node3D = $Checkpoints
+@onready var chunks: ChunkManager = $ChunkManager
+@onready var sun: DirectionalLight3D = $Sun
+@onready var world_environment: WorldEnvironment = $WorldEnvironment
 @onready var hud: HUD = $HUD
 @onready var touch_controls: TouchControls = $TouchControls
 @onready var pause_menu: PauseMenu = $PauseMenu
@@ -43,6 +46,8 @@ var _music_tween: Tween
 
 func _ready() -> void:
 	get_tree().paused = false
+	_apply_graphics()
+	GraphicsSettings.changed.connect(_apply_graphics)
 	total_items = collectibles.get_child_count()
 	hud.set_count(collected_items, total_items)
 	hud.set_health(player.health, player.max_health)
@@ -213,6 +218,11 @@ func _finish(won: bool) -> void:
 	get_tree().paused = true
 
 
+## Quality preset (Opciones): environment, sun shadows, camera distance, chunks and terrain.
+func _apply_graphics() -> void:
+	GraphicsSettings.apply_world(world_environment.environment, sun, player.camera, chunks)
+
+
 # ------------------------------------------------------------------ checkpoints and saving
 func _on_checkpoint_reached(cp: Checkpoint) -> void:
 	if finished or cp.checkpoint_id == current_checkpoint:
@@ -294,6 +304,7 @@ func _apply_save(d: Dictionary) -> void:
 	if cp:
 		player.global_position = cp.spawn_transform().origin
 		player.velocity = Vector3.ZERO
+		chunks.load_around(player.global_position)
 
 
 func _crossfade(to_player: AudioStreamPlayer, from_player: AudioStreamPlayer) -> void:

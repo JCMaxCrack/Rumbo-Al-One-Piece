@@ -19,6 +19,7 @@ const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha
 @onready var dialog_text: Label = $Root/DialogPanel/VBox/Text
 @onready var dialog_hint: Label = $Root/DialogPanel/VBox/Hint
 @onready var controls_hint: Label = $Root/ControlsHint
+@onready var fps_label: Label = $Root/FpsLabel
 
 var touch_mode := false
 
@@ -72,6 +73,13 @@ func hide_dialog() -> void:
 
 func is_dialog_open() -> bool:
 	return dialog_panel.visible
+
+
+## FPS counter (Opciones -> Mostrar FPS).
+func _process(_delta: float) -> void:
+	fps_label.visible = GraphicsSettings.show_fps
+	if fps_label.visible:
+		fps_label.text = "%d FPS" % Engine.get_frames_per_second()
 
 
 func _on_message_timer_timeout() -> void:
