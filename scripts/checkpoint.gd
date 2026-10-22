@@ -24,6 +24,7 @@ var _flag_mat: StandardMaterial3D
 
 
 func _ready() -> void:
+	add_to_group("checkpoints")
 	name_label.text = display_name
 	_flag_mat = StandardMaterial3D.new()
 	_flag_mat.emission_enabled = true

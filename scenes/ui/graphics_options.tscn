@@ -7,7 +7,7 @@
 process_mode = 3
 visible = false
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_ek1q5")
@@ -26,9 +26,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -330.0
-offset_top = -230.0
+offset_top = -254.0
 offset_right = 330.0
-offset_bottom = 230.0
+offset_bottom = 254.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=806882165]
 layout_mode = 2
@@ -36,8 +36,8 @@ theme_override_constants/separation = 14
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=290553980]
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 30
 text = "Opciones gráficas"
 horizontal_alignment = 1
 
@@ -47,8 +47,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panel/VBox/PresetRow" unique_id=2112181868]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
 text = "Calidad"
 
 [node name="PresetButton" type="OptionButton" parent="Panel/VBox/PresetRow" unique_id=1420438918]
@@ -69,8 +69,8 @@ theme_override_constants/separation = 12
 
 [node name="Label" type="Label" parent="Panel/VBox/ScaleRow" unique_id=955494656]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
 text = "Resolución de render"
 
 [node name="ScaleSlider" type="HSlider" parent="Panel/VBox/ScaleRow" unique_id=1053725167]
@@ -85,10 +85,14 @@ value = 100.0
 [node name="ScaleValue" type="Label" parent="Panel/VBox/ScaleRow" unique_id=1094909603]
 custom_minimum_size = Vector2(70, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
 text = "100 %"
 horizontal_alignment = 2
+
+[node name="FullscreenCheck" type="CheckBox" parent="Panel/VBox" unique_id=501626632]
+layout_mode = 2
+text = "Pantalla completa  (F11 / Alt+Enter)"
 
 [node name="FpsCheck" type="CheckBox" parent="Panel/VBox" unique_id=776509971]
 layout_mode = 2
@@ -97,8 +101,8 @@ text = "Mostrar FPS"
 [node name="Info" type="Label" parent="Panel/VBox" unique_id=229960902]
 custom_minimum_size = Vector2(600, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 17
 autowrap_mode = 3
 
 [node name="BackButton" type="Button" parent="Panel/VBox" unique_id=238681698]
@@ -107,5 +111,6 @@ text = "Volver"
 
 [connection signal="item_selected" from="Panel/VBox/PresetRow/PresetButton" to="." method="_on_preset_button_item_selected"]
 [connection signal="value_changed" from="Panel/VBox/ScaleRow/ScaleSlider" to="." method="_on_scale_slider_value_changed"]
+[connection signal="toggled" from="Panel/VBox/FullscreenCheck" to="." method="_on_fullscreen_check_toggled"]
 [connection signal="toggled" from="Panel/VBox/FpsCheck" to="." method="_on_fps_check_toggled"]
 [connection signal="pressed" from="Panel/VBox/BackButton" to="." method="_on_back_button_pressed"]
