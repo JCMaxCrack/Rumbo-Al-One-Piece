@@ -16,6 +16,8 @@ material = SubResource("StandardMaterial3D_jvlpv")
 top_radius = 0.45
 bottom_radius = 0.6
 height = 0.3
+radial_segments = 10
+rings = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t5gg6"]
 albedo_color = Color(0.42, 0.28, 0.16, 1)
@@ -26,6 +28,8 @@ material = SubResource("StandardMaterial3D_t5gg6")
 top_radius = 0.05
 bottom_radius = 0.07
 height = 3.2
+radial_segments = 10
+rings = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_kbe4y"]
 size = Vector3(1.1, 0.65, 0.04)
@@ -42,6 +46,7 @@ shape = SubResource("CylinderShape3D_8llkt")
 
 [node name="Base" type="MeshInstance3D" parent="." unique_id=2005486595]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+cast_shadow = 0
 mesh = SubResource("CylinderMesh_a5iic")
 
 [node name="Pole" type="MeshInstance3D" parent="." unique_id=335039935]
@@ -50,9 +55,10 @@ mesh = SubResource("CylinderMesh_b674y")
 
 [node name="Flag" type="MeshInstance3D" parent="." unique_id=262864337]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 2.95, 0)
+cast_shadow = 0
 mesh = SubResource("BoxMesh_kbe4y")
 
-[node name="Glow" type="OmniLight3D" parent="." unique_id=2008898298]
+[node name="Glow" type="OmniLight3D" parent="." unique_id=2008898298 groups=["dynamic_lights"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, 0)
 light_color = Color(0.93, 0.78, 0.42, 1)
 light_energy = 1.6

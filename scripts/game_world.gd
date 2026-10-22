@@ -16,6 +16,10 @@ enum Mission { NOT_GIVEN, ACTIVE, DONE }
 @onready var koby: Koby = $Koby
 @onready var collectibles: Node3D = $Collectibles
 @onready var checkpoints: Node3D = $Checkpoints
+@onready var chunks: ChunkManager = $ChunkManager
+@onready var sun: DirectionalLight3D = $Sun
+@onready var world_environment: WorldEnvironment = $WorldEnvironment
+@onready var terrain_shape: CollisionShape3D = $Island/TerrainBody/CollisionShape3D
 @onready var hud: HUD = $HUD
 @onready var touch_controls: TouchControls = $TouchControls
 @onready var pause_menu: PauseMenu = $PauseMenu
@@ -43,6 +47,8 @@ var _music_tween: Tween
 
 func _ready() -> void:
 	get_tree().paused = false
+	_apply_graphics()
+	GraphicsSettings.changed.connect(_apply_graphics)
 	total_items = collectibles.get_child_count()
 	hud.set_count(collected_items, total_items)
 	hud.set_health(player.health, player.max_health)
@@ -62,11 +68,13 @@ func _ready() -> void:
 		_apply_save(data)
 		hud.show_message("Partida %d cargada" % SaveManager.current_slot, 2.0)
 	_update_mission_text()
+	_update_boss_hud()
 
 
 func _process(delta: float) -> void:
 	if not finished:
 		elapsed += delta
+	_keep_above_ground()
 	touch_controls.set_interact_visible(hud.is_dialog_open() or koby.player_near, "Seguir" if hud.is_dialog_open() else "Hablar")
 	if DisplayServer.get_name() == "headless" or touch_controls.active:
 		return
@@ -117,6 +125,7 @@ func _next_dialog_line() -> void:
 		koby.set_mission_given(true)
 		hud.show_message("¡Nueva misión!", 1.5)
 		_update_mission_text()
+		_update_boss_hud()
 		_check_mission()
 
 
@@ -177,6 +186,8 @@ func _on_buggy_defeated() -> void:
 		return
 	_crossfade(explore_music, chase_music)
 	_update_mission_text()
+	# the bar shows Buggy's empty health for a moment and then goes away
+	get_tree().create_timer(1.5).timeout.connect(_update_boss_hud)
 	if mission == Mission.ACTIVE and collected_items >= total_items:
 		_check_mission()
 	else:
@@ -211,6 +222,11 @@ func _finish(won: bool) -> void:
 		SaveManager.write_slot(SaveManager.current_slot, collect_state(true))
 	end_screen.show_result(won, elapsed, collected_items, total_items, boss.is_defeated())
 	get_tree().paused = true
+
+
+## Quality preset (Opciones): environment, sun shadows, camera distance, chunks and terrain.
+func _apply_graphics() -> void:
+	GraphicsSettings.apply_world(world_environment.environment, sun, player.camera, chunks)
 
 
 # ------------------------------------------------------------------ checkpoints and saving
@@ -292,7 +308,52 @@ func _apply_save(d: Dictionary) -> void:
 	player.health_changed.emit(player.health, player.max_health)
 	var cp := _find_checkpoint(current_checkpoint)
 	if cp:
-		player.global_position = cp.spawn_transform().origin
+		player.global_position = _on_ground(cp.spawn_transform().origin)
+		player.velocity = Vector3.ZERO
+		chunks.load_around(player.global_position)
+
+
+## Buggy's health bar in the HUD: only while the mission is active and Buggy is still standing.
+func _update_boss_hud() -> void:
+	if is_inside_tree():
+		hud.set_boss_visible(mission == Mission.ACTIVE and not boss.is_defeated())
+
+
+## Height of the terrain at a point, read from its collision height map (it does not need the
+## physics engine, so it also works in the first frame after loading a game).
+## highest = true uses the highest corner of the cell: the result is never under the ground.
+func ground_height(x: float, z: float, highest := false) -> float:
+	var hm := terrain_shape.shape as HeightMapShape3D
+	var xf := terrain_shape.global_transform
+	var local := xf.affine_inverse() * Vector3(x, 0.0, z)
+	var fx := clampf(local.x + (hm.map_width - 1) / 2.0, 0.0, hm.map_width - 1.001)
+	var fz := clampf(local.z + (hm.map_depth - 1) / 2.0, 0.0, hm.map_depth - 1.001)
+	var i := int(fz) * hm.map_width + int(fx)
+	var h00 := hm.map_data[i]
+	var h10 := hm.map_data[i + 1]
+	var h01 := hm.map_data[i + hm.map_width]
+	var h11 := hm.map_data[i + hm.map_width + 1]
+	var h: float
+	if highest:
+		h = maxf(maxf(h00, h10), maxf(h01, h11))
+	else:
+		var tx := fx - int(fx)
+		var tz := fz - int(fz)
+		h = lerpf(lerpf(h00, h10, tx), lerpf(h01, h11, tx), tz)
+	return (xf * Vector3(local.x, h, local.z)).y
+
+
+## A point moved up onto the ground if it is under it (respawn points on slopes).
+func _on_ground(p: Vector3) -> Vector3:
+	return Vector3(p.x, maxf(p.y, ground_height(p.x, p.z, true) + 0.15), p.z)
+
+
+## The terrain collision only stops things from above: if Luffy ever ends under the island,
+## he is put back on the ground.
+func _keep_above_ground() -> void:
+	var p := player.global_position
+	if p.y < ground_height(p.x, p.z) - 1.5:
+		player.global_position = Vector3(p.x, ground_height(p.x, p.z) + 0.3, p.z)
 		player.velocity = Vector3.ZERO
 
 

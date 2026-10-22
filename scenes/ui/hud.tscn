@@ -83,6 +83,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("2_bo48s")
 
@@ -164,6 +166,7 @@ text = "Habla con Koby"
 autowrap_mode = 3
 
 [node name="BossBox" type="VBoxContainer" parent="Root" unique_id=1797542616]
+visible = false
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -269,6 +272,17 @@ theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
 text = "WASD mover  ·  Shift correr  ·  Espacio saltar/nadar  ·  Clic/J golpe  ·  E hablar  ·  Mouse cámara  ·  F1 ver IA  ·  Esc pausa"
 horizontal_alignment = 1
+
+[node name="FpsLabel" type="Label" parent="Root" unique_id=1992622063]
+visible = false
+layout_mode = 0
+offset_left = 18.0
+offset_top = 92.0
+offset_right = 200.0
+offset_bottom = 116.0
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+text = "60 FPS"
 
 [node name="MessageTimer" type="Timer" parent="." unique_id=1664139517]
 wait_time = 2.0
