@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hqnrr"]
 [ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_bo48s"]
+[ext_resource type="Script" path="res://scripts/minimap.gd" id="3_8qguk"]
+[ext_resource type="Texture2D" path="res://assets/ui/minimap_island.png" id="4_136eg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qguk"]
 content_margin_left = 10.0
@@ -104,19 +106,55 @@ layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="Root/PlayerPanel/VBox/Row" unique_id=1446674367]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 22
 text = "Luffy"
 
 [node name="HealthLabel" type="Label" parent="Root/PlayerPanel/VBox/Row" unique_id=44929703]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 18
 text = "100 / 100"
 horizontal_alignment = 2
 
 [node name="HealthBar" type="ProgressBar" parent="Root/PlayerPanel/VBox" unique_id=1375543481]
+custom_minimum_size = Vector2(300, 16)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_136eg")
+value = 100.0
+show_percentage = false
+
+[node name="Player2Panel" type="PanelContainer" parent="Root" unique_id=764535388]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 94.0
+offset_right = 340.0
+offset_bottom = 164.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8qguk")
+
+[node name="VBox" type="VBoxContainer" parent="Root/Player2Panel" unique_id=1879329139]
+layout_mode = 2
+
+[node name="Row" type="HBoxContainer" parent="Root/Player2Panel/VBox" unique_id=1557081333]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Root/Player2Panel/VBox/Row" unique_id=341126032]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 1, 0.55, 1)
+theme_override_font_sizes/font_size = 22
+text = "Zoro"
+
+[node name="HealthLabel" type="Label" parent="Root/Player2Panel/VBox/Row" unique_id=452746934]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 18
+text = "100 / 100"
+horizontal_alignment = 2
+
+[node name="HealthBar" type="ProgressBar" parent="Root/Player2Panel/VBox" unique_id=672082033]
 custom_minimum_size = Vector2(300, 16)
 layout_mode = 2
 theme_override_styles/fill = SubResource("StyleBoxFlat_136eg")
@@ -128,15 +166,15 @@ layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -250.0
-offset_top = 16.0
+offset_top = 224.0
 offset_right = -16.0
-offset_bottom = 64.0
+offset_bottom = 272.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_oj5la")
 
 [node name="ItemLabel" type="Label" parent="Root/ItemPanel" unique_id=522394012]
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 22
 text = "Carne: 0 / 10"
 
 [node name="MissionPanel" type="PanelContainer" parent="Root" unique_id=1466234601]
@@ -144,9 +182,9 @@ layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -350.0
-offset_top = 74.0
+offset_top = 282.0
 offset_right = -16.0
-offset_bottom = 150.0
+offset_bottom = 358.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_gss2c")
 
 [node name="VBox" type="VBoxContainer" parent="Root/MissionPanel" unique_id=1133880556]
@@ -154,14 +192,14 @@ layout_mode = 2
 
 [node name="MissionTitle" type="Label" parent="Root/MissionPanel/VBox" unique_id=1293861553]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 18
 text = "Misión de Koby"
 
 [node name="MissionText" type="Label" parent="Root/MissionPanel/VBox" unique_id=707929874]
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 17
 text = "Habla con Koby"
 autowrap_mode = 3
 
@@ -177,8 +215,8 @@ offset_bottom = 110.0
 
 [node name="BossName" type="Label" parent="Root/BossBox" unique_id=4143544]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
 theme_override_colors/font_color = Color(1, 0.6, 0.45, 1)
+theme_override_font_sizes/font_size = 26
 text = "Buggy el Payaso"
 horizontal_alignment = 1
 
@@ -195,16 +233,16 @@ show_percentage = false
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_font_sizes/font_size = 15
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 15
 text = "150 / 150"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BossState" type="Label" parent="Root/BossBox" unique_id=58846179]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 18
 text = "IA: Patrullando"
 horizontal_alignment = 1
 
@@ -217,8 +255,8 @@ offset_left = -500.0
 offset_top = 120.0
 offset_right = 500.0
 offset_bottom = 180.0
-theme_override_font_sizes/font_size = 40
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 40
 horizontal_alignment = 1
 
 [node name="DialogPanel" type="PanelContainer" parent="Root" unique_id=34010598]
@@ -240,21 +278,21 @@ theme_override_constants/separation = 8
 
 [node name="Speaker" type="Label" parent="Root/DialogPanel/VBox" unique_id=1336414972]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 24
 text = "Koby"
 
 [node name="Text" type="Label" parent="Root/DialogPanel/VBox" unique_id=1163346024]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 21
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 21
 autowrap_mode = 3
 
 [node name="Hint" type="Label" parent="Root/DialogPanel/VBox" unique_id=418460270]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 16
 text = "Pulsa E para continuar"
 horizontal_alignment = 2
 
@@ -268,8 +306,8 @@ offset_left = -600.0
 offset_top = -40.0
 offset_right = 600.0
 offset_bottom = -12.0
-theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 16
 text = "WASD mover  ·  Shift correr  ·  Espacio saltar/nadar  ·  Clic/J golpe  ·  E hablar  ·  Mouse cámara  ·  F1 ver IA  ·  Esc pausa"
 horizontal_alignment = 1
 
@@ -277,12 +315,23 @@ horizontal_alignment = 1
 visible = false
 layout_mode = 0
 offset_left = 18.0
-offset_top = 92.0
+offset_top = 172.0
 offset_right = 200.0
-offset_bottom = 116.0
-theme_override_font_sizes/font_size = 16
+offset_bottom = 196.0
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 16
 text = "60 FPS"
+
+[node name="Minimap" type="Control" parent="Root" unique_id=1317081625]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -216.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 216.0
+script = ExtResource("3_8qguk")
+map_texture = ExtResource("4_136eg")
 
 [node name="MessageTimer" type="Timer" parent="." unique_id=1664139517]
 wait_time = 2.0

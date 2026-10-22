@@ -14,6 +14,10 @@ signal collected(item: Collectible)
 var taken := false
 
 
+func _ready() -> void:
+	add_to_group("minimap_meat")
+
+
 func _on_body_entered(body: Node3D) -> void:
 	if taken or not body is Player or (body as Player).dead:
 		return

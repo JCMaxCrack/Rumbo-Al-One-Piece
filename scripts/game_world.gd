@@ -8,12 +8,17 @@ extends Node3D
 ## Saving: the progress is saved in the slot chosen in the menu (SaveManager, a JSON file) every
 ## time Luffy reaches a Checkpoint, from the pause menu ("Guardar partida", in any of the 4 slots)
 ## and when the mission is done. Loading a slot puts Luffy at the last checkpoint he reached.
+## Zoro: in single player he is tied to a post in the north-west forest; with 3 pieces of meat
+## he joins the crew (part of Koby's mission) and follows Luffy (CompanionAI). In local co-op
+## (GameSession.coop) Zoro is player 2 from the start and the screen is split in two.
+## Mini enemies (group "enemies", MiniEnemy) live in MiniEnemies; the HUD has a mini map.
 
 enum Mission { NOT_GIVEN, ACTIVE, DONE }
 
 @onready var player: Player = $Luffy
 @onready var boss: BuggyBoss = $Buggy
 @onready var koby: Koby = $Koby
+@onready var zoro: Player = $Zoro
 @onready var collectibles: Node3D = $Collectibles
 @onready var checkpoints: Node3D = $Checkpoints
 @onready var chunks: ChunkManager = $ChunkManager
@@ -43,10 +48,19 @@ var activated_checkpoints: Array = [SaveManager.FIRST_CHECKPOINT]
 var _dialog: PackedStringArray = []
 var _dialog_line := 0
 var _music_tween: Tween
+var zoro_recruited := false
+var _dialog_speaker := "Koby"
+var _split_viewports: Array[SubViewport] = []
+
+const MEAT_FOR_ZORO := 3
+const KOBY_ZORO_LINE := "Una cosa más: en el bosque del noroeste los marines tienen atado a un espadachín, Roronoa Zoro. ¡Recluta a Zoro para tu tripulación!"
+const KOBY_COOP_LINE := "¡Y qué suerte que Zoro, el espadachín, ya viaja contigo!"
 
 
 func _ready() -> void:
 	get_tree().paused = false
+	get_viewport().disable_3d = false
+	_setup_mode()
 	_apply_graphics()
 	GraphicsSettings.changed.connect(_apply_graphics)
 	total_items = collectibles.get_child_count()
@@ -69,13 +83,85 @@ func _ready() -> void:
 		hud.show_message("Partida %d cargada" % SaveManager.current_slot, 2.0)
 	_update_mission_text()
 	_update_boss_hud()
+	_update_zoro()
+
+
+func _exit_tree() -> void:
+	get_viewport().disable_3d = false
+
+
+# ------------------------------------------------------------------ single player / co-op
+func _setup_mode() -> void:
+	(zoro.get_node("CompanionAI") as CompanionAI).leader = player
+	if GameSession.coop:
+		zoro_recruited = true
+		zoro.control = Player.Controller.PLAYER_TWO
+		zoro.global_position = player.global_position + Vector3(1.6, 0.3, 0.8)
+		chunks.extra_targets = [zoro]
+		touch_controls.active = false
+		_setup_split_screen()
+	else:
+		zoro.control = Player.Controller.NONE
+
+
+## Co-op: two views side by side, each one following the camera of its player.
+func _setup_split_screen() -> void:
+	var layer := CanvasLayer.new()
+	layer.name = "SplitScreen"
+	layer.layer = -1
+	add_child(layer)
+	var box := HBoxContainer.new()
+	box.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	box.add_theme_constant_override("separation", 4)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(box)
+	for p in [player, zoro]:
+		var container := SubViewportContainer.new()
+		container.stretch = true
+		container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(container)
+		var vp := SubViewport.new()
+		vp.world_3d = get_viewport().find_world_3d()
+		vp.audio_listener_enable_3d = p == player
+		container.add_child(vp)
+		_split_viewports.append(vp)
+		var cam := Camera3D.new()
+		vp.add_child(cam)
+		cam.current = true
+		var follow := RemoteTransform3D.new()
+		follow.name = "SplitScreenCamera"
+		p.camera.add_child(follow)
+		follow.remote_path = follow.get_path_to(cam)
+	# the full screen view is not drawn: only the two halves
+	get_viewport().disable_3d = true
+
+
+## Zoro tied to the post, following Luffy, or player 2.
+func _update_zoro() -> void:
+	if GameSession.coop:
+		hud.set_player2_visible(true)
+		return
+	zoro.control = Player.Controller.AI if zoro_recruited else Player.Controller.NONE
+	$ZoroPost.visible = true
+	hud.set_player2_visible(zoro_recruited)
+	if zoro_recruited and zoro.global_position.distance_to(player.global_position) > 20.0:
+		zoro.global_position = player.global_position - player.facing * 2.5 + Vector3(0, 0.4, 0)
+	zoro.health_changed.emit(zoro.health, zoro.max_health)
+
+
+func _zoro_near() -> bool:
+	return not GameSession.coop and not zoro_recruited and zoro.global_position.distance_to(player.global_position) < 3.2
 
 
 func _process(delta: float) -> void:
 	if not finished:
 		elapsed += delta
 	_keep_above_ground()
-	touch_controls.set_interact_visible(hud.is_dialog_open() or koby.player_near, "Seguir" if hud.is_dialog_open() else "Hablar")
+	var near_zoro := _zoro_near()
+	zoro.get_node("NameLabel").visible = not GameSession.coop and not zoro_recruited
+	zoro.get_node("PromptLabel").visible = near_zoro and not hud.is_dialog_open()
+	touch_controls.set_interact_visible(hud.is_dialog_open() or koby.player_near or near_zoro, "Seguir" if hud.is_dialog_open() else "Hablar")
 	if DisplayServer.get_name() == "headless" or touch_controls.active:
 		return
 	var free_mouse := get_tree().paused or finished
@@ -87,39 +173,70 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if finished:
 		return
-	if event.is_action_pressed("pause"):
+	var p2 := GameSession.coop
+	if event.is_action_pressed("pause") or (p2 and event.is_action_pressed("p2_pause")):
 		pause_menu.can_save = not player.dead
 		pause_menu.toggle()
 	elif event.is_action_pressed("toggle_debug"):
 		boss.set_debug_visible(not boss.show_debug)
-	elif event.is_action_pressed("interact"):
+	elif event.is_action_pressed("map") or (p2 and event.is_action_pressed("p2_map")):
+		hud.toggle_map()
+	elif event.is_action_pressed("interact") or (p2 and event.is_action_pressed("p2_interact")):
 		if hud.is_dialog_open():
 			_next_dialog_line()
 		elif koby.player_near:
 			_talk_to_koby()
+		elif _zoro_near():
+			_talk_to_zoro()
 
 
 # ------------------------------------------------------------------ Koby and the mission
 func _talk_to_koby() -> void:
 	match mission:
 		Mission.NOT_GIVEN:
-			_dialog = koby.mission_lines
+			_dialog = koby.mission_lines.duplicate()
+			_dialog.append(KOBY_COOP_LINE if GameSession.coop else KOBY_ZORO_LINE)
 		Mission.ACTIVE:
 			_dialog = [_progress_line()]
 		_:
 			_dialog = ["¡Lo lograste, Luffy-san! ¡Eres increíble!"]
+	_open_dialog("Koby")
+
+
+func _open_dialog(speaker: String) -> void:
+	_dialog_speaker = speaker
 	_dialog_line = 0
 	player.controls_enabled = false
-	hud.show_dialog("Koby", _dialog[0], _dialog.size() == 1)
+	zoro.controls_enabled = false
+	hud.show_dialog(speaker, _dialog[0], _dialog.size() == 1)
+
+
+## Zoro, tied up: he joins the crew when Luffy has some meat for him.
+func _talk_to_zoro() -> void:
+	if collected_items >= MEAT_FOR_ZORO:
+		_dialog = ["¡Por fin comida! ...Está bien, me uniré a tu tripulación.", "Pero escucha: mi sueño es ser el mejor espadachín del mundo. ¡Que no se te olvide, capitán!"]
+	else:
+		_dialog = ["¿Y tú quién eres? Soy Roronoa Zoro. Los marines me ataron aquí y llevo días sin comer...",
+			"Si me traes %d carnes, me uniré a tu tripulación. (Tienes %d)" % [MEAT_FOR_ZORO, collected_items]]
+	_open_dialog("Zoro")
 
 
 func _next_dialog_line() -> void:
 	_dialog_line += 1
 	if _dialog_line < _dialog.size():
-		hud.show_dialog("Koby", _dialog[_dialog_line], _dialog_line == _dialog.size() - 1)
+		hud.show_dialog(_dialog_speaker, _dialog[_dialog_line], _dialog_line == _dialog.size() - 1)
 		return
 	hud.hide_dialog()
 	player.controls_enabled = true
+	zoro.controls_enabled = true
+	if _dialog_speaker == "Zoro":
+		if collected_items >= MEAT_FOR_ZORO and not zoro_recruited:
+			zoro_recruited = true
+			_update_zoro()
+			hud.show_message("¡Zoro se unió a la tripulación!", 2.0)
+			_update_mission_text()
+			_check_mission()
+		return
 	if mission == Mission.NOT_GIVEN:
 		mission = Mission.ACTIVE
 		koby.set_mission_given(true)
@@ -135,6 +252,8 @@ func _progress_line() -> String:
 		missing.append("derrotar a Buggy en el cráter")
 	if collected_items < total_items:
 		missing.append("recolectar %d carne(s) más" % (total_items - collected_items))
+	if not zoro_recruited:
+		missing.append("reclutar a Zoro en el bosque del noroeste")
 	return "¡Ánimo, Luffy-san! Todavía te falta " + " y ".join(missing) + "."
 
 
@@ -144,11 +263,15 @@ func _update_mission_text() -> void:
 		return
 	var boss_mark := "[X]" if boss.is_defeated() else "[  ]"
 	var meat_mark := "[X]" if collected_items >= total_items else "[  ]"
-	hud.set_mission("%s Derrota a Buggy el Payaso\n%s Recolecta la carne (%d/%d)" % [boss_mark, meat_mark, collected_items, total_items])
+	var zoro_mark := "[X]" if zoro_recruited else "[  ]"
+	var text := "%s Derrota a Buggy el Payaso\n%s Recolecta la carne (%d/%d)" % [boss_mark, meat_mark, collected_items, total_items]
+	if not GameSession.coop:
+		text += "\n%s Recluta a Zoro" % zoro_mark
+	hud.set_mission(text)
 
 
 func _check_mission() -> void:
-	if mission == Mission.ACTIVE and boss.is_defeated() and collected_items >= total_items:
+	if mission == Mission.ACTIVE and boss.is_defeated() and collected_items >= total_items and zoro_recruited:
 		mission = Mission.DONE
 		_finish(true)
 
@@ -161,7 +284,7 @@ func _on_item_collected(item: Collectible) -> void:
 	collected_meat.append(str(item.name))
 	hud.set_count(collected_items, total_items)
 	_update_mission_text()
-	if mission == Mission.ACTIVE and collected_items >= total_items and boss.is_defeated():
+	if mission == Mission.ACTIVE and collected_items >= total_items and boss.is_defeated() and zoro_recruited:
 		_check_mission()
 	else:
 		hud.show_message("¡Carne! +%d de vida  (%d/%d)" % [int(item.heal_amount), collected_items, total_items], 1.2)
@@ -188,7 +311,7 @@ func _on_buggy_defeated() -> void:
 	_update_mission_text()
 	# the bar shows Buggy's empty health for a moment and then goes away
 	get_tree().create_timer(1.5).timeout.connect(_update_boss_hud)
-	if mission == Mission.ACTIVE and collected_items >= total_items:
+	if mission == Mission.ACTIVE and collected_items >= total_items and zoro_recruited:
 		_check_mission()
 	else:
 		hud.show_message("¡Derrotaste a Buggy el Payaso!", 2.0)
@@ -201,6 +324,16 @@ func _on_player_died() -> void:
 		return
 	hud.show_message("¡Buggy te derrotó!", 1.5)
 	defeat_timer.start()
+
+
+## Zoro fell (player 2 or companion): he comes back next to Luffy after a moment.
+func _on_zoro_died() -> void:
+	if finished:
+		return
+	hud.show_message("¡Zoro cayó! Volverá en un momento", 1.5)
+	await get_tree().create_timer(3.0).timeout
+	if is_inside_tree() and not finished:
+		zoro.revive(_on_ground(player.global_position - player.facing * 2.0))
 
 
 func _on_defeat_timer_timeout() -> void:
@@ -227,6 +360,19 @@ func _finish(won: bool) -> void:
 ## Quality preset (Opciones): environment, sun shadows, camera distance, chunks and terrain.
 func _apply_graphics() -> void:
 	GraphicsSettings.apply_world(world_environment.environment, sun, player.camera, chunks)
+	# split screen: the two halves use the same quality as the full view
+	var root := get_viewport()
+	for vp in _split_viewports:
+		vp.msaa_3d = root.msaa_3d
+		vp.screen_space_aa = root.screen_space_aa
+		vp.scaling_3d_mode = root.scaling_3d_mode
+		vp.scaling_3d_scale = root.scaling_3d_scale
+		vp.mesh_lod_threshold = root.mesh_lod_threshold
+		vp.use_occlusion_culling = root.use_occlusion_culling
+		var cam := vp.get_camera_3d()
+		if cam:
+			cam.far = player.camera.far
+			cam.fov = player.camera.fov
 
 
 # ------------------------------------------------------------------ checkpoints and saving
@@ -268,6 +414,7 @@ func collect_state(completed := false) -> Dictionary:
 		"meat": collected_meat.duplicate(),
 		"boss_health": ceili(boss.health),
 		"boss_defeated": boss.is_defeated(),
+		"zoro": zoro_recruited,
 	}
 
 
@@ -300,6 +447,7 @@ func _apply_save(d: Dictionary) -> void:
 	collected_items = collected_meat.size()
 	hud.set_count(collected_items, total_items)
 	boss.restore(float(d.boss_health))
+	zoro_recruited = bool(d.get("zoro", false)) or GameSession.coop
 	hud.set_boss_state(BuggyBoss.STATE_TEXT[boss.state])
 	activated_checkpoints = d.checkpoints.duplicate()
 	current_checkpoint = str(d.checkpoint)

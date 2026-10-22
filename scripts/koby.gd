@@ -24,6 +24,10 @@ var player_near := false
 var _player: Node3D
 
 
+func _ready() -> void:
+	add_to_group("minimap_npc")
+
+
 func _on_talk_area_body_entered(body: Node3D) -> void:
 	if body is Player:
 		_player = body

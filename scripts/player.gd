@@ -1,13 +1,27 @@
 class_name Player
 extends CharacterBody3D
-## Luffy: walk, sprint, jump, swim and the Gomu Gomu punch (stretching arm).
-## Nodes used (see scenes/player/luffy.tscn):
-##   Model (the luffy.fbx instance), AnimationPlayer (animations library "luffy"),
-##   CameraPivot/SpringArm3D/Camera3D, PunchHitbox, HurtSound, JumpSound, SplashSound,
-##   SwingSound, PunchSound, InvulnerabilityTimer, HurtTimer, AttackTimer.
+## A playable character: Luffy (Gomu Gomu punch) or Zoro (katana slash). Walk, sprint, jump,
+## swim and attack. Who controls it (control):
+##   PLAYER_ONE: keyboard + mouse (and a gamepad in single player), touch controls on phones.
+##   PLAYER_TWO: local co-op, the gamepad of player 2 (actions "p2_*", see GameSession).
+##   AI: a companion (CompanionAI writes ai_move / ai_run / ai_jump / ai_attack).
+##   NONE: stands still (Zoro tied up before he joins the crew).
+## Nodes used (see scenes/player/luffy.tscn and zoro.tscn):
+##   Model, AnimationPlayer (library anim_library), CameraPivot/SpringArm3D/Camera3D, PunchHitbox,
+##   HurtSound, JumpSound, SplashSound, SwingSound, PunchSound, InvulnerabilityTimer, HurtTimer,
+##   AttackTimer. Optional: the weapon node (weapon_path), shown only while attacking.
 
 signal health_changed(current: float, maximum: float)
 signal died
+
+enum Controller { PLAYER_ONE, PLAYER_TWO, AI, NONE }
+
+@export var control: Controller = Controller.PLAYER_ONE
+@export var display_name := "Luffy"
+## Name of the animation library in the AnimationPlayer ("luffy", "zoro").
+@export var anim_library := "luffy"
+## Node shown only while attacking (Zoro's katana). Empty for Luffy.
+@export var weapon_path: NodePath
 
 @export var max_health := 100.0
 @export var walk_speed := 3.2
@@ -59,17 +73,39 @@ var controls_enabled := true
 var _current_anim := ""
 var _current_speed := 1.0
 var _shake := 0.0
+var _weapon: Node3D
+## Written by CompanionAI when control == AI (direction in world space, 0..1 long).
+var ai_move := Vector3.ZERO
+var ai_run := false
+var ai_jump := false
+var ai_attack := false
 
 
 func _ready() -> void:
-	add_to_group("player")
+	add_to_group("players")
+	if control == Controller.PLAYER_ONE:
+		add_to_group("player")
+	if not weapon_path.is_empty():
+		_weapon = get_node_or_null(weapon_path) as Node3D
 	health = max_health
 	health_changed.emit(health, max_health)
 	_play("idle")
 
 
+## Name of an input action for this player ("jump" for player 1, "p2_jump" for player 2).
+func action(name: String) -> String:
+	return "p2_" + name if control == Controller.PLAYER_TWO else name
+
+
+## Player 1 or player 2 (only if its input actions exist: GameSession makes those of player 2).
+func is_human() -> bool:
+	if control == Controller.PLAYER_TWO:
+		return InputMap.has_action("p2_jump")
+	return control == Controller.PLAYER_ONE
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	if control != Controller.PLAYER_ONE or Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		return
 	if event is InputEventMouseMotion:
 		look((event as InputEventMouseMotion).relative)
@@ -84,9 +120,12 @@ func look(rel: Vector2) -> void:
 
 
 func _process(delta: float) -> void:
-	var stick := Input.get_vector("look_left", "look_right", "look_up", "look_down")
-	if stick.length() > 0.1:
-		look(stick * 900.0 * delta)
+	if is_human():
+		var stick := Input.get_vector(action("look_left"), action("look_right"), action("look_up"), action("look_down"))
+		if stick.length() > 0.1:
+			look(stick * 900.0 * delta)
+	if _weapon:
+		_weapon.visible = is_attacking()
 	# blink while invulnerable
 	model.visible = invulnerability_timer.is_stopped() or int(invulnerability_timer.time_left * 16.0) % 2 == 0
 	if _shake > 0.0:
@@ -99,17 +138,30 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var can_move := controls_enabled and not dead and hurt_timer.is_stopped()
-	if can_move and Input.is_action_just_pressed("attack"):
-		attack()
-	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back") if can_move else Vector2.ZERO
-	var basis_y := camera_pivot.global_transform.basis
-	var forward := Vector3(-basis_y.z.x, 0, -basis_y.z.z).normalized()
-	var right := Vector3(basis_y.x.x, 0, basis_y.x.z).normalized()
-	var move := right * input.x + forward * -input.y
-	if move.length() > 1.0:
-		move = move.normalized()
-	var running := Input.is_action_pressed("sprint")
+	var can_move := controls_enabled and not dead and hurt_timer.is_stopped() and control != Controller.NONE
+	var move := Vector3.ZERO
+	var running := false
+	var jump_pressed := false
+	if control == Controller.AI:
+		move = Vector3(ai_move.x, 0, ai_move.z).limit_length(1.0) if can_move else Vector3.ZERO
+		running = ai_run
+		jump_pressed = can_move and ai_jump
+		if can_move and ai_attack:
+			attack()
+		ai_jump = false
+		ai_attack = false
+	elif is_human():
+		if can_move and Input.is_action_just_pressed(action("attack")):
+			attack()
+		var input := Input.get_vector(action("move_left"), action("move_right"), action("move_forward"), action("move_back")) if can_move else Vector2.ZERO
+		var basis_y := camera_pivot.global_transform.basis
+		var forward := Vector3(-basis_y.z.x, 0, -basis_y.z.z).normalized()
+		var right := Vector3(basis_y.x.x, 0, basis_y.x.z).normalized()
+		move = right * input.x + forward * -input.y
+		if move.length() > 1.0:
+			move = move.normalized()
+		running = Input.is_action_pressed(action("sprint"))
+		jump_pressed = can_move and Input.is_action_just_pressed(action("jump"))
 	_update_swimming()
 	var speed := run_speed if running else walk_speed
 	if swimming:
@@ -125,12 +177,12 @@ func _physics_process(delta: float) -> void:
 	if swimming and global_position.y <= float_y + 0.05:
 		# buoyancy: the body floats with the head out of the water
 		velocity.y = lerpf(velocity.y, (float_y - global_position.y) * 4.0, clampf(6.0 * delta, 0.0, 1.0))
-		if can_move and Input.is_action_just_pressed("jump"):
+		if jump_pressed:
 			velocity.y = swim_jump_velocity
 			splash_sound.play()
 	elif not is_on_floor():
 		velocity.y -= gravity * delta
-	elif can_move and Input.is_action_just_pressed("jump"):
+	elif jump_pressed:
 		velocity.y = jump_velocity
 		jump_sound.play()
 		_play("jump", jump_anim_speed, jump_anim_start)
@@ -192,11 +244,11 @@ func _play(anim_name: String, speed: float = 1.0, from_time: float = 0.0, restar
 	if anim_name == _current_anim and from_time == 0.0 and not restart:
 		if not is_equal_approx(speed, _current_speed):
 			_current_speed = speed
-			anim.play("luffy/" + anim_name, 0.15, speed)
+			anim.play(anim_library + "/" + anim_name, 0.15, speed)
 		return
 	_current_anim = anim_name
 	_current_speed = speed
-	anim.play("luffy/" + anim_name, 0.15 if not restart else 0.05, speed)
+	anim.play(anim_library + "/" + anim_name, 0.15 if not restart else 0.05, speed)
 	if from_time > 0.0:
 		anim.seek(from_time, true)
 
@@ -209,7 +261,7 @@ func heal(amount: float) -> void:
 	health_changed.emit(health, max_health)
 
 
-## Called by Buggy when the punch connects.
+## Called by Buggy and the mini enemies when their attack connects.
 func receive_hit(damage: float, from_pos: Vector3) -> void:
 	if dead or not invulnerability_timer.is_stopped():
 		return
@@ -231,4 +283,19 @@ func receive_hit(damage: float, from_pos: Vector3) -> void:
 	else:
 		hurt_timer.start()
 		_current_anim = ""
-		anim.play("luffy/hurt", 0.1)
+		anim.play(anim_library + "/hurt", 0.1)
+
+
+## Brings the character back (Zoro after falling in co-op or as a companion).
+func revive(at: Vector3) -> void:
+	dead = false
+	health = max_health
+	health_changed.emit(health, max_health)
+	global_position = at
+	velocity = Vector3.ZERO
+	knockback = Vector3.ZERO
+	swimming = false
+	hurt_timer.stop()
+	invulnerability_timer.start()
+	_current_anim = ""
+	_play("idle")

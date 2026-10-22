@@ -50,6 +50,9 @@ var preset: int = Preset.MEDIUM
 ## 0.5 - 1.0 of the window resolution for the 3D world (the interface is always sharp).
 var render_scale := 1.0
 var show_fps := false
+## PC: full screen (F11 or Alt+Enter also switch it). The image always fills the screen: the 3D
+## view takes the whole window and the interface keeps its proportions (stretch "expand").
+var fullscreen := true
 var _light_timer := 0.0
 
 
@@ -58,6 +61,7 @@ func _ready() -> void:
 	if not _load():
 		_pick_default()
 	apply_global()
+	apply_window()
 
 
 func settings() -> Dictionary:
@@ -80,6 +84,35 @@ func set_render_scale(s: float) -> void:
 	_save()
 	apply_global()
 	changed.emit()
+
+
+func set_fullscreen(on: bool) -> void:
+	fullscreen = on
+	_save()
+	apply_window()
+	changed.emit()
+
+
+func can_change_window() -> bool:
+	return not (OS.has_feature("mobile") or OS.has_feature("web") or DisplayServer.get_name() == "headless")
+
+
+func apply_window() -> void:
+	if not can_change_window():
+		return
+	var want := DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
+	var now := DisplayServer.window_get_mode()
+	if fullscreen and (now == DisplayServer.WINDOW_MODE_FULLSCREEN or now == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN):
+		return
+	if not fullscreen and (now == DisplayServer.WINDOW_MODE_WINDOWED or now == DisplayServer.WINDOW_MODE_MAXIMIZED):
+		return
+	DisplayServer.window_set_mode(want)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("toggle_fullscreen") and can_change_window():
+		get_viewport().set_input_as_handled()
+		set_fullscreen(not fullscreen)
 
 
 func set_show_fps(on: bool) -> void:
@@ -177,6 +210,7 @@ func _load() -> bool:
 	preset = clampi(int(cfg.get_value("graficos", "preset", Preset.MEDIUM)), Preset.LOW, Preset.HIGH)
 	render_scale = clampf(float(cfg.get_value("graficos", "escala_render", 1.0)), 0.5, 1.0)
 	show_fps = bool(cfg.get_value("graficos", "mostrar_fps", false))
+	fullscreen = bool(cfg.get_value("graficos", "pantalla_completa", true))
 	return true
 
 
@@ -185,4 +219,5 @@ func _save() -> void:
 	cfg.set_value("graficos", "preset", preset)
 	cfg.set_value("graficos", "escala_render", render_scale)
 	cfg.set_value("graficos", "mostrar_fps", show_fps)
+	cfg.set_value("graficos", "pantalla_completa", fullscreen)
 	cfg.save(FILE)
