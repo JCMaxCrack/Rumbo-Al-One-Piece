@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_ek1q5"]
 [ext_resource type="Script" path="res://scripts/graphics_options.gd" id="2_ewesi"]
+[ext_resource type="PackedScene" path="res://scenes/ui/controls_menu.tscn" id="3_ctrl"]
 
 [node name="GraphicsOptions" type="Control" unique_id=896974404]
 process_mode = 3
@@ -26,9 +27,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -330.0
-offset_top = -254.0
+offset_top = -310.0
 offset_right = 330.0
-offset_bottom = 254.0
+offset_bottom = 310.0
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=806882165]
 layout_mode = 2
@@ -90,6 +91,20 @@ theme_override_font_sizes/font_size = 20
 text = "100 %"
 horizontal_alignment = 2
 
+[node name="LanguageRow" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/LanguageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "Idioma"
+
+[node name="LanguageButton" type="OptionButton" parent="Panel/VBox/LanguageRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
 [node name="FullscreenCheck" type="CheckBox" parent="Panel/VBox" unique_id=501626632]
 layout_mode = 2
 text = "Pantalla completa  (F11 / Alt+Enter)"
@@ -105,12 +120,26 @@ theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
 theme_override_font_sizes/font_size = 17
 autowrap_mode = 3
 
+[node name="ControlsButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "Controles"
+
 [node name="BackButton" type="Button" parent="Panel/VBox" unique_id=238681698]
 layout_mode = 2
 text = "Volver"
+
+[node name="ControlsMenu" parent="." instance=ExtResource("3_ctrl")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [connection signal="item_selected" from="Panel/VBox/PresetRow/PresetButton" to="." method="_on_preset_button_item_selected"]
 [connection signal="value_changed" from="Panel/VBox/ScaleRow/ScaleSlider" to="." method="_on_scale_slider_value_changed"]
 [connection signal="toggled" from="Panel/VBox/FullscreenCheck" to="." method="_on_fullscreen_check_toggled"]
 [connection signal="toggled" from="Panel/VBox/FpsCheck" to="." method="_on_fps_check_toggled"]
 [connection signal="pressed" from="Panel/VBox/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="item_selected" from="Panel/VBox/LanguageRow/LanguageButton" to="." method="_on_language_button_item_selected"]
+[connection signal="pressed" from="Panel/VBox/ControlsButton" to="." method="_on_controls_button_pressed"]
