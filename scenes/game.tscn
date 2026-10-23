@@ -1084,6 +1084,9 @@ target = NodePath("../Luffy")
 [node name="GoingMerry" parent="." unique_id=2125988302 groups=["minimap_ship"] instance=ExtResource("18_m4url")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 298.32, 1, 156.4)
 
+[node name="ShipHelm" type="Marker3D" parent="." unique_id=1771250011]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 298.32, 3.85, 162.9)
+
 [node name="Collectibles" type="Node3D" parent="." unique_id=1244462564]
 
 [node name="Meat1" parent="Collectibles" unique_id=1125071650 instance=ExtResource("19_8ool0")]
@@ -1120,27 +1123,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164.56, 16.955202, 246.4)
 
 [node name="EvilMushroom1" parent="MiniEnemies" unique_id=2031733337 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 6.90101, 185)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom2" parent="MiniEnemies" unique_id=1001188226 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.26749888, 0, 0.9635582, 0, 1, 0, -0.9635582, 0, 0.26749888, 185.86603, 15.650042, 268.5)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom3" parent="MiniEnemies" unique_id=1658103917 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(-0.8568887, 0, 0.51550144, 0, 1, 0, -0.51550144, 0, -0.8568887, 272, 1.771608, 292)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom4" parent="MiniEnemies" unique_id=1055108678 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(-0.72593224, 0, -0.68776625, 0, 1, 0, 0.68776625, 0, -0.72593224, 335, 5.1637435, 257)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom5" parent="MiniEnemies" unique_id=322593704 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.4685165, 0, -0.88345474, 0, 1, 0, 0.88345474, 0, 0.4685165, 355, 3.4554381, 205)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom6" parent="MiniEnemies" unique_id=1256565346 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.97658765, 0, 0.21511999, 0, 1, 0, -0.21511999, 0, 0.97658765, 315, 11.619318, 190)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom7" parent="MiniEnemies" unique_id=2018482999 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.05395523, 0, 0.9985434, 0, 1, 0, -0.9985434, 0, 0.05395523, 255, 2.629045, 140)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom8" parent="MiniEnemies" unique_id=483907102 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(-0.9477217, 0, 0.319098, 0, 1, 0, -0.319098, 0, -0.9477217, 165.40192, 6.783624, 203.5)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="ExploreMusic" type="AudioStreamPlayer" parent="." unique_id=424666769]
 stream = ExtResource("20_pr1ej")

@@ -27,6 +27,10 @@ const SAIL_MENU_SCENE := "res://scenes/ui/sail_menu.tscn"
 @export var recruit_member := ""
 ## false when the scene itself connects the boss signals (the first island does).
 @export var connect_boss_signals := true
+## Top view of the island for the minimap (the first island keeps the one of the HUD) and the
+## side of the area it shows, in meters.
+@export var minimap_texture: Texture2D
+@export var world_size := 440.0
 
 @onready var player: Player = $Luffy
 @onready var collectibles: Node3D = $Collectibles
@@ -96,6 +100,9 @@ func _ready() -> void:
 	add_child(sail_menu)
 	sail_menu.closed.connect(_on_menu_closed)
 	sail_menu.sail_requested.connect(sail_to)
+	if minimap_texture:
+		hud.minimap.map_texture = minimap_texture
+		hud.minimap.world_size = world_size
 	hud.set_touch_mode(touch_controls.active)
 	hud.hide_dialog()
 	player.set_max_health(_luffy_max_health(), true)

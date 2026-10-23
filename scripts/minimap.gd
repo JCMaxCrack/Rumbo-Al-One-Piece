@@ -114,7 +114,7 @@ func _draw() -> void:
 		var m3: Array = _to_map(en.global_position, c, radius)
 		if not m3[1]:
 			continue
-		if en is BuggyBoss:
+		if en is BuggyBoss or en is Boss:
 			draw_circle(m3[0], icon * 1.5, COLORS.boss)
 			draw_circle(m3[0], icon * 0.6, Color.WHITE)
 		else:
