@@ -2,7 +2,6 @@ class_name HUD
 extends CanvasLayer
 ## In-game interface. Nodes in scenes/ui/hud.tscn.
 
-const KEYBOARD_HINT := "WASD mover  ·  Shift correr  ·  Espacio saltar/nadar  ·  Clic/J golpe  ·  E hablar  ·  M mapa  ·  Mouse cámara  ·  Esc pausa"
 const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha: cámara"
 
 @onready var health_bar: ProgressBar = $Root/PlayerPanel/VBox/HealthBar
@@ -24,8 +23,31 @@ const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha
 @onready var player2_panel: Control = $Root/Player2Panel
 @onready var health_bar2: ProgressBar = $Root/Player2Panel/VBox/HealthBar
 @onready var health_label2: Label = $Root/Player2Panel/VBox/Row/HealthLabel
+@onready var level_label: Label = $Root/PlayerPanel/VBox/XpRow/LevelLabel
+@onready var xp_bar: ProgressBar = $Root/PlayerPanel/VBox/XpRow/XpBar
+@onready var points_label: Label = $Root/PlayerPanel/VBox/XpRow/PointsLabel
+@onready var inventory_slots: Array = $Root/Inventory/Slots.get_children()
+@onready var inventory_hint: Label = $Root/Inventory/Hint
+@onready var skill_box: Control = $Root/SkillBox
+@onready var skill_name: Label = $Root/SkillBox/VBox/SkillName
+@onready var skill_bar: ProgressBar = $Root/SkillBox/VBox/Cooldown
+@onready var skill_hint: Label = $Root/SkillBox/VBox/Hint
+@onready var interact_hint: Label = $Root/InteractHint
+@onready var banner: Control = $Root/Banner
+@onready var banner_title: Label = $Root/Banner/Title
+@onready var banner_text: Label = $Root/Banner/Text
+@onready var boss_name: Label = $Root/BossBox/BossName
 
 var touch_mode := false
+var _banner_tween: Tween
+
+
+func _ready() -> void:
+	Preferences.bindings_changed.connect(_refresh_hints)
+	Preferences.language_changed.connect(_refresh_hints)
+	banner.visible = false
+	interact_hint.visible = false
+	_refresh_hints()
 
 
 func set_health(current: float, maximum: float) -> void:
@@ -51,7 +73,72 @@ func toggle_map() -> void:
 
 
 func set_count(current: int, total: int) -> void:
-	item_label.text = "Carne: %d / %d" % [current, total]
+	item_label.text = tr("Carne: %d / %d") % [current, total]
+
+
+## Level, experience bar and skill points.
+func set_xp(level: int, xp: int, needed: int, points: int) -> void:
+	level_label.text = tr("Nv. %d") % level
+	xp_bar.max_value = needed
+	xp_bar.value = xp
+	points_label.text = "★ %d" % points
+	points_label.modulate = Color(1, 0.85, 0.3) if points > 0 else Color(0.7, 0.7, 0.7)
+
+
+## The slots of the inventory (GameState.inventory) and the one selected.
+func set_inventory(inv: Array, selected: int) -> void:
+	for i in inventory_slots.size():
+		var slot: ItemSlot = inventory_slots[i]
+		var e: Dictionary = inv[i] if i < inv.size() else {}
+		slot.set_item(str(e.get("id", "")), int(e.get("count", 0)), i == selected)
+
+
+## The equipped skill and how much of its waiting time is left (1 = just used, 0 = ready).
+func set_skill(id: String, cooldown: float) -> void:
+	skill_box.visible = id != ""
+	if id == "":
+		return
+	skill_name.text = GameState.skill_name(id)
+	skill_bar.value = 1.0 - clampf(cooldown, 0.0, 1.0)
+	skill_bar.modulate = Color(0.55, 1, 0.55) if cooldown <= 0.0 else Color(1, 1, 1, 0.8)
+
+
+## "[E] Hablar", "[E] Zarpar"... over the inventory (empty text hides it).
+func set_interact_hint(text: String) -> void:
+	interact_hint.visible = text != "" and not dialog_panel.visible
+	if text != "":
+		var key := tr("Toca «%s»") % text if touch_mode else "[%s] %s" % [Preferences.event_text("interact", false), text]
+		interact_hint.text = key
+
+
+## Big text in the middle of the screen ("¡Isla completada!").
+func show_banner(title: String, text: String, duration := 3.0) -> void:
+	banner_title.text = title
+	banner_text.text = text
+	banner.visible = true
+	banner.modulate.a = 0.0
+	if _banner_tween:
+		_banner_tween.kill()
+	_banner_tween = create_tween()
+	_banner_tween.tween_property(banner, "modulate:a", 1.0, 0.3)
+	_banner_tween.tween_interval(duration)
+	_banner_tween.tween_property(banner, "modulate:a", 0.0, 0.6)
+	_banner_tween.tween_callback(func(): banner.visible = false)
+
+
+func set_boss_name(text: String) -> void:
+	boss_name.text = text
+
+
+## Texts with the keys (they change if the player changes the controls).
+func _refresh_hints() -> void:
+	var k := func(a: String) -> String: return Preferences.event_text(a, false)
+	var hint := tr("%s mover  ·  %s correr  ·  %s saltar/nadar  ·  Clic/%s golpe  ·  %s hablar  ·  %s mapa  ·  %s pausa") % [
+		k.call("move_forward") + k.call("move_left") + k.call("move_back") + k.call("move_right"), k.call("sprint"), k.call("jump"),
+		k.call("attack"), k.call("interact"), k.call("map"), k.call("pause")]
+	controls_hint.text = tr(TOUCH_HINT) if touch_mode else hint
+	inventory_hint.text = tr("%s comer  ·  %s cambiar") % [k.call("use_item"), k.call("next_item")] if not touch_mode else ""
+	skill_hint.text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [k.call("skill"), k.call("next_skill"), k.call("shop")] if not touch_mode else ""
 
 
 func set_mission(text: String) -> void:
@@ -70,12 +157,12 @@ func set_boss_visible(on: bool) -> void:
 
 
 func set_boss_state(text: String) -> void:
-	boss_state_label.text = "IA: " + text
+	boss_state_label.text = tr("IA: ") + text
 
 
 func set_touch_mode(on: bool) -> void:
 	touch_mode = on
-	controls_hint.text = TOUCH_HINT if on else KEYBOARD_HINT
+	_refresh_hints()
 
 
 func show_message(text: String, duration: float = 2.0) -> void:
@@ -86,10 +173,11 @@ func show_message(text: String, duration: float = 2.0) -> void:
 
 func show_dialog(speaker: String, text: String, last: bool) -> void:
 	dialog_panel.visible = true
+	interact_hint.visible = false
 	dialog_speaker.text = speaker
 	dialog_text.text = text
-	var key := "Toca «Seguir»" if touch_mode else "Pulsa E"
-	dialog_hint.text = key + (" para cerrar" if last else " para continuar")
+	var key := tr("Toca «Seguir»") if touch_mode else tr("Pulsa %s") % Preferences.event_text("interact", false)
+	dialog_hint.text = key + (tr(" para cerrar") if last else tr(" para continuar"))
 
 
 func hide_dialog() -> void:

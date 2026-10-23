@@ -33,6 +33,9 @@ signal defeated
 @export var hit_knockback := 4.0
 @export var gravity := 22.0
 @export var show_debug := true
+## Experience that Luffy gets for defeating him.
+@export var xp_reward := 80
+@export var display_name := "Buggy el Payaso"
 
 @onready var anim: AnimationPlayer = $AnimationPlayer
 @onready var detection_area: Area3D = $DetectionArea
@@ -78,6 +81,12 @@ func _ready() -> void:
 
 func is_defeated() -> bool:
 	return state == State.DEFEATED
+
+
+## Strong pushes of Luffy's skills (bosses only move a little).
+func apply_knockback(v: Vector3) -> void:
+	if state != State.DEFEATED:
+		knockback = Vector3(v.x, 0.0, v.z) * 0.4
 
 
 ## Called by Luffy's punch.

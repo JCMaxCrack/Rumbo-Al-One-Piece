@@ -1,7 +1,9 @@
 class_name Player
 extends CharacterBody3D
-## A playable character: Luffy (Gomu Gomu punch) or Zoro (katana slash). Walk, sprint, jump,
-## swim and attack. Who controls it (control):
+## A playable character: Luffy (Gomu Gomu punch), Zoro (katana), Usopp (slingshot) or Nami.
+## Walk, sprint, jump, swim and attack. Luffy can also eat food from the inventory (animation
+## "eat", its method track calls _on_bite()) and use the skills learned in the skill shop
+## (animations "skill_<id>", their method tracks call _on_skill_hit()). Who controls it (control):
 ##   PLAYER_ONE: keyboard + mouse (and a gamepad in single player), touch controls on phones.
 ##   PLAYER_TWO: local co-op, the gamepad of player 2 (actions "p2_*", see GameSession).
 ##   AI: a companion (CompanionAI writes ai_move / ai_run / ai_jump / ai_attack).
@@ -20,8 +22,14 @@ enum Controller { PLAYER_ONE, PLAYER_TWO, AI, NONE }
 @export var display_name := "Luffy"
 ## Name of the animation library in the AnimationPlayer ("luffy", "zoro").
 @export var anim_library := "luffy"
-## Node shown only while attacking (Zoro's katana). Empty for Luffy.
+## Weapon node (Zoro's katana). Empty for Luffy.
 @export var weapon_path: NodePath
+## true: the weapon is always in the hand (except swimming); false: only while attacking.
+@export var weapon_always_visible := false
+## Turn of the model when it looks forward (a model made facing -Z needs PI).
+@export var model_yaw := 0.0
+## Usopp: the attack shoots a pellet with the slingshot instead of hitting what is in front.
+@export var ranged_attack := false
 
 @export var max_health := 100.0
 @export var walk_speed := 3.2
@@ -79,6 +87,14 @@ var ai_move := Vector3.ZERO
 var ai_run := false
 var ai_jump := false
 var ai_attack := false
+## Eating food or doing a skill: the character does not move or attack meanwhile.
+var eating := false
+var skill_active := ""
+var _busy_left := 0.0
+var _eat_heal := 0.0
+var _skill_damage := 0.0
+var _skill_cd := {}
+var _eat_sound: AudioStreamPlayer3D
 
 
 func _ready() -> void:
@@ -89,6 +105,12 @@ func _ready() -> void:
 		_weapon = get_node_or_null(weapon_path) as Node3D
 	health = max_health
 	health_changed.emit(health, max_health)
+	_eat_sound = AudioStreamPlayer3D.new()
+	_eat_sound.stream = load("res://assets/audio/pickup.wav")
+	_eat_sound.pitch_scale = 1.5
+	_eat_sound.volume_db = -6.0
+	add_child(_eat_sound)
+	_show_food("")
 	_play("idle")
 
 
@@ -125,9 +147,11 @@ func _process(delta: float) -> void:
 		if stick.length() > 0.1:
 			look(stick * 900.0 * delta)
 	if _weapon:
-		_weapon.visible = is_attacking()
-	# blink while invulnerable
-	model.visible = invulnerability_timer.is_stopped() or int(invulnerability_timer.time_left * 16.0) % 2 == 0
+		_weapon.visible = is_attacking() or (weapon_always_visible and not swimming)
+	for id in _skill_cd:
+		_skill_cd[id] = maxf(0.0, float(_skill_cd[id]) - delta)
+	# blink while invulnerable (not while inflated with Gomu Gomu no Fusen)
+	model.visible = invulnerability_timer.is_stopped() or skill_active == "fusen" or int(invulnerability_timer.time_left * 16.0) % 2 == 0
 	if _shake > 0.0:
 		camera.h_offset = randf_range(-1.0, 1.0) * _shake
 		camera.v_offset = randf_range(-1.0, 1.0) * _shake
@@ -138,7 +162,11 @@ func _process(delta: float) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	var can_move := controls_enabled and not dead and hurt_timer.is_stopped() and control != Controller.NONE
+	if _busy_left > 0.0:
+		_busy_left -= delta
+		if _busy_left <= 0.0:
+			_end_busy()
+	var can_move := controls_enabled and not dead and hurt_timer.is_stopped() and control != Controller.NONE and not is_busy()
 	var move := Vector3.ZERO
 	var running := false
 	var jump_pressed := false
@@ -187,7 +215,7 @@ func _physics_process(delta: float) -> void:
 		jump_sound.play()
 		_play("jump", jump_anim_speed, jump_anim_start)
 	move_and_slide()
-	model.rotation.y = lerp_angle(model.rotation.y, atan2(facing.x, facing.z), clampf(12.0 * delta, 0.0, 1.0))
+	model.rotation.y = lerp_angle(model.rotation.y, atan2(facing.x, facing.z) + model_yaw, clampf(12.0 * delta, 0.0, 1.0))
 	punch_hitbox.position = facing * punch_reach + Vector3(0, 1.1, 0)
 	_update_animation(move, running)
 
@@ -208,9 +236,14 @@ func is_attacking() -> bool:
 	return not attack_timer.is_stopped()
 
 
+## Eating or doing a skill.
+func is_busy() -> bool:
+	return eating or skill_active != ""
+
+
 ## Gomu Gomu no... Pistol! The "attack" animation calls _on_punch_impact() when the arm is stretched.
 func attack() -> void:
-	if dead or swimming or is_attacking() or not controls_enabled or not hurt_timer.is_stopped():
+	if dead or swimming or is_attacking() or is_busy() or not controls_enabled or not hurt_timer.is_stopped():
 		return
 	attack_timer.start()
 	swing_sound.play()
@@ -218,6 +251,12 @@ func attack() -> void:
 
 
 func _on_punch_impact() -> void:
+	if skill_active != "":
+		_on_skill_hit()
+		return
+	if ranged_attack:
+		_shoot()
+		return
 	for body in punch_hitbox.get_overlapping_bodies():
 		if body != self and body.has_method("receive_hit"):
 			body.receive_hit(punch_damage, global_position)
@@ -226,7 +265,7 @@ func _on_punch_impact() -> void:
 
 
 func _update_animation(move: Vector3, running: bool) -> void:
-	if dead or not hurt_timer.is_stopped() or is_attacking():
+	if dead or not hurt_timer.is_stopped() or is_attacking() or is_busy():
 		return
 	if swimming:
 		var moving := move.length() > 0.1
@@ -253,12 +292,176 @@ func _play(anim_name: String, speed: float = 1.0, from_time: float = 0.0, restar
 		anim.seek(from_time, true)
 
 
-## Every piece of meat gives back part of Luffy's health.
+## Gives back health (food, checkpoints, level ups).
 func heal(amount: float) -> void:
 	if dead:
 		return
 	health = minf(max_health, health + amount)
 	health_changed.emit(health, max_health)
+
+
+## Luffy's health grows with his level (GameState).
+func set_max_health(value: float, refill := false) -> void:
+	max_health = value
+	health = max_health if refill else minf(health, max_health)
+	health_changed.emit(health, max_health)
+
+
+# ------------------------------------------------------------------ eating
+func can_eat() -> bool:
+	return not dead and not swimming and not is_attacking() and not is_busy() and hurt_timer.is_stopped() and is_on_floor()
+
+
+## Eats something from the inventory: a short animation with three bites, every bite gives back a
+## third of the health. Returns false if he can not eat now.
+func eat(item_id: String, heal_amount: float) -> bool:
+	if not can_eat():
+		return false
+	var full := anim_library + "/eat"
+	if not anim.has_animation(full):
+		heal(heal_amount)
+		FX.heal(get_parent(), global_position + Vector3(0, 1.0, 0))
+		return true
+	eating = true
+	_eat_heal = heal_amount / 3.0
+	_show_food(item_id)
+	_play("eat", 1.0, 0.0, true)
+	_busy_left = anim.get_animation(full).length
+	return true
+
+
+## Called by the "eat" animation at every bite.
+func _on_bite() -> void:
+	if not eating:
+		return
+	heal(_eat_heal)
+	_eat_sound.play()
+	var mouth := global_position + Vector3(0, 1.45, 0) + facing * 0.25
+	FX.crumbs(get_parent(), mouth)
+	FX.heal(get_parent(), global_position + Vector3(0, 0.9, 0))
+
+
+func _show_food(item_id: String) -> void:
+	var holder := get_node_or_null("FoodAttachment")
+	if holder == null:
+		return
+	for c in holder.get_children():
+		(c as Node3D).visible = c.name.to_lower() == item_id
+
+
+# ------------------------------------------------------------------ skills
+func skill_cooldown(id: String) -> float:
+	return float(_skill_cd.get(id, 0.0))
+
+
+func can_use_skill(id: String) -> bool:
+	return GameState.SKILLS.has(id) and skill_cooldown(id) <= 0.0 and not dead and not swimming and not is_attacking() \
+		and not is_busy() and hurt_timer.is_stopped() and controls_enabled
+
+
+## Gomu Gomu no... (a skill learned in the shop). The animation "skill_<id>" calls _on_skill_hit().
+func use_skill(id: String) -> bool:
+	if not can_use_skill(id):
+		return false
+	var spec: Dictionary = GameState.SKILLS[id]
+	_skill_cd[id] = float(spec.cooldown)
+	skill_active = id
+	_skill_damage = float(spec.damage) * (1.0 + 0.06 * (GameState.level - 1))
+	var anim_name := "skill_" + id
+	if not anim.has_animation(anim_library + "/" + anim_name):
+		anim_name = "attack"
+	_play(anim_name, 1.0, 0.0, true)
+	_busy_left = anim.get_animation(anim_library + "/" + anim_name).length
+	swing_sound.play()
+	if id == "fusen":
+		invulnerability_timer.start(_busy_left + 0.4)
+		var tw := create_tween()
+		var base := model.scale
+		tw.tween_property(model, "scale", Vector3(base.x * 1.7, base.y * 1.15, base.z * 1.7), 0.25).set_trans(Tween.TRANS_BACK)
+		tw.tween_interval(maxf(0.1, _busy_left - 0.5))
+		tw.tween_property(model, "scale", base, 0.25)
+	elif id == "muchi" or id == "storm":
+		var spin := create_tween()
+		spin.tween_property(model, "rotation:y", model.rotation.y + TAU * (1.0 if id == "muchi" else 3.0), _busy_left * 0.8)
+	return true
+
+
+## Hit of the skill being done (the animations call it once or several times).
+func _on_skill_hit() -> void:
+	var dmg := _skill_damage
+	var front := global_position + facing * 1.6
+	match skill_active:
+		"muchi":
+			_area_hit(global_position, 3.3, dmg, 8.0)
+			FX.ring(get_parent(), global_position, 3.3, Color(1, 0.8, 0.5, 0.8))
+		"bazooka":
+			_area_hit(front, 1.9, dmg, 18.0)
+			FX.burst(get_parent(), front + Vector3(0, 1.1, 0), Color(1, 0.9, 0.6), 24, 5.0, 0.12, 0.0, 0.4)
+			_shake = 0.2
+		"gatling":
+			_area_hit(front, 1.5, dmg, 2.5)
+			FX.burst(get_parent(), front + Vector3(randf_range(-0.4, 0.4), 1.1 + randf_range(-0.3, 0.3), 0), Color(1, 0.95, 0.8), 6, 3.0, 0.07, 0.0, 0.25)
+		"fusen":
+			_area_hit(global_position, 3.6, dmg, 13.0)
+			FX.ring(get_parent(), global_position, 3.6, Color(1, 0.6, 0.6, 0.8))
+		"ono":
+			var p := global_position + facing * 2.2
+			_area_hit(p, 2.8, dmg, 10.0)
+			FX.ring(get_parent(), p, 3.2, Color(1, 0.75, 0.3, 0.9))
+			FX.burst(get_parent(), p, Color(0.7, 0.6, 0.45), 30, 5.0, 0.14, -12.0, 0.8)
+			_shake = 0.3
+		"storm":
+			_area_hit(global_position, 4.2, dmg, 6.0)
+			FX.ring(get_parent(), global_position, 4.2, Color(0.9, 0.9, 1.0, 0.7))
+	punch_sound.play()
+
+
+## Hits every enemy inside a sphere (only those in front of him if cone_dot > -1).
+func _area_hit(center: Vector3, radius: float, damage: float, push: float, cone_dot := -1.0) -> int:
+	var q := PhysicsShapeQueryParameters3D.new()
+	var sph := SphereShape3D.new()
+	sph.radius = radius
+	q.shape = sph
+	q.transform = Transform3D(Basis(), center + Vector3(0, 1.0, 0))
+	q.collision_mask = punch_hitbox.collision_mask
+	q.exclude = [get_rid()]
+	var hits := 0
+	var seen := {}
+	for r in get_world_3d().direct_space_state.intersect_shape(q, 32):
+		var b: Object = r.collider
+		if b == null or seen.has(b) or not b.has_method("receive_hit"):
+			continue
+		seen[b] = true
+		var to := (b as Node3D).global_position - global_position
+		to.y = 0.0
+		if cone_dot > -1.0 and to.length() > 0.3 and to.normalized().dot(facing) < cone_dot:
+			continue
+		b.receive_hit(damage, global_position)
+		if b.has_method("apply_knockback") and to.length() > 0.01:
+			b.apply_knockback(to.normalized() * push)
+		hits += 1
+	if hits > 0:
+		_shake = maxf(_shake, 0.1)
+	return hits
+
+
+func _end_busy() -> void:
+	_busy_left = 0.0
+	eating = false
+	skill_active = ""
+	_show_food("")
+	_current_anim = ""
+
+
+# ------------------------------------------------------------------ Usopp's slingshot
+func _shoot() -> void:
+	var pellet := Pellet.new()
+	pellet.direction = facing
+	pellet.damage = punch_damage
+	pellet.shooter = self
+	get_parent().add_child(pellet)
+	pellet.global_position = global_position + Vector3(0, 1.3, 0) + facing * 0.6
+	punch_sound.play()
 
 
 ## Called by Buggy and the mini enemies when their attack connects.
@@ -276,9 +479,11 @@ func receive_hit(damage: float, from_pos: Vector3) -> void:
 	_shake = 0.18
 	invulnerability_timer.start()
 	attack_timer.stop()
+	if is_busy():
+		_end_busy()
 	if health <= 0.0:
 		dead = true
-		_play("hurt")
+		_play("death" if anim.has_animation(anim_library + "/death") else "hurt")
 		died.emit()
 	else:
 		hurt_timer.start()

@@ -1,0 +1,102 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_vl7eo"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/kuro/kuro.fbx" id="2_23tul"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/kuro/kuro_mesh_1.res" id="3_m6lkg"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/kuro/kuro_mesh_2.res" id="4_0yy8g"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/kuro_animations.res" id="5_170qe"]
+[ext_resource type="AudioStream" path="res://assets/audio/boss_roar.wav" id="6_k7lqp"]
+[ext_resource type="AudioStream" path="res://assets/audio/swing.wav" id="7_w68qx"]
+[ext_resource type="AudioStream" path="res://assets/audio/hit.wav" id="8_fcejr"]
+[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="9_72htg"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qm3el"]
+radius = 0.42
+height = 1.9475
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5pyvx"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.05, 0.05, 0.08, 0.85)
+
+[sub_resource type="QuadMesh" id="QuadMesh_14p6l"]
+material = SubResource("StandardMaterial3D_5pyvx")
+size = Vector2(1.3, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2p1vu"]
+render_priority = 1
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.9, 0.18, 0.15, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_moymv"]
+material = SubResource("StandardMaterial3D_2p1vu")
+size = Vector2(1.26, 0.09)
+center_offset = Vector3(0.63, 0, 0)
+
+[node name="Kuro" type="CharacterBody3D" unique_id=64563643]
+collision_layer = 4
+floor_snap_length = 0.4
+script = ExtResource("1_vl7eo")
+display_name = "Capitán Kuro"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=543527032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97375, 0)
+shape = SubResource("CapsuleShape3D_qm3el")
+
+[node name="Model" parent="." unique_id=1639693681 instance=ExtResource("2_23tul")]
+transform = Transform3D(0.0066630533, 0, 0, 0, 0.0066630533, 0, 0, 0, 0.0066630533, 0, -0.0011227157, 0)
+
+[node name="Object_2" parent="Model/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1639693681, 2037052036) index="0" unique_id=1547025847]
+mesh = ExtResource("3_m6lkg")
+
+[node name="Object_3" parent="Model/Armature/Skeleton3D" parent_id_path=PackedInt32Array(1639693681, 2037052036) index="1" unique_id=1520866355]
+mesh = ExtResource("4_0yy8g")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=720367735]
+libraries/kuro = ExtResource("5_170qe")
+autoplay = &"kuro/idle"
+
+[node name="Eye" type="Marker3D" parent="." unique_id=1024312314]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.804, 0)
+
+[node name="HealthBar" type="Node3D" parent="." unique_id=1327343481]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+
+[node name="Back" type="MeshInstance3D" parent="HealthBar" unique_id=1161656104]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_14p6l")
+
+[node name="Fill" type="MeshInstance3D" parent="HealthBar" unique_id=800731843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.63, 0, 0.01)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_moymv")
+
+[node name="RoarSound" type="AudioStreamPlayer3D" parent="." unique_id=1709741306]
+stream = ExtResource("6_k7lqp")
+unit_size = 14.0
+
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=45514332]
+stream = ExtResource("7_w68qx")
+volume_db = -2.0
+unit_size = 14.0
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="." unique_id=929022837]
+stream = ExtResource("8_fcejr")
+unit_size = 14.0
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=1324411372]
+stream = ExtResource("9_72htg")
+unit_size = 14.0
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1675163705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(1, 0.45, 0.4, 1)
+text = "Capitán Kuro"
+font_size = 46
+
+[editable path="Model"]
