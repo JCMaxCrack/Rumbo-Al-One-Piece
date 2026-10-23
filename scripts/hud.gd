@@ -39,6 +39,12 @@ const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha
 @onready var boss_name: Label = $Root/BossBox/BossName
 
 var touch_mode := false
+var sailing := false
+## The World (set by it): the minimaps use it for the destination of the voyage.
+var world: World
+var compass: Compass
+## Minimap of player 2 (co-op only).
+var minimap2: Minimap
 var _banner_tween: Tween
 
 
@@ -47,6 +53,15 @@ func _ready() -> void:
 	Preferences.language_changed.connect(_refresh_hints)
 	banner.visible = false
 	interact_hint.visible = false
+	compass = Compass.new()
+	compass.name = "Compass"
+	compass.visible = false
+	$Root.add_child(compass)
+	compass.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	compass.offset_left = -220.0
+	compass.offset_right = 220.0
+	compass.offset_top = 8.0
+	compass.offset_bottom = 104.0
 	_refresh_hints()
 
 
@@ -67,9 +82,59 @@ func set_player2_visible(on: bool) -> void:
 	player2_panel.visible = on
 
 
-## M / D-pad up: small map around the player <-> the whole island.
-func toggle_map() -> void:
-	minimap.toggle_big()
+## M / D-pad up: small map around the player <-> the chart of the whole sea (index: which player).
+func toggle_map(index := 0) -> void:
+	if index == 1 and minimap2:
+		minimap2.toggle_big()
+	else:
+		minimap.toggle_big()
+
+
+## The player that the minimap of player 1 follows.
+func set_player(p: Player) -> void:
+	minimap.target = p
+
+
+## Co-op: the screen is split in two; each half has its panel of health and its minimap.
+func set_split(on: bool, p2: Player) -> void:
+	var vs := get_viewport().get_visible_rect().size
+	if not on:
+		return
+	minimap.area = Rect2(Vector2.ZERO, Vector2(vs.x / 2.0, vs.y))
+	minimap._layout()
+	if minimap2 == null:
+		minimap2 = Minimap.new()
+		minimap2.name = "Minimap2"
+		$Root.add_child(minimap2)
+	minimap2.target = p2
+	minimap2.area = Rect2(Vector2(vs.x / 2.0, 0.0), Vector2(vs.x / 2.0, vs.y))
+	minimap2._layout()
+	# player 2's panel goes to his half; the panels of the right side to the left half
+	player2_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	player2_panel.position = Vector2(vs.x / 2.0 + 16.0, 16.0)
+	for path in ["Root/ItemPanel", "Root/MissionPanel", "Root/SkillBox"]:
+		var c := get_node(path) as Control
+		var w := c.offset_right - c.offset_left
+		c.anchor_left = 0.5
+		c.anchor_right = 0.5
+		c.offset_right = -16.0
+		c.offset_left = -16.0 - w
+
+
+## Taking the wheel of the Going Merry: the hints show the controls of the ship.
+func set_sailing(on: bool) -> void:
+	sailing = on
+	$Root/Inventory.visible = not on
+	if on:
+		skill_box.visible = false
+	_refresh_hints()
+
+
+## The compass that points to the destination (angle from the camera, in radians).
+func set_compass(on: bool, angle: float, title: String, meters: float) -> void:
+	compass.visible = on and not $Root/BossBox.visible
+	if compass.visible:
+		compass.set_target(angle, title, meters)
 
 
 func set_count(current: int, total: int) -> void:
@@ -95,7 +160,7 @@ func set_inventory(inv: Array, selected: int) -> void:
 
 ## The equipped skill and how much of its waiting time is left (1 = just used, 0 = ready).
 func set_skill(id: String, cooldown: float) -> void:
-	skill_box.visible = id != ""
+	skill_box.visible = id != "" and not sailing
 	if id == "":
 		return
 	skill_name.text = GameState.skill_name(id)
@@ -136,7 +201,10 @@ func _refresh_hints() -> void:
 	var hint := tr("%s mover  ·  %s correr  ·  %s saltar/nadar  ·  Clic/%s golpe  ·  %s hablar  ·  %s mapa  ·  %s pausa") % [
 		k.call("move_forward") + k.call("move_left") + k.call("move_back") + k.call("move_right"), k.call("sprint"), k.call("jump"),
 		k.call("attack"), k.call("interact"), k.call("map"), k.call("pause")]
-	controls_hint.text = tr(TOUCH_HINT) if touch_mode else hint
+	if sailing:
+		hint = tr("%s/%s vela  ·  %s/%s timón  ·  %s a toda vela  ·  %s carta  ·  %s atracar / soltar") % [
+			k.call("move_forward"), k.call("move_back"), k.call("move_left"), k.call("move_right"), k.call("sprint"), k.call("use_item"), k.call("interact")]
+	controls_hint.text = tr(TOUCH_HINT) if touch_mode and not sailing else hint
 	inventory_hint.text = tr("%s comer  ·  %s cambiar") % [k.call("use_item"), k.call("next_item")] if not touch_mode else ""
 	skill_hint.text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [k.call("skill"), k.call("next_skill"), k.call("shop")] if not touch_mode else ""
 

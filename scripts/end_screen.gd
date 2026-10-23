@@ -34,7 +34,7 @@ func show_result(won: bool, time_seconds: float, collected: int, total: int, bos
 func _on_checkpoint_button_pressed() -> void:
 	get_tree().paused = false
 	if SaveManager.load_game(SaveManager.current_slot):
-		get_tree().change_scene_to_file(GameState.island_scene())
+		get_tree().change_scene_to_file(GameState.WORLD_SCENE)
 
 
 ## "Jugar de nuevo": a new game (in the same slot, if there is one).
@@ -44,7 +44,7 @@ func _on_retry_button_pressed() -> void:
 		SaveManager.start_new_game(SaveManager.current_slot)
 	else:
 		GameState.reset()
-	get_tree().change_scene_to_file(GameState.island_scene())
+	get_tree().change_scene_to_file(GameState.WORLD_SCENE)
 
 
 func _on_menu_button_pressed() -> void:
