@@ -1,0 +1,267 @@
+class_name HUD
+extends CanvasLayer
+## In-game interface. Nodes in scenes/ui/hud.tscn.
+
+const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha: cámara"
+
+@onready var health_bar: ProgressBar = $Root/PlayerPanel/VBox/HealthBar
+@onready var health_label: Label = $Root/PlayerPanel/VBox/Row/HealthLabel
+@onready var item_label: Label = $Root/ItemPanel/ItemLabel
+@onready var mission_label: Label = $Root/MissionPanel/VBox/MissionText
+@onready var boss_health_bar: ProgressBar = $Root/BossBox/BossHealthBar
+@onready var boss_health_label: Label = $Root/BossBox/BossHealthBar/BossHealthLabel
+@onready var boss_state_label: Label = $Root/BossBox/BossState
+@onready var message_label: Label = $Root/Message
+@onready var message_timer: Timer = $MessageTimer
+@onready var dialog_panel: Control = $Root/DialogPanel
+@onready var dialog_speaker: Label = $Root/DialogPanel/VBox/Speaker
+@onready var dialog_text: Label = $Root/DialogPanel/VBox/Text
+@onready var dialog_hint: Label = $Root/DialogPanel/VBox/Hint
+@onready var controls_hint: Label = $Root/ControlsHint
+@onready var fps_label: Label = $Root/FpsLabel
+@onready var minimap: Minimap = $Root/Minimap
+@onready var player2_panel: Control = $Root/Player2Panel
+@onready var health_bar2: ProgressBar = $Root/Player2Panel/VBox/HealthBar
+@onready var health_label2: Label = $Root/Player2Panel/VBox/Row/HealthLabel
+@onready var level_label: Label = $Root/PlayerPanel/VBox/XpRow/LevelLabel
+@onready var xp_bar: ProgressBar = $Root/PlayerPanel/VBox/XpRow/XpBar
+@onready var points_label: Label = $Root/PlayerPanel/VBox/XpRow/PointsLabel
+@onready var inventory_slots: Array = $Root/Inventory/Slots.get_children()
+@onready var inventory_hint: Label = $Root/Inventory/Hint
+@onready var skill_box: Control = $Root/SkillBox
+@onready var skill_name: Label = $Root/SkillBox/VBox/SkillName
+@onready var skill_bar: ProgressBar = $Root/SkillBox/VBox/Cooldown
+@onready var skill_hint: Label = $Root/SkillBox/VBox/Hint
+@onready var interact_hint: Label = $Root/InteractHint
+@onready var banner: Control = $Root/Banner
+@onready var banner_title: Label = $Root/Banner/Title
+@onready var banner_text: Label = $Root/Banner/Text
+@onready var boss_name: Label = $Root/BossBox/BossName
+
+var touch_mode := false
+var sailing := false
+## The World (set by it): the minimaps use it for the destination of the voyage.
+var world: World
+var compass: Compass
+## Minimap of player 2 (co-op only).
+var minimap2: Minimap
+var _banner_tween: Tween
+
+
+func _ready() -> void:
+	Preferences.bindings_changed.connect(_refresh_hints)
+	Preferences.language_changed.connect(_refresh_hints)
+	banner.visible = false
+	interact_hint.visible = false
+	compass = Compass.new()
+	compass.name = "Compass"
+	compass.visible = false
+	$Root.add_child(compass)
+	compass.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	compass.offset_left = -220.0
+	compass.offset_right = 220.0
+	compass.offset_top = 8.0
+	compass.offset_bottom = 104.0
+	_refresh_hints()
+
+
+func set_health(current: float, maximum: float) -> void:
+	health_bar.max_value = maximum
+	health_bar.value = current
+	health_label.text = "%d / %d" % [int(ceil(current)), int(maximum)]
+
+
+## Health of Zoro (player 2 in co-op, or the companion once he joins the crew).
+func set_health2(current: float, maximum: float) -> void:
+	health_bar2.max_value = maximum
+	health_bar2.value = current
+	health_label2.text = "%d / %d" % [int(ceil(current)), int(maximum)]
+
+
+func set_player2_visible(on: bool) -> void:
+	player2_panel.visible = on
+
+
+## M / D-pad up: small map around the player <-> the chart of the whole sea (index: which player).
+func toggle_map(index := 0) -> void:
+	if index == 1 and minimap2:
+		minimap2.toggle_big()
+	else:
+		minimap.toggle_big()
+
+
+## The player that the minimap of player 1 follows.
+func set_player(p: Player) -> void:
+	minimap.target = p
+
+
+## Co-op: the screen is split in two; each half has its panel of health and its minimap.
+func set_split(on: bool, p2: Player) -> void:
+	var vs := get_viewport().get_visible_rect().size
+	if not on:
+		return
+	minimap.area = Rect2(Vector2.ZERO, Vector2(vs.x / 2.0, vs.y))
+	minimap._layout()
+	if minimap2 == null:
+		minimap2 = Minimap.new()
+		minimap2.name = "Minimap2"
+		$Root.add_child(minimap2)
+	minimap2.target = p2
+	minimap2.area = Rect2(Vector2(vs.x / 2.0, 0.0), Vector2(vs.x / 2.0, vs.y))
+	minimap2._layout()
+	# player 2's panel goes to his half; the panels of the right side to the left half
+	player2_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	player2_panel.position = Vector2(vs.x / 2.0 + 16.0, 16.0)
+	for path in ["Root/ItemPanel", "Root/MissionPanel", "Root/SkillBox"]:
+		var c := get_node(path) as Control
+		var w := c.offset_right - c.offset_left
+		c.anchor_left = 0.5
+		c.anchor_right = 0.5
+		c.offset_right = -16.0
+		c.offset_left = -16.0 - w
+
+
+## Taking the wheel of the Going Merry: the hints show the controls of the ship.
+func set_sailing(on: bool) -> void:
+	sailing = on
+	$Root/Inventory.visible = not on
+	if on:
+		skill_box.visible = false
+	_refresh_hints()
+
+
+## The compass that points to the destination (angle from the camera, in radians).
+func set_compass(on: bool, angle: float, title: String, meters: float) -> void:
+	compass.visible = on and not $Root/BossBox.visible
+	if compass.visible:
+		compass.set_target(angle, title, meters)
+
+
+func set_count(current: int, total: int) -> void:
+	item_label.text = tr("Carne: %d / %d") % [current, total]
+
+
+## Level, experience bar and skill points.
+func set_xp(level: int, xp: int, needed: int, points: int) -> void:
+	level_label.text = tr("Nv. %d") % level
+	xp_bar.max_value = needed
+	xp_bar.value = xp
+	points_label.text = "★ %d" % points
+	points_label.modulate = Color(1, 0.85, 0.3) if points > 0 else Color(0.7, 0.7, 0.7)
+
+
+## The slots of the inventory (GameState.inventory) and the one selected.
+func set_inventory(inv: Array, selected: int) -> void:
+	for i in inventory_slots.size():
+		var slot: ItemSlot = inventory_slots[i]
+		var e: Dictionary = inv[i] if i < inv.size() else {}
+		slot.set_item(str(e.get("id", "")), int(e.get("count", 0)), i == selected)
+
+
+## The equipped skill and how much of its waiting time is left (1 = just used, 0 = ready).
+func set_skill(id: String, cooldown: float) -> void:
+	skill_box.visible = id != "" and not sailing
+	if id == "":
+		return
+	skill_name.text = GameState.skill_name(id)
+	skill_bar.value = 1.0 - clampf(cooldown, 0.0, 1.0)
+	skill_bar.modulate = Color(0.55, 1, 0.55) if cooldown <= 0.0 else Color(1, 1, 1, 0.8)
+
+
+## "[E] Hablar", "[E] Zarpar"... over the inventory (empty text hides it).
+func set_interact_hint(text: String) -> void:
+	interact_hint.visible = text != "" and not dialog_panel.visible
+	if text != "":
+		var key := tr("Toca «%s»") % text if touch_mode else "[%s] %s" % [Preferences.event_text("interact", false), text]
+		interact_hint.text = key
+
+
+## Big text in the middle of the screen ("¡Isla completada!").
+func show_banner(title: String, text: String, duration := 3.0) -> void:
+	banner_title.text = title
+	banner_text.text = text
+	banner.visible = true
+	banner.modulate.a = 0.0
+	if _banner_tween:
+		_banner_tween.kill()
+	_banner_tween = create_tween()
+	_banner_tween.tween_property(banner, "modulate:a", 1.0, 0.3)
+	_banner_tween.tween_interval(duration)
+	_banner_tween.tween_property(banner, "modulate:a", 0.0, 0.6)
+	_banner_tween.tween_callback(func(): banner.visible = false)
+
+
+func set_boss_name(text: String) -> void:
+	boss_name.text = text
+
+
+## Texts with the keys (they change if the player changes the controls).
+func _refresh_hints() -> void:
+	var k := func(a: String) -> String: return Preferences.event_text(a, false)
+	var hint := tr("%s mover  ·  %s correr  ·  %s saltar/nadar  ·  Clic/%s golpe  ·  %s hablar  ·  %s mapa  ·  %s pausa") % [
+		k.call("move_forward") + k.call("move_left") + k.call("move_back") + k.call("move_right"), k.call("sprint"), k.call("jump"),
+		k.call("attack"), k.call("interact"), k.call("map"), k.call("pause")]
+	if sailing:
+		hint = tr("%s/%s vela  ·  %s/%s timón  ·  %s a toda vela  ·  %s carta  ·  %s atracar / soltar") % [
+			k.call("move_forward"), k.call("move_back"), k.call("move_left"), k.call("move_right"), k.call("sprint"), k.call("use_item"), k.call("interact")]
+	controls_hint.text = tr(TOUCH_HINT) if touch_mode and not sailing else hint
+	inventory_hint.text = tr("%s comer  ·  %s cambiar") % [k.call("use_item"), k.call("next_item")] if not touch_mode else ""
+	skill_hint.text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [k.call("skill"), k.call("next_skill"), k.call("shop")] if not touch_mode else ""
+
+
+func set_mission(text: String) -> void:
+	mission_label.text = text
+
+
+func set_boss_health(current: float, maximum: float) -> void:
+	boss_health_bar.max_value = maximum
+	boss_health_bar.value = current
+	boss_health_label.text = "%d / %d" % [int(ceil(current)), int(maximum)]
+
+
+## Buggy's name, health and AI state (hidden until Koby gives the mission and after Buggy falls).
+func set_boss_visible(on: bool) -> void:
+	$Root/BossBox.visible = on
+
+
+func set_boss_state(text: String) -> void:
+	boss_state_label.text = tr("IA: ") + text
+
+
+func set_touch_mode(on: bool) -> void:
+	touch_mode = on
+	_refresh_hints()
+
+
+func show_message(text: String, duration: float = 2.0) -> void:
+	message_label.text = text
+	message_label.visible = true
+	message_timer.start(duration)
+
+
+func show_dialog(speaker: String, text: String, last: bool) -> void:
+	dialog_panel.visible = true
+	interact_hint.visible = false
+	dialog_speaker.text = speaker
+	dialog_text.text = text
+	var key := tr("Toca «Seguir»") if touch_mode else tr("Pulsa %s") % Preferences.event_text("interact", false)
+	dialog_hint.text = key + (tr(" para cerrar") if last else tr(" para continuar"))
+
+
+func hide_dialog() -> void:
+	dialog_panel.visible = false
+
+
+func is_dialog_open() -> bool:
+	return dialog_panel.visible
+
+
+## FPS counter (Opciones -> Mostrar FPS).
+func _process(_delta: float) -> void:
+	fps_label.visible = GraphicsSettings.show_fps
+	if fps_label.visible:
+		fps_label.text = "%d FPS" % Engine.get_frames_per_second()
+
+
+func _on_message_timer_timeout() -> void:
+	message_label.visible = false

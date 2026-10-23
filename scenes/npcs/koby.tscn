@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/koby.gd" id="1_8n8yv"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/koby/koby.fbx" id="2_cv8fu"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/koby_animations.res" id="3_m7ph2"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p5gu7"]
+radius = 0.35
+height = 1.6
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_mv736"]
+radius = 3.2
+
+[node name="Koby" type="StaticBody3D" unique_id=659906218]
+collision_mask = 0
+script = ExtResource("1_8n8yv")
+mission_lines = PackedStringArray("¡Luffy-san! ¡Qué bueno que llegaste a la isla!", "Buggy el Payaso se escondió en el cráter del volcán, en el centro de la isla, y tiene a todos aterrorizados.", "Tu misión: ¡derrota a Buggy y recolecta toda la carne que está repartida por la isla!", "Cada carne te devuelve vida. Y el Going Merry está anclado en la ensenada del noreste: sube por el puente del muelle.")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1958805768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("CapsuleShape3D_p5gu7")
+
+[node name="Model" parent="." unique_id=879611115 instance=ExtResource("2_cv8fu")]
+transform = Transform3D(0.09628476, 0, 0, 0, 0.09628476, 0, 0, 0, 0.09628476, 0, -0.006374334, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=329797572]
+root_node = NodePath("../Model")
+libraries/koby = ExtResource("3_m7ph2")
+autoplay = &"koby/idle"
+
+[node name="TalkArea" type="Area3D" parent="." unique_id=1789640774]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TalkArea" unique_id=1822896964]
+shape = SubResource("SphereShape3D_mv736")
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=94729730]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.96, 0.94, 0.88, 1)
+text = "Koby"
+font_size = 44
+
+[node name="PromptLabel" type="Label3D" parent="." unique_id=1050546271]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.22, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.93, 0.78, 0.42, 1)
+text = "[E] Hablar"
+font_size = 40
+
+[node name="MissionMarker" type="Label3D" parent="." unique_id=710790149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(1, 0.85, 0.2, 1)
+text = "!"
+font_size = 130
+
+[connection signal="body_entered" from="TalkArea" to="." method="_on_talk_area_body_entered"]
+[connection signal="body_exited" from="TalkArea" to="." method="_on_talk_area_body_exited"]

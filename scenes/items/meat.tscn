@@ -1,0 +1,128 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/collectible.gd" id="1_otts8"]
+[ext_resource type="AudioStream" path="res://assets/audio/pickup.wav" id="2_n0k21"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_drow4"]
+radius = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5d41b"]
+albedo_color = Color(0.55, 0.22, 0.12, 1)
+roughness = 0.55
+emission_enabled = true
+emission = Color(0.6, 0.25, 0.1, 1)
+emission_energy_multiplier = 0.35
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_a7y7r"]
+material = SubResource("StandardMaterial3D_5d41b")
+radius = 0.28
+height = 0.8
+radial_segments = 12
+rings = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h55ow"]
+albedo_color = Color(0.95, 0.92, 0.85, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_el8ij"]
+material = SubResource("StandardMaterial3D_h55ow")
+top_radius = 0.06
+bottom_radius = 0.06
+height = 1.3
+radial_segments = 6
+rings = 1
+
+[sub_resource type="SphereMesh" id="SphereMesh_8fwbd"]
+material = SubResource("StandardMaterial3D_h55ow")
+radius = 0.11
+height = 0.22
+radial_segments = 8
+rings = 4
+
+[sub_resource type="SphereMesh" id="SphereMesh_001y1"]
+material = SubResource("StandardMaterial3D_h55ow")
+radius = 0.11
+height = 0.22
+radial_segments = 8
+rings = 4
+
+[sub_resource type="Animation" id="Animation_6gpqr"]
+length = 2.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.6, 0), Vector3(0, 0.9, 0), Vector3(0, 0.6, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 6.2831855, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gwd7y"]
+_data = {
+&"float": SubResource("Animation_6gpqr")
+}
+
+[node name="Meat" type="Area3D" unique_id=1125071650]
+collision_layer = 8
+collision_mask = 2
+monitorable = false
+script = ExtResource("1_otts8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=453846383]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("SphereShape3D_drow4")
+
+[node name="Visual" type="Node3D" parent="." unique_id=753907602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="MeatMesh" type="MeshInstance3D" parent="Visual" unique_id=1083311841]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CapsuleMesh_a7y7r")
+
+[node name="BoneMesh" type="MeshInstance3D" parent="Visual" unique_id=1827989311]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_el8ij")
+
+[node name="BoneEndLeft" type="MeshInstance3D" parent="Visual" unique_id=1504169332]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.66, 0, 0)
+cast_shadow = 0
+mesh = SubResource("SphereMesh_8fwbd")
+
+[node name="BoneEndRight" type="MeshInstance3D" parent="Visual" unique_id=263080181]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.66, 0, 0)
+cast_shadow = 0
+mesh = SubResource("SphereMesh_001y1")
+
+[node name="Glow" type="OmniLight3D" parent="Visual" unique_id=1015235070 groups=["dynamic_lights"]]
+light_color = Color(1, 0.8, 0.4, 1)
+light_energy = 1.5
+omni_range = 3.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=362371523]
+libraries/ = SubResource("AnimationLibrary_gwd7y")
+autoplay = &"float"
+
+[node name="PickupSound" type="AudioStreamPlayer3D" parent="." unique_id=1402646414]
+stream = ExtResource("2_n0k21")
+unit_size = 12.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="finished" from="PickupSound" to="." method="_on_pickup_sound_finished"]

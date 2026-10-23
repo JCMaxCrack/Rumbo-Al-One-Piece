@@ -1,0 +1,195 @@
+[gd_scene format=4]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_j312r"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/zoro/zoro.fbx" id="2_goxpm"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/zoro_animations.res" id="3_vs88y"]
+[ext_resource type="AudioStream" path="res://assets/audio/hurt.wav" id="4_hc7uc"]
+[ext_resource type="AudioStream" path="res://assets/audio/splash.wav" id="5_purvj"]
+[ext_resource type="AudioStream" path="res://assets/audio/stretch.wav" id="6_wlwu4"]
+[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="7_atva1"]
+[ext_resource type="Script" path="res://scripts/companion_ai.gd" id="8_vmgw7"]
+[ext_resource type="Texture2D" path="res://assets/models/characters/zoro/swords_0.png" id="9_wlwu4"]
+[ext_resource type="Texture2D" path="res://assets/models/characters/zoro/swords_1.png" id="10_atva1"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/zoro/sword_1.res" id="11_vmgw7"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/zoro/sword_2.res" id="12_7tlh2"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/zoro/sword_3.res" id="13_swnue"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pyym4"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ti5j0"]
+radius = 0.25
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ynw32"]
+radius = 1.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_unfdo"]
+resource_name = "09___Default0.001"
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("9_wlwu4")
+emission_enabled = true
+emission_energy_multiplier = 0.0
+emission_texture = ExtResource("10_atva1")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5vw04"]
+_surfaces = [{
+"aabb": AABB(-4.350569, -27.727684, -3.8540955, 9.013149, 28.98482, 9.03672),
+"attribute_data": PackedByteArray("bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiyH1j5seLo+IPTMPmx4uj4sh9Y+9+ThPiD0zD5seLo+LIfWPmx4uj4g9Mw+bHi6PiD0zD735OE+LIfWPvfk4T4g9Mw+bHi6PiyH1j735OE+IPTMPvfk4T4sh9Y+fPIwO7prqT4kKP4+IEGxPnzyMDsgQbE+JCj+PiBBsT588jA7umupPiQo/j66a6k+fPIwOwCzmz4kKP4+umupPnzyMDu6a6k+JCj+PrprqT588jA7ALObPiQo/j4As5s+24r9Prbz/T7biv0+ak3TPu5a4j4sst0+24r9PmpN0z7biv0+tvP9Pu5a4j4sst0+7lriPiyy3T5uNMA+ksvfPtuK/T628/0+bjTAPpLL3z7uWuI+LLLdPtuK/T628/0+bee7PryW8D7biv0+tvP9Pm40wD6Sy98+24r9Prbz/T5t57s+vJbwPm40wD6Sy98+24r9Prbz/T5t57s+vJbwPifCpj628/0+bee7PryW8D7biv0+tvP9PifCpj628/0+J8KmPrbz/T5t57s+vJbwPtuK/T628/0+bee7PryW8D4nwqY+tvP9PtuK/T628/0+bee7PryW8D7biv0+tvP9Pm40wD6Sy98+bjTAPpLL3z7biv0+tvP9Pm3nuz68lvA+24r9Prbz/T7uWuI+LLLdPm40wD6Sy98+24r9Prbz/T5uNMA+ksvfPu5a4j4sst0+7lriPiyy3T7biv0+tvP9PtuK/T5qTdM+7lriPiyy3T7biv0+ak3TPtuK/T628/0+24r9Prbz/T7uWuI+LLLdPtuK/T5qTdM+7lriPiyy3T7biv0+tvP9Pm40wD6Sy98+7lriPiyy3T7biv0+tvP9PtuK/T5qTdM+bee7PryW8D5uNMA+ksvfPtuK/T628/0+7lriPiyy3T5uNMA+ksvfPtuK/T628/0+24r9Prbz/T4nwqY+tvP9Pm3nuz68lvA+bee7PryW8D7biv0+tvP9Pm40wD6Sy98+J8KmPrbz/T7biv0+tvP9Pm3nuz68lvA+24r9Prbz/T5t57s+vJbwPifCpj628/0+bjTAPpLL3z5t57s+vJbwPtuK/T628/0+24r9Prbz/T7uWuI+LLLdPm40wD6Sy98+J8KmPrbz/T5t57s+vJbwPtuK/T628/0+7lriPiyy3T7biv0+tvP9PtuK/T5qTdM+bjTAPpLL3z7biv0+tvP9Pm3nuz68lvA+7lriPiyy3T7biv0+ak3TPtuK/T628/0+24r9Prbz/T5uNMA+ksvfPu5a4j4sst0+m+b9PlBAsz7pSO4+5NDCPpvm/T7k0MI+6UjuPuTQwj6b5v0+UECzPulI7j5QQLM+JCj+PiBBsT588jA7umupPnzyMDsgQbE+fPIwO7prqT4kKP4+IEGxPiQo/j66a6k+JCj+PrprqT588jA7ALObPnzyMDu6a6k+fPIwOwCzmz4kKP4+umupPiQo/j4As5s+"),
+"format": 34359738391,
+"material": SubResource("StandardMaterial3D_unfdo"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 222,
+"vertex_data": PackedByteArray("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")
+}]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wlwu4"]
+albedo_color = Color(0.9, 0.92, 0.95, 1)
+metallic = 0.35
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_atva1"]
+material = SubResource("StandardMaterial3D_wlwu4")
+size = Vector3(3, 72, 0.6)
+
+[node name="Zoro" type="CharacterBody3D" unique_id=1325825775]
+collision_layer = 2
+floor_max_angle = 0.87266463
+floor_snap_length = 0.4
+script = ExtResource("1_j312r")
+display_name = "Zoro"
+anim_library = "zoro"
+weapon_path = NodePath("KatanaAttachment/Katana")
+weapon_always_visible = true
+max_health = 120.0
+jump_anim_start = 0.15
+jump_anim_speed = 1.0
+punch_damage = 20.0
+punch_reach = 1.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2084463036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_pyym4")
+
+[node name="Model" parent="." unique_id=917798773 instance=ExtResource("2_goxpm")]
+transform = Transform3D(0.012684731, 0, 0, 0, 0.012684731, 0, 0, 0, 0.012684731, 0, -2.4194205e-07, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=853466169]
+root_node = NodePath("../Model")
+libraries/zoro = ExtResource("3_vs88y")
+autoplay = &"zoro/idle"
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1417963850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=1010481075]
+transform = Transform3D(1, 0, 0, 0, 0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0.5, 0, 0)
+shape = SubResource("SphereShape3D_ti5j0")
+spring_length = 4.8
+margin = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=310205440]
+fov = 68.0
+far = 600.0
+
+[node name="PunchHitbox" type="Area3D" parent="." unique_id=360561045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 1.7)
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PunchHitbox" unique_id=990038049]
+shape = SubResource("SphereShape3D_ynw32")
+
+[node name="HurtSound" type="AudioStreamPlayer3D" parent="." unique_id=1024871921]
+stream = ExtResource("4_hc7uc")
+unit_size = 12.0
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="." unique_id=443197221]
+stream = ExtResource("5_purvj")
+volume_db = -14.0
+unit_size = 12.0
+
+[node name="SplashSound" type="AudioStreamPlayer3D" parent="." unique_id=1976039233]
+stream = ExtResource("5_purvj")
+volume_db = -4.0
+unit_size = 12.0
+
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=1282916527]
+stream = ExtResource("6_wlwu4")
+volume_db = -2.0
+unit_size = 12.0
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=1413812292]
+stream = ExtResource("7_atva1")
+unit_size = 12.0
+
+[node name="InvulnerabilityTimer" type="Timer" parent="." unique_id=206651069]
+wait_time = 1.2
+one_shot = true
+
+[node name="HurtTimer" type="Timer" parent="." unique_id=1967409819]
+wait_time = 0.45
+one_shot = true
+
+[node name="AttackTimer" type="Timer" parent="." unique_id=325337742]
+wait_time = 0.7058823529411765
+one_shot = true
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1293456764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.6, 1, 0.6, 1)
+text = "Zoro"
+font_size = 44
+
+[node name="PromptLabel" type="Label3D" parent="." unique_id=1659800706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.45, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.93, 0.78, 0.42, 1)
+text = "[E] Hablar"
+font_size = 40
+
+[node name="CompanionAI" type="Node" parent="." unique_id=1643117353]
+script = ExtResource("8_vmgw7")
+
+[node name="KatanaAttachment" type="BoneAttachment3D" parent="." unique_id=537632279]
+bone_name = "mixamorig_RightHand"
+bone_idx = 22
+use_external_skeleton = true
+external_skeleton = NodePath("../Model/Skeleton3D")
+
+[node name="Katana" type="Node3D" parent="KatanaAttachment" unique_id=1715248273]
+transform = Transform3D(-2.2351742e-08, 2.9802322e-08, -1.0000001, 1.0000001, -1.8626451e-08, -5.9604645e-08, 1.3038516e-07, -1.0000001, 2.9802322e-08, 0.93476105, 8.561644, 2.2496185)
+
+[node name="Hilt" type="MeshInstance3D" parent="KatanaAttachment/Katana" unique_id=811967207]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0)
+mesh = SubResource("ArrayMesh_5vw04")
+
+[node name="Blade" type="MeshInstance3D" parent="KatanaAttachment/Katana" unique_id=1209952164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 48, 0)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_atva1")
+
+[node name="SwordsAttachment" type="BoneAttachment3D" parent="." unique_id=1915409407]
+bone_name = "mixamorig_Hips"
+bone_idx = 0
+use_external_skeleton = true
+external_skeleton = NodePath("../Model/Skeleton3D")
+
+[node name="Sword1" type="MeshInstance3D" parent="SwordsAttachment" unique_id=795585677]
+transform = Transform3D(0.90298164, 0.3151541, 0.2920649, 0, -0.67972815, 0.733464, 0.42967898, -0.66230464, -0.61378205, 16, 3, 9)
+mesh = ExtResource("11_vmgw7")
+
+[node name="Sword2" type="MeshInstance3D" parent="SwordsAttachment" unique_id=484464259]
+transform = Transform3D(0.9539937, 0.21991205, 0.20380057, 0, -0.67972815, 0.73346406, 0.2998266, -0.69972014, -0.64845634, 18, 1, 7)
+mesh = ExtResource("12_7tlh2")
+
+[node name="Sword3" type="MeshInstance3D" parent="SwordsAttachment" unique_id=1101402194]
+transform = Transform3D(0.9864373, 0.12038965, 0.11156952, 0, -0.67972815, 0.73346406, 0.16413844, -0.72351635, -0.6705092, 20, -1, 5)
+mesh = ExtResource("13_swnue")
