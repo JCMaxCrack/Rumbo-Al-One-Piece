@@ -15,8 +15,8 @@ const COLORS := {
 	"checkpoint": Color(1.0, 0.85, 0.25), "p1": Color(1, 1, 1), "p2": Color(0.45, 1.0, 0.45), "goal": Color(1.0, 0.82, 0.3),
 	"ring": Color(0.93, 0.78, 0.42), "paper": Color(0.86, 0.78, 0.6),
 }
-const LEGEND := [["meat", "Comida"], ["key", "Llave"], ["enemy", "Enemigo"], ["boss", "Jefe"], ["npc", "Personaje"],
-	["checkpoint", "Punto de control"], ["ship", "Going Merry"], ["goal", "Destino"]]
+const LEGEND := [["meat", "Food"], ["key", "Key"], ["enemy", "Enemy"], ["boss", "Boss"], ["npc", "Character"],
+	["checkpoint", "Checkpoint"], ["ship", "Going Merry"], ["goal", "Destination"]]
 const SMALL_SIZE := 200.0
 const CLIP_SHADER := """
 shader_type canvas_item;

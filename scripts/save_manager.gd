@@ -116,7 +116,7 @@ func start_new_game(slot: int) -> void:
 	GameState.reset()
 
 
-## "Cargar": only valid slots of games that are not finished can be loaded. A co-op game (two
+## "Load": only valid slots of games that are not finished can be loaded. A co-op game (two
 ## heroes) needs a gamepad for player 2. The game mode and the characters come from the save; the
 ## voyage (GameState) is restored here; the world scene restores the rest with take_pending().
 func load_game(slot: int) -> bool:

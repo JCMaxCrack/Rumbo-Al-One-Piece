@@ -281,14 +281,14 @@ func _to_world(s: Vector2) -> Vector2:
 func _refresh() -> void:
 	if island == "":
 		_hover = _island_at(_to_world(_cursor))
-		_title.text = tr("Mapa del mar")
-		_hint.text = tr("Elige una isla: ratón o stick  ·  Clic/A: ver la isla  ·  Esc/B/M: cerrar")
+		_title.text = tr("Sea chart")
+		_hint.text = tr("Choose an island: mouse or stick  ·  Click/A: view the island  ·  Esc/B/M: close")
 	else:
 		_title.text = tr(GameState.ISLAND_NAMES[island]) + ("  ✓" if GameState.completed.has(island) else "")
 		var course := ""
 		if world and not (world.current and world.current.island_id == island):
-			course = "  ·  " + (tr("Rumbo fijado") if world.destination == island else tr("Q/X: fijar rumbo"))
-		_hint.text = tr("Rueda/gatillos: zoom  ·  Arrastrar/stick derecho: mover  ·  Esc/B: volver  ·  M: cerrar") + course
+			course = "  ·  " + (tr("Course set") if world.destination == island else tr("Q/X: set course"))
+		_hint.text = tr("Wheel/triggers: zoom  ·  Drag/right stick: move  ·  Esc/B: back  ·  M: close") + course
 	_canvas.queue_redraw()
 
 
@@ -349,7 +349,7 @@ func _draw_sea() -> void:
 		ci.draw_string_outline(font, at, name, HORIZONTAL_ALIGNMENT_CENTER, 220.0, 17, 5, Color(0, 0, 0, 0.85))
 		ci.draw_string(font, at, name, HORIZONTAL_ALIGNMENT_CENTER, 220.0, 17, Color(1.0, 0.9, 0.5) if lit else Color.WHITE)
 		if id == _hover and not open:
-			_tip = tr("Aún no descubres esta isla")
+			_tip = tr("You haven't discovered this island yet")
 	_draw_ship(9.0)
 	_draw_goal(9.0)
 	_draw_players(9.0, false)
@@ -376,8 +376,8 @@ func _draw_island() -> void:
 	_draw_players(icon, true)
 	if isl == null:
 		var font := ci.get_theme_default_font()
-		ci.draw_string_outline(font, _area.get_center() - Vector2(200, 0), tr("Acércate a la isla para ver lo que hay en ella"), HORIZONTAL_ALIGNMENT_CENTER, 400, 18, 5, Color.BLACK)
-		ci.draw_string(font, _area.get_center() - Vector2(200, 0), tr("Acércate a la isla para ver lo que hay en ella"), HORIZONTAL_ALIGNMENT_CENTER, 400, 18, Color.WHITE)
+		ci.draw_string_outline(font, _area.get_center() - Vector2(200, 0), tr("Get closer to the island to see what is on it"), HORIZONTAL_ALIGNMENT_CENTER, 400, 18, 5, Color.BLACK)
+		ci.draw_string(font, _area.get_center() - Vector2(200, 0), tr("Get closer to the island to see what is on it"), HORIZONTAL_ALIGNMENT_CENTER, 400, 18, Color.WHITE)
 
 
 ## Point of the world inside the frame of the map (null when it is out of it).
@@ -399,7 +399,7 @@ func _draw_things(isl: IslandWorld, icon: float) -> void:
 			var s: Variant = _at((cp as Node3D).global_position)
 			if s != null:
 				Minimap.draw_flag(ci, s, icon, Minimap.COLORS.checkpoint)
-				_near_cursor(s, icon, tr("Punto de control"))
+				_near_cursor(s, icon, tr("Checkpoint"))
 	for group in ["minimap_meat", "minimap_key"]:
 		for item in tree.get_nodes_in_group(group):
 			var it := item as Collectible
@@ -432,7 +432,7 @@ func _draw_things(isl: IslandWorld, icon: float) -> void:
 			_near_cursor(s4, icon * 1.6, tr(en.get("display_name")))
 		else:
 			ci.draw_circle(s4, icon * 0.8, Minimap.COLORS.enemy)
-			_near_cursor(s4, icon, tr("Enemigo"))
+			_near_cursor(s4, icon, tr("Enemy"))
 	# people of the island that can join the crew (still not recruited)
 	for p in tree.get_nodes_in_group("players"):
 		var pl := p as Player
@@ -450,7 +450,7 @@ func _draw_dock(icon: float) -> void:
 		return
 	_canvas.draw_rect(Rect2(s - Vector2(icon, icon * 0.5), Vector2(icon * 2.0, icon)), DOCK_COLOR)
 	_canvas.draw_rect(Rect2(s - Vector2(icon, icon * 0.5), Vector2(icon * 2.0, icon)), Color(0, 0, 0, 0.7), false, 1.5)
-	_near_cursor(s, icon, tr("Muelle"))
+	_near_cursor(s, icon, tr("Dock"))
 
 
 func _draw_ship(icon: float) -> void:
@@ -499,7 +499,7 @@ func _draw_players(icon: float, crew: bool) -> void:
 func _draw_legend() -> void:
 	var ci := _canvas
 	var font := ci.get_theme_default_font()
-	var items: Array = Minimap.LEGEND + [["dock", "Muelle"], ["p1", "Jugador"]]
+	var items: Array = Minimap.LEGEND + [["dock", "Dock"], ["p1", "Player"]]
 	var box := Rect2(_area.position + Vector2(10, 10), Vector2(180, items.size() * 20 + 12))
 	if _area.position.x > box.size.x + 24.0:
 		# beside the map when there is room, so it does not hide a corner of the island

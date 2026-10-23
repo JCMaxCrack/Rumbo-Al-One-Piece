@@ -10,10 +10,10 @@ signal chosen(characters: Array)
 signal cancelled
 
 const INFO := {
-	"luffy": ["Luffy", "Capitán. Puños de goma que se estiran: golpea desde lejos."],
-	"zoro": ["Zoro", "Espadachín. Tres espadas y mucha vida: el más resistente."],
-	"usopp": ["Usopp", "Francotirador. Dispara con su tirachinas a los enemigos lejanos."],
-	"nami": ["Nami", "Navegante. Ágil y rápida, pelea con el Clima-Tact."],
+	"luffy": ["Luffy", "Captain. Stretchy rubber fists: he hits from far away."],
+	"zoro": ["Zoro", "Swordsman. Three swords and lots of health: the toughest one."],
+	"usopp": ["Usopp", "Sniper. Shoots far-away enemies with his slingshot."],
+	"nami": ["Nami", "Navigator. Quick and agile, she fights with the Clima-Tact."],
 }
 const SCENES := {"luffy": "res://scenes/player/luffy.tscn", "zoro": "res://scenes/player/zoro.tscn",
 	"usopp": "res://scenes/player/usopp.tscn", "nami": "res://scenes/player/nami.tscn"}
@@ -41,7 +41,7 @@ func _ready() -> void:
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.add_theme_constant_override("separation", 18)
 	var title := Label.new()
-	title.text = tr("Elige tu personaje")
+	title.text = tr("Choose your character")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 40)
 	title.add_theme_constant_override("outline_size", 10)
@@ -58,7 +58,7 @@ func _ready() -> void:
 	_status.add_theme_font_size_override("font_size", 18)
 	box.add_child(_status)
 	var help := Label.new()
-	help.text = tr("Jugador 1: A/D o flechas y Enter (o clic)  ·  Jugador 2: stick y A (B deshace)  ·  Esc: volver")
+	help.text = tr("Player 1: A/D or arrows and Enter (or click)  ·  Player 2: stick and A (B undoes)  ·  Esc: back")
 	help.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	help.add_theme_font_size_override("font_size", 15)
 	help.modulate = Color(0.8, 0.8, 0.85)
@@ -218,13 +218,13 @@ func _choose(who: int) -> void:
 		return
 	var other := 1 - who
 	if _done[other] and _cursor[other] == _cursor[who]:
-		_status.text = tr("%s ya lo eligió el otro jugador") % INFO[GameSession.CHARACTERS[_cursor[who]]][0]
+		_status.text = tr("The other player already chose %s") % INFO[GameSession.CHARACTERS[_cursor[who]]][0]
 		return
 	_done[who] = true
 	_refresh()
 	if _done[0] and _done[1]:
 		_finishing = true
-		_status.text = tr("¡A la aventura!")
+		_status.text = tr("Off to adventure!")
 		get_tree().create_timer(0.8).timeout.connect(func() -> void:
 			visible = false
 			chosen.emit([GameSession.CHARACTERS[_cursor[0]], GameSession.CHARACTERS[_cursor[1]]]))
@@ -241,7 +241,7 @@ func _refresh() -> void:
 			if _cursor[who] == i:
 				style.border_color = COLORS[who] if style.border_width_top == 0 else style.border_color.lerp(COLORS[who], 0.5)
 				style.set_border_width_all(4 if _done[who] else 2)
-				tags.append(("J%d ✓" if _done[who] else "J%d") % (who + 1))
+				tags.append(tr("P%d ✓" if _done[who] else "P%d") % (who + 1))
 		if (_done[0] and _cursor[0] == i) or (_done[1] and _cursor[1] == i):
 			style.bg_color = Color(0.16, 0.14, 0.08, 0.95)
 		_cards[i].add_theme_stylebox_override("panel", style)
@@ -251,5 +251,5 @@ func _refresh() -> void:
 		var waiting := []
 		for who in 2:
 			if not _done[who]:
-				waiting.append(tr("Jugador %d") % (who + 1))
-		_status.text = tr("Esperando a: %s") % ", ".join(waiting) if not waiting.is_empty() else ""
+				waiting.append(tr("Player %d") % (who + 1))
+		_status.text = tr("Waiting for: %s") % ", ".join(waiting) if not waiting.is_empty() else ""

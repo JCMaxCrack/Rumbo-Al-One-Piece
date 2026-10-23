@@ -11738,7 +11738,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("13_v87l5")
 checkpoint_id = "puerto_whisky"
-display_name = "Puerto de Whisky Peak"
+display_name = "Whisky Peak Port"
 
 [node name="Checkpoint2" type="Area3D" parent="Checkpoints" unique_id=1973722789 instance=ExtResource("12_bbp5f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 212, 3.0148113, 294)
@@ -11747,7 +11747,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("13_v87l5")
 checkpoint_id = "arco_whisky"
-display_name = "Arco de entrada"
+display_name = "Entrance Arch"
 
 [node name="Checkpoint3" type="Area3D" parent="Checkpoints" unique_id=931458389 instance=ExtResource("12_bbp5f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 213, 3, 258)
@@ -11756,7 +11756,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("13_v87l5")
 checkpoint_id = "plaza_whisky"
-display_name = "Plaza del pueblo"
+display_name = "Town Square"
 
 [node name="Checkpoint4" type="Area3D" parent="Checkpoints" unique_id=361363185 instance=ExtResource("12_bbp5f")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 18, 122)
@@ -11765,7 +11765,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("13_v87l5")
 checkpoint_id = "cactus_whisky"
-display_name = "Meseta del gran cactus"
+display_name = "Great Cactus Plateau"
 
 [node name="MiniEnemies" type="Node3D" parent="." unique_id=2020613404]
 
@@ -11774,7 +11774,7 @@ transform = Transform3D(0.8368422, 0, 0.5474442, 0, 1, 0, -0.5474442, 0, 0.83684
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("15_61iig")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_2dr5r")
 
 [node name="EvilMushroom2" type="CharacterBody3D" parent="MiniEnemies" unique_id=1273282343 instance=ExtResource("14_ekt8n")]
@@ -11782,7 +11782,7 @@ transform = Transform3D(-0.9934516, 0, 0.11425396, 0, 1, 0, -0.11425396, 0, -0.9
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("15_61iig")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_2dr5r")
 
 [node name="EvilMushroom3" type="CharacterBody3D" parent="MiniEnemies" unique_id=245789897 instance=ExtResource("14_ekt8n")]
@@ -11790,7 +11790,7 @@ transform = Transform3D(-0.60170007, 0, 0.7987221, 0, 1, 0, -0.7987221, 0, -0.60
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("15_61iig")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_2dr5r")
 
 [node name="EvilMushroom4" type="CharacterBody3D" parent="MiniEnemies" unique_id=843391116 instance=ExtResource("14_ekt8n")]
@@ -11798,7 +11798,7 @@ transform = Transform3D(0.41970482, 0, 0.90766066, 0, 1, 0, -0.90766066, 0, 0.41
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("15_61iig")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_2dr5r")
 
 [node name="EvilMushroom5" type="CharacterBody3D" parent="MiniEnemies" unique_id=955974220 instance=ExtResource("14_ekt8n")]
@@ -11806,7 +11806,7 @@ transform = Transform3D(-0.43275854, 0, 0.9015099, 0, 1, 0, -0.9015099, 0, -0.43
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("15_61iig")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_2dr5r")
 
 [node name="Nami" type="CharacterBody3D" parent="." unique_id=1325825775 instance=ExtResource("16_4w41n")]
@@ -11840,7 +11840,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 176,
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("19_cxcbe")
-display_name = "Vicealmirante Garp"
+display_name = "Vice Admiral Garp"
 anim_library = "garp"
 patrol_path = NodePath("../GarpPatrol")
 max_health = 720.0
@@ -11864,4 +11864,4 @@ xp_reward = 320
 transform = Transform3D(-0.9396926, 0, 0.3420202, 0, 1, 0, -0.3420202, 0, -0.9396926, 193, 1.8337178, 312)
 collision_mask = 0
 script = ExtResource("21_4kxpp")
-mission_lines = PackedStringArray("¡Luffy-san! ¡Qué bueno que llegaste a la isla!", "Buggy el Payaso se escondió en el cráter del volcán, en el centro de la isla, y tiene a todos aterrorizados.", "Tu misión: ¡derrota a Buggy y recolecta toda la carne que está repartida por la isla!", "Cada carne te devuelve vida. Y el Going Merry está anclado en la ensenada del noreste: sube por el puente del muelle.")
+mission_lines = PackedStringArray("Luffy-san! I'm so glad you made it to the island!", "Buggy the Clown is hiding in the volcano crater, in the middle of the island, and he has everyone terrified.", "Your mission: defeat Buggy and collect all the meat scattered around the island!", "Every piece of meat gives you health back. And the Going Merry is anchored in the northeast inlet: go up the gangway from the dock.")

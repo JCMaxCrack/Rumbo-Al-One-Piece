@@ -1,6 +1,6 @@
 extends Control
 ## Main menu. Nodes in scenes/main_menu.tscn.
-## "Jugar" asks how to play (ModePanel: single player or local co-op with a gamepad for
+## "Play" asks how to play (ModePanel: single player or local co-op with a gamepad for
 ## player 2, GameSession); in co-op every player chooses his character (CharacterSelect); then
 ## the 4 save slots open (SaveSlots node, load mode).
 
@@ -42,9 +42,9 @@ func _on_play_button_pressed() -> void:
 
 func _update_mode_info() -> void:
 	if GameSession.can_play_coop():
-		mode_info.text = "Cooperativo: pantalla dividida. Jugador 1: teclado y mouse. Jugador 2: mando. Cada uno elige su personaje."
+		mode_info.text = "Co-op: split screen. Player 1: keyboard and mouse. Player 2: gamepad. Each one picks a character."
 	else:
-		mode_info.text = "Para el modo cooperativo conecta un mando: el jugador 2 juega con él."
+		mode_info.text = "For co-op, connect a gamepad: player 2 plays with it."
 
 
 func _on_solo_button_pressed() -> void:

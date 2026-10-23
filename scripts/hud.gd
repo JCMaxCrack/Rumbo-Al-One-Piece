@@ -4,7 +4,7 @@ extends CanvasLayer
 ## In co-op player 2 has his own copy of the level bar, the inventory and the skill box (made in
 ## code from player 1's, see set_split()); the functions that fill them take the player index.
 
-const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha: cámara"
+const TOUCH_HINT := "Joystick: move (run at the edge)  ·  Drag on the right: camera"
 
 @onready var health_bar: ProgressBar = $Root/PlayerPanel/VBox/HealthBar
 @onready var health_label: Label = $Root/PlayerPanel/VBox/Row/HealthLabel
@@ -162,7 +162,7 @@ func set_compass(on: bool, angle: float, title: String, meters: float) -> void:
 
 
 func set_count(current: int, total: int) -> void:
-	item_label.text = tr("Carne: %d / %d") % [current, total]
+	item_label.text = tr("Meat: %d / %d") % [current, total]
 
 
 ## Level, experience bar and skill points of a player.
@@ -170,7 +170,7 @@ func set_xp(level: int, xp: int, needed: int, points: int, player := 0) -> void:
 	var row: Control = $Root/PlayerPanel/VBox/XpRow if player == 0 else _xp2
 	if row == null:
 		return
-	(row.get_node("LevelLabel") as Label).text = tr("Nv. %d") % level
+	(row.get_node("LevelLabel") as Label).text = tr("Lv. %d") % level
 	var bar := row.get_node("XpBar") as ProgressBar
 	bar.max_value = needed
 	bar.value = xp
@@ -202,15 +202,15 @@ func set_skill(id: String, cooldown: float, player := 0) -> void:
 	bar.modulate = Color(0.55, 1, 0.55) if cooldown <= 0.0 else Color(1, 1, 1, 0.8)
 
 
-## "[E] Hablar", "[E] Zarpar"... over the inventory (empty text hides it).
+## "[E] Talk", "[E] Zarpar"... over the inventory (empty text hides it).
 func set_interact_hint(text: String) -> void:
 	interact_hint.visible = text != "" and not dialog_panel.visible
 	if text != "":
-		var key := tr("Toca «%s»") % text if touch_mode else "[%s] %s" % [Preferences.event_text("interact", false), text]
+		var key := tr("Tap “%s”") % text if touch_mode else "[%s] %s" % [Preferences.event_text("interact", false), text]
 		interact_hint.text = key
 
 
-## Big text in the middle of the screen ("¡Isla completada!").
+## Big text in the middle of the screen ("Island complete!").
 func show_banner(title: String, text: String, duration := 3.0) -> void:
 	banner_title.text = title
 	banner_text.text = text
@@ -232,20 +232,20 @@ func set_boss_name(text: String) -> void:
 ## Texts with the keys (they change if the player changes the controls).
 func _refresh_hints() -> void:
 	var k := func(a: String) -> String: return Preferences.event_text(a, false)
-	var hint := tr("%s mover  ·  %s correr  ·  %s saltar/nadar  ·  Clic/%s golpe  ·  %s hablar  ·  %s mapa  ·  %s pausa") % [
+	var hint := tr("%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s pause") % [
 		k.call("move_forward") + k.call("move_left") + k.call("move_back") + k.call("move_right"), k.call("sprint"), k.call("jump"),
 		k.call("attack"), k.call("interact"), k.call("map"), k.call("pause")]
 	if sailing:
-		hint = tr("%s/%s vela  ·  %s/%s timón  ·  %s a toda vela  ·  %s carta  ·  %s atracar / soltar") % [
+		hint = tr("%s/%s sail  ·  %s/%s helm  ·  %s full sail  ·  %s chart  ·  %s dock / let go") % [
 			k.call("move_forward"), k.call("move_back"), k.call("move_left"), k.call("move_right"), k.call("sprint"), k.call("use_item"), k.call("interact")]
 	controls_hint.text = tr(TOUCH_HINT) if touch_mode and not sailing else hint
-	inventory_hint.text = tr("%s comer  ·  %s cambiar") % [k.call("use_item"), k.call("next_item")] if not touch_mode else ""
-	skill_hint.text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [k.call("skill"), k.call("next_skill"), k.call("shop")] if not touch_mode else ""
+	inventory_hint.text = tr("%s eat  ·  %s switch") % [k.call("use_item"), k.call("next_item")] if not touch_mode else ""
+	skill_hint.text = tr("%s use  ·  %s switch  ·  %s shop") % [k.call("skill"), k.call("next_skill"), k.call("shop")] if not touch_mode else ""
 	if _inventory2:
 		# player 2 plays with a gamepad
 		var g := func(a: String) -> String: return Preferences.event_text(a, true)
-		(_inventory2.get_node("Hint") as Label).text = tr("%s comer  ·  %s cambiar") % [g.call("use_item"), g.call("next_item")]
-		(_skill_box2.get_node("VBox/Hint") as Label).text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [g.call("skill"), g.call("next_skill"), g.call("shop")]
+		(_inventory2.get_node("Hint") as Label).text = tr("%s eat  ·  %s switch") % [g.call("use_item"), g.call("next_item")]
+		(_skill_box2.get_node("VBox/Hint") as Label).text = tr("%s use  ·  %s switch  ·  %s shop") % [g.call("skill"), g.call("next_skill"), g.call("shop")]
 
 
 func set_mission(text: String) -> void:
@@ -264,7 +264,7 @@ func set_boss_visible(on: bool) -> void:
 
 
 func set_boss_state(text: String) -> void:
-	boss_state_label.text = tr("IA: ") + text
+	boss_state_label.text = tr("AI: ") + text
 
 
 func set_touch_mode(on: bool) -> void:
@@ -283,8 +283,8 @@ func show_dialog(speaker: String, text: String, last: bool) -> void:
 	interact_hint.visible = false
 	dialog_speaker.text = speaker
 	dialog_text.text = text
-	var key := tr("Toca «Seguir»") if touch_mode else tr("Pulsa %s") % Preferences.event_text("interact", false)
-	dialog_hint.text = key + (tr(" para cerrar") if last else tr(" para continuar"))
+	var key := tr("Tap “Next”") if touch_mode else tr("Press %s") % Preferences.event_text("interact", false)
+	dialog_hint.text = key + (tr(" to close") if last else tr(" to continue"))
 
 
 func hide_dialog() -> void:

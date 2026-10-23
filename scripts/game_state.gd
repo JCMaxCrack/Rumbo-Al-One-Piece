@@ -18,7 +18,7 @@ const ISLAND_SCENES := {
 	"villa_syrup": "res://scenes/islands/villa_syrup.tscn",
 	"whisky_peak": "res://scenes/islands/whisky_peak.tscn",
 }
-const ISLAND_NAMES := {"isla_inicio": "Isla del Payaso", "villa_syrup": "Villa Syrup", "whisky_peak": "Whisky Peak"}
+const ISLAND_NAMES := {"isla_inicio": "Clown Island", "villa_syrup": "Syrup Village", "whisky_peak": "Whisky Peak"}
 const CREW := ["zoro", "usopp", "nami"]
 ## Where every island is in the sea and what the voyage needs to know about it without loading it:
 ##   offset: position of the island scene; size: side of its map (meters, from the offset);
@@ -44,9 +44,9 @@ const SEA_RECT := Rect2(-500, -2600, 2900, 3400)
 const INVENTORY_SIZE := 4
 ## id -> name, health it gives back when eaten (0 = it can not be eaten), how many fit in a slot.
 const ITEMS := {
-	"meat": {"name": "Carne", "heal": 35.0, "stack": 9, "color": Color(0.85, 0.42, 0.2)},
-	"orange": {"name": "Mandarina", "heal": 15.0, "stack": 9, "color": Color(1.0, 0.6, 0.1)},
-	"key": {"name": "Llave de la mansión", "heal": 0.0, "stack": 1, "color": Color(0.95, 0.8, 0.3)},
+	"meat": {"name": "Meat", "heal": 35.0, "stack": 9, "color": Color(0.85, 0.42, 0.2)},
+	"orange": {"name": "Tangerine", "heal": 15.0, "stack": 9, "color": Color(1.0, 0.6, 0.1)},
+	"key": {"name": "Mansion key", "heal": 0.0, "stack": 1, "color": Color(0.95, 0.8, 0.3)},
 }
 
 ## Skills of every character (ids are unique among all of them). "island": index of the island
@@ -57,59 +57,59 @@ const ITEMS := {
 const SKILLS := {
 	"luffy": {
 		"muchi": {"name": "Gomu Gomu no Muchi", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 22.0, "effect": "spin", "radius": 3.3, "push": 8.0,
-			"text": "Patada giratoria: golpea a todos los enemigos a tu alrededor."},
+			"text": "Spinning kick: hits every enemy around you."},
 		"bazooka": {"name": "Gomu Gomu no Bazooka", "island": 0, "cost": 2, "cooldown": 6.0, "damage": 40.0, "effect": "front", "radius": 1.9, "push": 18.0,
-			"text": "Empujón con las dos palmas: mucho daño y lanza lejos al enemigo."},
+			"text": "Two-palm shove: big damage and sends the enemy flying."},
 		"gatling": {"name": "Gomu Gomu no Gatling", "island": 1, "cost": 2, "cooldown": 7.0, "damage": 9.0, "effect": "rapid", "radius": 1.5, "push": 2.5,
-			"text": "Lluvia de puñetazos hacia delante: muchos golpes seguidos."},
+			"text": "A rain of punches in front of you: many hits in a row."},
 		"fusen": {"name": "Gomu Gomu no Fusen", "island": 1, "cost": 1, "cooldown": 10.0, "damage": 10.0, "effect": "shield", "radius": 3.6, "push": 13.0,
-			"text": "Te inflas como un globo: nada te hace daño y empujas a los enemigos."},
+			"text": "You puff up like a balloon: nothing hurts you and you push enemies away."},
 		"ono": {"name": "Gomu Gomu no Ono", "island": 2, "cost": 2, "cooldown": 8.0, "damage": 48.0, "effect": "wave", "radius": 2.8, "push": 10.0,
-			"text": "Hachazo con el talón: una onda de choque delante de ti."},
+			"text": "Heel axe-drop: a shock wave in front of you."},
 		"storm": {"name": "Gomu Gomu no Storm", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 14.0, "effect": "storm", "radius": 4.2, "push": 6.0,
-			"text": "Tormenta de golpes en todas las direcciones."},
+			"text": "A storm of punches in every direction."},
 	},
 	"zoro": {
 		"onigiri": {"name": "Oni Giri", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 26.0, "effect": "front", "radius": 1.9, "push": 14.0,
-			"text": "Corte cruzado con las tres espadas: mucho daño delante de ti."},
+			"text": "Cross cut with the three swords: big damage in front of you."},
 		"tatsumaki": {"name": "Tatsu Maki", "island": 0, "cost": 2, "cooldown": 7.0, "damage": 30.0, "effect": "spin", "radius": 3.6, "push": 12.0,
-			"text": "Un tornado de cortes que golpea a todos a tu alrededor."},
+			"text": "A tornado of cuts that hits everyone around you."},
 		"yakkodori": {"name": "Yakkodori", "island": 1, "cost": 1, "cooldown": 5.0, "damage": 34.0, "effect": "shot", "radius": 0.35, "push": 6.0,
-			"text": "Un corte que vuela: golpea a los enemigos lejanos."},
+			"text": "A flying cut: hits far-away enemies."},
 		"rengoku": {"name": "Rengoku Oni Giri", "island": 1, "cost": 2, "cooldown": 7.0, "damage": 10.0, "effect": "rapid", "radius": 1.6, "push": 3.0,
-			"text": "Una ráfaga de cortes seguidos hacia delante."},
+			"text": "A flurry of cuts in front of you."},
 		"sanjuroku": {"name": "Sanjuroku Pound Ho", "island": 2, "cost": 2, "cooldown": 8.0, "damage": 50.0, "effect": "wave", "radius": 2.9, "push": 11.0,
-			"text": "Un cañonazo de aire cortante: una onda de choque delante de ti."},
+			"text": "A cannon blast of cutting air: a shock wave in front of you."},
 		"ashura": {"name": "Asura", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 16.0, "effect": "storm", "radius": 4.2, "push": 7.0,
-			"text": "Nueve espadas: cortes en todas las direcciones."},
+			"text": "Nine swords: cuts in every direction."},
 	},
 	"usopp": {
 		"namari": {"name": "Namari Boshi", "island": 0, "cost": 1, "cooldown": 3.0, "damage": 22.0, "effect": "shot", "radius": 0.2, "push": 5.0,
-			"text": "Una bola de plomo: mucho daño a un enemigo lejano."},
+			"text": "A lead ball: big damage to a far-away enemy."},
 		"pound": {"name": "Usopp Pound", "island": 0, "cost": 1, "cooldown": 5.0, "damage": 28.0, "effect": "front", "radius": 1.8, "push": 14.0,
-			"text": "¡Martillazo de cinco toneladas! (o eso dice Usopp)."},
+			"text": "A five-ton hammer blow! (or so Usopp says)."},
 		"kaen": {"name": "Kaen Boshi", "island": 1, "cost": 2, "cooldown": 6.0, "damage": 38.0, "effect": "shot", "radius": 0.3, "push": 8.0,
-			"text": "Una estrella de fuego que quema a quien toca."},
+			"text": "A fire star that burns whoever it touches."},
 		"tamago": {"name": "Tamago Boshi", "island": 1, "cost": 1, "cooldown": 6.0, "damage": 14.0, "effect": "spread", "radius": 0.2, "push": 4.0,
-			"text": "Tres huevos podridos a la vez: abanico de disparos."},
+			"text": "Three rotten eggs at once: a fan of shots."},
 		"kemuri": {"name": "Kemuri Boshi", "island": 2, "cost": 1, "cooldown": 10.0, "damage": 8.0, "effect": "shield", "radius": 3.4, "push": 12.0,
-			"text": "Una nube de humo: nada te hace daño y los enemigos retroceden."},
+			"text": "A cloud of smoke: nothing hurts you and enemies back away."},
 		"kayaku": {"name": "Kayaku Boshi", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 18.0, "effect": "storm", "radius": 4.4, "push": 9.0,
-			"text": "Explosiones de pólvora a tu alrededor."},
+			"text": "Gunpowder blasts all around you."},
 	},
 	"nami": {
 		"cyclone": {"name": "Cyclone Tempo", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 18.0, "effect": "front", "radius": 2.2, "push": 22.0,
-			"text": "Un ciclón con el Clima-Tact que lanza lejos a los enemigos."},
+			"text": "A cyclone from the Clima-Tact that blows enemies away."},
 		"thunderbolt": {"name": "Thunderbolt Tempo", "island": 0, "cost": 2, "cooldown": 6.0, "damage": 34.0, "effect": "wave", "radius": 2.8, "push": 8.0,
-			"text": "Un rayo cae delante de ti."},
+			"text": "Lightning strikes in front of you."},
 		"cool_ball": {"name": "Cool Ball", "island": 1, "cost": 1, "cooldown": 6.0, "damage": 12.0, "effect": "spread", "radius": 0.25, "push": 4.0,
-			"text": "Tres burbujas de aire frío en abanico."},
+			"text": "Three bubbles of cold air in a fan."},
 		"mirage": {"name": "Mirage Tempo", "island": 1, "cost": 1, "cooldown": 10.0, "damage": 8.0, "effect": "shield", "radius": 3.4, "push": 12.0,
-			"text": "Un espejismo: nada te hace daño y confundes a los enemigos."},
+			"text": "A mirage: nothing hurts you and enemies get confused."},
 		"heat_ball": {"name": "Heat Ball", "island": 2, "cost": 2, "cooldown": 7.0, "damage": 40.0, "effect": "shot", "radius": 0.35, "push": 8.0,
-			"text": "Una burbuja de aire caliente que estalla al tocar."},
+			"text": "A bubble of hot air that bursts on touch."},
 		"thunder_lance": {"name": "Thunder Lance Tempo", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 18.0, "effect": "storm", "radius": 4.2, "push": 6.0,
-			"text": "Lanzas de rayo caen a tu alrededor."},
+			"text": "Spears of lightning fall all around you."},
 	},
 }
 ## Health of every character at level 1 (it grows HEALTH_PER_LEVEL with every level).

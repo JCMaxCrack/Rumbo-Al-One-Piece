@@ -251,7 +251,7 @@ func _default_destination() -> String:
 
 func set_destination(id: String) -> void:
 	destination = id
-	hud.show_banner(tr("Rumbo a %s") % tr(GameState.ISLAND_NAMES[id]), tr("Sigue la brújula y la luz sobre su puerto"), 2.5)
+	hud.show_banner(tr("Heading to %s") % tr(GameState.ISLAND_NAMES[id]), tr("Follow the compass and the light over its port"), 2.5)
 
 
 # ------------------------------------------------------------------ crew and co-op
@@ -429,7 +429,7 @@ func view_camera() -> Camera3D:
 func _on_crew_died(p: Player) -> void:
 	if finished:
 		return
-	hud.show_message(tr("¡%s cayó! Volverá en un momento") % p.display_name, 1.5)
+	hud.show_message(tr("%s fell! Back in a moment") % p.display_name, 1.5)
 	await get_tree().create_timer(3.0).timeout
 	if is_inside_tree() and not finished and is_instance_valid(p):
 		p.revive(current.on_ground(player.global_position - player.facing * 2.0))
@@ -463,7 +463,7 @@ func _process(delta: float) -> void:
 func _interactables() -> Array:
 	var out: Array = current._interactables() if current else []
 	if not ship.steering and not ship.is_docking() and not player.dead:
-		out.append([ship.get_node("Helm"), 2.8, "Tomar el timón", take_helm])
+		out.append([ship.get_node("Helm"), 2.8, "Take the helm", take_helm])
 	return out
 
 
@@ -472,7 +472,7 @@ func _update_interact_target() -> void:
 	var label := ""
 	if ship.steering:
 		var port := _port_near()
-		label = tr("Atracar en %s") % tr(GameState.ISLAND_NAMES[port]) if port != "" else tr("Soltar el timón")
+		label = tr("Dock at %s") % tr(GameState.ISLAND_NAMES[port]) if port != "" else tr("Let go of the helm")
 		if ship.is_docking():
 			label = ""
 	elif not hud.is_dialog_open() and not finished and not player.dead:
@@ -480,7 +480,7 @@ func _update_interact_target() -> void:
 		label = tr(best[2]) if not best.is_empty() else ""
 	_interact_target = best
 	hud.set_interact_hint(label)
-	touch_controls.set_interact_visible(hud.is_dialog_open() or label != "", tr("Seguir") if hud.is_dialog_open() else (label if label != "" else tr("Hablar")))
+	touch_controls.set_interact_visible(hud.is_dialog_open() or label != "", tr("Next") if hud.is_dialog_open() else (label if label != "" else tr("Talk")))
 
 
 ## The closest thing that this player can use with "interact" ([] = none).
@@ -557,14 +557,14 @@ func _use_selected_item(i := 0) -> void:
 	var p := hero_node(i)
 	var id := h.selected_item()
 	if id == "":
-		hud.show_message(tr("No tienes nada en esa casilla"), 1.2)
+		hud.show_message(tr("You have nothing in that slot"), 1.2)
 		return
 	var heal: float = GameState.ITEMS[id].heal
 	if heal <= 0.0:
-		hud.show_message(tr("%s: se usa en otro lugar") % GameState.item_name(id), 1.5)
+		hud.show_message(tr("%s: it's used somewhere else") % GameState.item_name(id), 1.5)
 		return
 	if p.health >= p.max_health:
-		hud.show_message(tr("Ya tienes toda la vida"), 1.2)
+		hud.show_message(tr("Your health is already full"), 1.2)
 		return
 	if p.eat(id, heal):
 		h.remove_item(id)
@@ -574,12 +574,12 @@ func _use_skill(i := 0) -> void:
 	var h := GameState.hero(i)
 	var p := hero_node(i)
 	if h.equipped == "":
-		hud.show_message(tr("Aprende ataques en la tienda de habilidades (%s)") % Preferences.event_text("shop", i == 1), 1.8)
+		hud.show_message(tr("Learn attacks in the skill shop (%s)") % Preferences.event_text("shop", i == 1), 1.8)
 		return
 	if not p.use_skill(h.equipped, h.level):
 		var cd := p.skill_cooldown(h.equipped)
 		if cd > 0.0:
-			hud.show_message(tr("%s: espera %.1f s") % [GameState.skill_name(h.equipped), cd], 0.9)
+			hud.show_message(tr("%s: wait %.1f s") % [GameState.skill_name(h.equipped), cd], 0.9)
 
 
 func open_skill_shop(i := 0) -> void:
@@ -632,8 +632,8 @@ func take_helm() -> void:
 		_follow_camera(_split_follow[0], ship.camera)
 	ship.camera.far = player.camera.far
 	hud.set_sailing(true)
-	var where := tr(GameState.ISLAND_NAMES[destination]) if destination != "" else tr("mar abierto")
-	hud.show_banner(tr("¡Zarpamos!"), tr("Rumbo a %s  ·  %s carta de navegación") % [where, Preferences.event_text("use_item", false)], 3.0)
+	var where := tr(GameState.ISLAND_NAMES[destination]) if destination != "" else tr("open sea")
+	hud.show_banner(tr("Set sail!"), tr("Heading to %s  ·  %s navigation chart") % [where, Preferences.event_text("use_item", false)], 3.0)
 
 
 func _leave_helm() -> void:
@@ -653,11 +653,11 @@ func _ship_interact() -> void:
 	var port := _port_near()
 	if port == "":
 		_leave_helm()
-		hud.show_message(tr("Soltaste el timón: el Going Merry está anclado"), 1.8)
+		hud.show_message(tr("You let go of the helm: the Going Merry is anchored"), 1.8)
 		return
 	if not islands.has(port):
 		_load_island_now(port)
-	hud.show_message(tr("Atracando en %s...") % tr(GameState.ISLAND_NAMES[port]), 2.0)
+	hud.show_message(tr("Docking at %s...") % tr(GameState.ISLAND_NAMES[port]), 2.0)
 	ship.dock(GameState.dock_transform(port), _on_docked.bind(port))
 
 
@@ -673,9 +673,9 @@ func _on_docked(id: String) -> void:
 	var was := current
 	arrive_at(isl)
 	if was == isl:
-		hud.show_message(tr("De vuelta en %s") % tr(GameState.ISLAND_NAMES[id]), 2.0)
+		hud.show_message(tr("Back in %s") % tr(GameState.ISLAND_NAMES[id]), 2.0)
 	if SaveManager.current_slot > 0 and save_game(SaveManager.current_slot):
-		hud.show_message(tr("Partida guardada"), 1.5)
+		hud.show_message(tr("Game saved"), 1.5)
 
 
 ## The open island whose port is close to the ship ("" = none).
@@ -707,13 +707,13 @@ func _can_sail(p: Vector3) -> String:
 
 func _on_ship_blocked(reason: String) -> void:
 	if reason == "land":
-		hud.show_message(tr("¡Cuidado con la costa! Busca el puerto para atracar"), 2.0)
+		hud.show_message(tr("Watch out for the coast! Find the port to dock"), 2.0)
 	elif reason == "border":
-		hud.show_message(tr("Más allá el mar es demasiado peligroso: da la vuelta"), 2.0)
+		hud.show_message(tr("Beyond here the sea is too dangerous: turn back"), 2.0)
 	elif reason.begins_with("locked:"):
 		var id := reason.substr(7)
 		var before: String = GameState.ISLANDS[GameState.island_index(id) - 1]
-		hud.show_message(tr("Una tormenta rodea %s. Completa antes %s") % [tr(GameState.ISLAND_NAMES[id]), tr(GameState.ISLAND_NAMES[before])], 2.6)
+		hud.show_message(tr("A storm surrounds %s. Complete %s first") % [tr(GameState.ISLAND_NAMES[id]), tr(GameState.ISLAND_NAMES[before])], 2.6)
 
 
 # ------------------------------------------------------------------ sea, fog, compass and light
@@ -821,12 +821,12 @@ func _on_leveled_up(level: int, i: int) -> void:
 	var p := hero_node(i)
 	p.set_max_health(h.max_health(), true)
 	FX.level_up(self, p.global_position)
-	FX.text(self, p.global_position + Vector3(0, 2.4, 0), tr("¡Nivel %d!") % level, Color(1, 0.85, 0.3), 64, 1.6)
+	FX.text(self, p.global_position + Vector3(0, 2.4, 0), tr("Level %d!") % level, Color(1, 0.85, 0.3), 64, 1.6)
 	var shop := Preferences.event_text("shop", i == 1)
 	if player2:
-		hud.show_message(tr("¡%s subió al nivel %d! Tiene %d punto(s) de habilidad: abre la tienda (%s)") % [p.display_name, level, h.skill_points, shop], 3.0)
+		hud.show_message(tr("%s reached level %d! %d skill point(s): open the shop (%s)") % [p.display_name, level, h.skill_points, shop], 3.0)
 	else:
-		hud.show_message(tr("¡Subiste al nivel %d! Tienes %d punto(s) de habilidad: abre la tienda (%s)") % [level, h.skill_points, shop], 3.0)
+		hud.show_message(tr("You reached level %d! You have %d skill point(s): open the shop (%s)") % [level, h.skill_points, shop], 3.0)
 	_on_skills_changed(i)
 
 
@@ -868,7 +868,7 @@ func on_island_completed(isl: IslandWorld) -> void:
 	victory_sound.play()
 	var nxt := GameState.next_island(isl.island_id)
 	destination = nxt
-	hud.show_banner(tr("¡Isla completada!"), tr("Sube al Going Merry y toma el timón para navegar hasta %s") % tr(GameState.ISLAND_NAMES[nxt]), 6.0)
+	hud.show_banner(tr("Island complete!"), tr("Board the Going Merry and take the helm to sail to %s") % tr(GameState.ISLAND_NAMES[nxt]), 6.0)
 	if SaveManager.current_slot > 0:
 		save_game(SaveManager.current_slot)
 
@@ -876,7 +876,7 @@ func on_island_completed(isl: IslandWorld) -> void:
 func _on_player_died() -> void:
 	if finished:
 		return
-	hud.show_message(tr("¡Te derrotaron!"), 1.5)
+	hud.show_message(tr("You were defeated!"), 1.5)
 	defeat_timer.start()
 
 
@@ -952,7 +952,7 @@ func save_game(slot: int) -> bool:
 	return ok
 
 
-## Pause menu -> "Guardar partida" -> a slot.
+## Pause menu -> "Save game" -> a slot.
 func _on_pause_menu_save_requested(slot: int) -> void:
 	var ok := save_game(slot)
 	pause_menu.show_saved(slot, ok)

@@ -40,7 +40,7 @@ center_offset = Vector3(0.63, 0, 0)
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("1_vl7eo")
-display_name = "Capitán Kuro"
+display_name = "Captain Kuro"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=543527032]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97375, 0)
@@ -96,7 +96,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0)
 pixel_size = 0.006
 billboard = 1
 modulate = Color(1, 0.45, 0.4, 1)
-text = "Capitán Kuro"
+text = "Captain Kuro"
 font_size = 46
 
 [editable path="Model"]

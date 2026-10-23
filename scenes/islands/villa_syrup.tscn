@@ -16774,7 +16774,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("14_o4crl")
 checkpoint_id = "puerto_syrup"
-display_name = "Puerto de Villa Syrup"
+display_name = "Syrup Village Port"
 
 [node name="Checkpoint2" type="Area3D" parent="Checkpoints" unique_id=1109361122 instance=ExtResource("13_8lfcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 214, 2.8, 288)
@@ -16783,7 +16783,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("14_o4crl")
 checkpoint_id = "aldea_syrup"
-display_name = "Aldea de Syrup"
+display_name = "Village Center"
 
 [node name="Checkpoint3" type="Area3D" parent="Checkpoints" unique_id=1129736712 instance=ExtResource("13_8lfcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 102, 13.017878, 222)
@@ -16792,7 +16792,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("14_o4crl")
 checkpoint_id = "colina_syrup"
-display_name = "Colina de Usopp"
+display_name = "Usopp's Hill"
 
 [node name="Checkpoint4" type="Area3D" parent="Checkpoints" unique_id=641235999 instance=ExtResource("13_8lfcx")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 254, 11, 134)
@@ -16801,7 +16801,7 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("14_o4crl")
 checkpoint_id = "jardin_mansion"
-display_name = "Jardín de la mansión"
+display_name = "Mansion Garden"
 
 [node name="MiniEnemies" type="Node3D" parent="." unique_id=201016615]
 
@@ -16810,7 +16810,7 @@ transform = Transform3D(-0.4973125, 0, -0.8675715, 0, 1, 0, 0.8675715, 0, -0.497
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_fcho2")
 
 [node name="EvilMushroom2" type="CharacterBody3D" parent="MiniEnemies" unique_id=750407186 instance=ExtResource("15_d5cin")]
@@ -16818,7 +16818,7 @@ transform = Transform3D(0.29365212, 0, -0.95591235, 0, 1, 0, 0.95591235, 0, 0.29
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_fcho2")
 
 [node name="EvilMushroom3" type="CharacterBody3D" parent="MiniEnemies" unique_id=157173061 instance=ExtResource("15_d5cin")]
@@ -16826,7 +16826,7 @@ transform = Transform3D(-0.94948053, 0, -0.313826, 0, 1, 0, 0.313826, 0, -0.9494
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_fcho2")
 
 [node name="EvilMushroom4" type="CharacterBody3D" parent="MiniEnemies" unique_id=1918569862 instance=ExtResource("15_d5cin")]
@@ -16834,7 +16834,7 @@ transform = Transform3D(-0.91100675, 0, -0.41239142, 0, 1, 0, 0.41239142, 0, -0.
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_fcho2")
 
 [node name="EvilMushroom5" type="CharacterBody3D" parent="MiniEnemies" unique_id=607039893 instance=ExtResource("15_d5cin")]
@@ -16842,7 +16842,7 @@ transform = Transform3D(0.68555206, 0, 0.7280236, 0, 1, 0, -0.7280236, 0, 0.6855
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_fcho2")
 
 [node name="EvilMushroom6" type="CharacterBody3D" parent="MiniEnemies" unique_id=1050560100 instance=ExtResource("15_d5cin")]
@@ -16850,7 +16850,7 @@ transform = Transform3D(-0.03297975, 0, 0.99945605, 0, 1, 0, -0.99945605, 0, -0.
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Hongo malvado"
+display_name = "Evil Mushroom"
 drop_scene = ExtResource("9_fcho2")
 
 [node name="Skeleton1" type="CharacterBody3D" parent="MiniEnemies" unique_id=844968370 instance=ExtResource("17_el04y")]
@@ -16858,7 +16858,7 @@ transform = Transform3D(0.18324041, 0, 0.9830681, 0, 1, 0, -0.9830681, 0, 0.1832
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Esqueleto"
+display_name = "Skeleton"
 anim_library = "skeleton"
 max_health = 60.0
 damage = 14.0
@@ -16875,7 +16875,7 @@ transform = Transform3D(-0.8997949, 0, -0.43631315, 0, 1, 0, 0.43631315, 0, -0.8
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Esqueleto"
+display_name = "Skeleton"
 anim_library = "skeleton"
 max_health = 60.0
 damage = 14.0
@@ -16892,7 +16892,7 @@ transform = Transform3D(0.4227345, 0, 0.9062536, 0, 1, 0, -0.9062536, 0, 0.42273
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Esqueleto"
+display_name = "Skeleton"
 anim_library = "skeleton"
 max_health = 60.0
 damage = 14.0
@@ -16909,7 +16909,7 @@ transform = Transform3D(0.30732465, 0, -0.9516047, 0, 1, 0, 0.9516047, 0, 0.3073
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Esqueleto"
+display_name = "Skeleton"
 anim_library = "skeleton"
 max_health = 60.0
 damage = 14.0
@@ -16926,7 +16926,7 @@ transform = Transform3D(-0.7245175, 0, 0.68925637, 0, 1, 0, -0.68925637, 0, -0.7
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Esqueleto"
+display_name = "Skeleton"
 anim_library = "skeleton"
 max_health = 60.0
 damage = 14.0
@@ -16943,7 +16943,7 @@ transform = Transform3D(-0.8453998, 0, 0.5341341, 0, 1, 0, -0.5341341, 0, -0.845
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("16_4d1hl")
-display_name = "Esqueleto"
+display_name = "Skeleton"
 anim_library = "skeleton"
 max_health = 60.0
 damage = 14.0
@@ -20299,7 +20299,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 250,
 collision_layer = 4
 floor_snap_length = 0.4
 script = ExtResource("21_48ph7")
-display_name = "Capitán Kuro"
+display_name = "Captain Kuro"
 patrol_path = NodePath("../KuroPatrol")
 dodge_chance = 0.18
 
@@ -20307,4 +20307,4 @@ dodge_chance = 0.18
 transform = Transform3D(-0.9396926, 0, -0.34202015, 0, 1, 0, 0.34202015, 0, -0.9396926, 207, 1.7, 318)
 collision_mask = 0
 script = ExtResource("23_v6jyr")
-mission_lines = PackedStringArray("¡Luffy-san! ¡Qué bueno que llegaste a la isla!", "Buggy el Payaso se escondió en el cráter del volcán, en el centro de la isla, y tiene a todos aterrorizados.", "Tu misión: ¡derrota a Buggy y recolecta toda la carne que está repartida por la isla!", "Cada carne te devuelve vida. Y el Going Merry está anclado en la ensenada del noreste: sube por el puente del muelle.")
+mission_lines = PackedStringArray("Luffy-san! I'm so glad you made it to the island!", "Buggy the Clown is hiding in the volcano crater, in the middle of the island, and he has everyone terrified.", "Your mission: defeat Buggy and collect all the meat scattered around the island!", "Every piece of meat gives you health back. And the Going Merry is anchored in the northeast inlet: go up the gangway from the dock.")

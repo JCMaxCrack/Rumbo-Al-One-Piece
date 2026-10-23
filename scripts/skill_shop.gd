@@ -45,7 +45,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _refresh() -> void:
-	points_label.text = tr("%s  ·  Nivel %d  ·  Puntos de habilidad: %d") % [tr(hero.character.capitalize()), hero.level, hero.skill_points]
+	points_label.text = tr("%s  ·  Level %d  ·  Skill points: %d") % [tr(hero.character.capitalize()), hero.level, hero.skill_points]
 	for c in list.get_children():
 		list.remove_child(c)
 		c.queue_free()
@@ -71,20 +71,20 @@ func _refresh() -> void:
 		row.add_child(button)
 		var owned := hero.skills.has(id)
 		if available.has(id):
-			name_label.text = "%s  (%s)" % [tr(spec.name), tr("%d punto(s)") % int(spec.cost)]
-			desc.text = tr(spec.text) + "  " + tr("Daño %d · espera %d s") % [int(spec.damage), int(spec.cooldown)]
+			name_label.text = "%s  (%s)" % [tr(spec.name), tr("%d point(s)") % int(spec.cost)]
+			desc.text = tr(spec.text) + "  " + tr("Damage %d · cooldown %d s") % [int(spec.damage), int(spec.cooldown)]
 			if owned:
-				button.text = tr("Equipada") if hero.equipped == id else tr("Equipar")
+				button.text = tr("Equipped") if hero.equipped == id else tr("Equip")
 				button.disabled = hero.equipped == id
 				button.pressed.connect(_on_equip.bind(id))
 			else:
-				button.text = tr("Aprender")
+				button.text = tr("Learn")
 				button.disabled = not hero.can_learn(id)
 				button.pressed.connect(_on_learn.bind(id))
 		else:
 			name_label.text = "???"
-			desc.text = tr("Se desbloquea al llegar a %s") % tr(GameState.ISLAND_NAMES[GameState.ISLANDS[int(spec.island)]])
-			button.text = tr("Bloqueada")
+			desc.text = tr("Unlocks when you reach %s") % tr(GameState.ISLAND_NAMES[GameState.ISLANDS[int(spec.island)]])
+			button.text = tr("Locked")
 			button.disabled = true
 			row.modulate = Color(1, 1, 1, 0.55)
 		list.add_child(row)
@@ -93,13 +93,13 @@ func _refresh() -> void:
 func _on_learn(id: String) -> void:
 	if hero.learn(id):
 		buy_sound.play()
-		info_label.text = tr("¡Aprendiste %s!") % GameState.skill_name(id)
+		info_label.text = tr("You learned %s!") % GameState.skill_name(id)
 	_refresh()
 
 
 func _on_equip(id: String) -> void:
 	hero.equip(id)
-	info_label.text = tr("Habilidad equipada: %s") % GameState.skill_name(id)
+	info_label.text = tr("Skill equipped: %s") % GameState.skill_name(id)
 	_refresh()
 
 
