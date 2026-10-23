@@ -47,7 +47,7 @@ const FILE_PATH := "user://saves/partidas.json"
 ## 2 = Zoro added ("zoro": recruited). 3 = several islands, inventory, experience and skills.
 ## Saves of versions 1 and 2 are still valid (see upgrade()).
 const VERSION := 3
-## Ids of the Checkpoint nodes of scenes/game.tscn (anything else in a save is rejected).
+## Ids of the Checkpoint nodes of scenes/islands/isla_inicio.tscn (anything else in a save is rejected).
 const CHECKPOINT_IDS := ["playa_sur", "entrada_crater", "muelle", "peninsula_oeste", "bosque_noroeste", "costa_este"]
 const FIRST_CHECKPOINT := "playa_sur"
 const MEAT_COUNT := 10
@@ -67,7 +67,7 @@ const HEALTH_PER_LEVEL := 5.0
 
 ## Slot used by the game that is being played (0 = none, nothing is saved).
 var current_slot := 0
-## Progress to apply when scenes/game.tscn starts (filled by load_game()).
+## Progress to apply when scenes/world.tscn starts (filled by load_game()).
 var _pending: Dictionary = {}
 
 
@@ -110,7 +110,7 @@ func delete_slot(slot: int) -> bool:
 	return _write_db(db)
 
 
-## "Nueva partida": the game starts from zero in this slot (game_world.gd saves it at once).
+## "Nueva partida": the game starts from zero in this slot (world.gd saves it at once).
 func start_new_game(slot: int) -> void:
 	current_slot = slot
 	_pending = {}
@@ -118,7 +118,7 @@ func start_new_game(slot: int) -> void:
 
 
 ## "Cargar": only valid slots of games that are not finished can be loaded. The voyage (GameState)
-## is restored here; the island scene restores its own part with take_pending().
+## is restored here; the world scene restores the rest with take_pending().
 func load_game(slot: int) -> bool:
 	var info := read_slot(slot)
 	if info.status != SlotStatus.VALID or bool(info.data.get("completed", false)):

@@ -14,13 +14,34 @@ signal leveled_up(level: int)
 signal skills_changed
 
 const ISLANDS := ["isla_inicio", "villa_syrup", "whisky_peak"]
+## The voyage is one scene: the sea, the Going Merry, the crew and the interface. The islands are
+## loaded into it (and freed again) while the ship gets close to them, at their place in the sea.
+const WORLD_SCENE := "res://scenes/world.tscn"
 const ISLAND_SCENES := {
-	"isla_inicio": "res://scenes/game.tscn",
+	"isla_inicio": "res://scenes/islands/isla_inicio.tscn",
 	"villa_syrup": "res://scenes/islands/villa_syrup.tscn",
 	"whisky_peak": "res://scenes/islands/whisky_peak.tscn",
 }
 const ISLAND_NAMES := {"isla_inicio": "Isla del Payaso", "villa_syrup": "Villa Syrup", "whisky_peak": "Whisky Peak"}
 const CREW := ["zoro", "usopp", "nami"]
+## Where every island is in the sea and what the voyage needs to know about it without loading it:
+##   offset: position of the island scene; size: side of its map (meters, from the offset);
+##   center / radius: the land (in the island's own coordinates), for the fog and for loading it;
+##   dock / dock_yaw: where the Going Merry is moored in its port (own coordinates);
+##   map / shore: picture for the minimap and foam mask for the sea.
+const ISLAND_PLACES := {
+	"isla_inicio": {"offset": Vector3(0, 0, 0), "size": 440.0, "center": Vector2(220, 220), "radius": 225.0,
+		"dock": Vector3(298.32, 1.0, 156.4), "dock_yaw": 180.0,
+		"map": "res://assets/ui/minimap_island.png", "shore": "res://assets/generated/shore_mask.res"},
+	"villa_syrup": {"offset": Vector3(700, 0, -1000), "size": 400.0, "center": Vector2(200, 190), "radius": 175.0,
+		"dock": Vector3(200, 1.0, 372), "dock_yaw": 0.0,
+		"map": "res://assets/ui/minimap_villa_syrup.png", "shore": "res://assets/generated/villa_syrup_shore_mask.res"},
+	"whisky_peak": {"offset": Vector3(1500, 0, -2000), "size": 400.0, "center": Vector2(200, 190), "radius": 170.0,
+		"dock": Vector3(200, 1.0, 372), "dock_yaw": 0.0,
+		"map": "res://assets/ui/minimap_whisky_peak.png", "shore": "res://assets/generated/whisky_peak_shore_mask.res"},
+}
+## The sea that can be sailed (x, z): the Going Merry turns back at its border.
+const SEA_RECT := Rect2(-500, -2600, 2900, 3400)
 
 const INVENTORY_SIZE := 4
 ## id -> name, health it gives back when eaten (0 = it can not be eaten), how many fit in a slot.
@@ -309,6 +330,30 @@ func restore(d: Dictionary, island_id: String, island_data: Dictionary, time: fl
 	play_time = time
 
 
-## Scene of the island being played.
+## Scene of an island (its content: it is loaded into the world scene).
 func island_scene(id: String = "") -> String:
 	return ISLAND_SCENES[island if id == "" else id]
+
+
+## Center of an island in the world (x, z).
+func island_center(id: String) -> Vector2:
+	var p: Dictionary = ISLAND_PLACES[id]
+	return Vector2(p.offset.x, p.offset.z) + p.center
+
+
+## Where the Going Merry is moored in the port of an island (world transform).
+func dock_transform(id: String) -> Transform3D:
+	var p: Dictionary = ISLAND_PLACES[id]
+	return Transform3D(Basis(Vector3.UP, deg_to_rad(p.dock_yaw)), p.offset + p.dock)
+
+
+## The island whose land is closest to a point and how far from its shore (negative = on it).
+func nearest_island(pos: Vector3) -> Array:
+	var best := ""
+	var best_d := INF
+	for id in ISLANDS:
+		var d := island_center(id).distance_to(Vector2(pos.x, pos.z)) - float(ISLAND_PLACES[id].radius)
+		if d < best_d:
+			best_d = d
+			best = id
+	return [best, best_d]

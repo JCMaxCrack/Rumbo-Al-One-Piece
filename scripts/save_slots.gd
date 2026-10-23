@@ -93,7 +93,7 @@ func _on_main_pressed(slot: int) -> void:
 	if mode == Mode.LOAD:
 		if SaveManager.load_game(slot):
 			get_tree().paused = false
-			get_tree().change_scene_to_file(GameState.island_scene())
+			get_tree().change_scene_to_file(GameState.WORLD_SCENE)
 		else:
 			status_label.text = tr("Esa partida no se puede cargar.")
 	elif info.status == SaveManager.SlotStatus.EMPTY:
@@ -106,7 +106,7 @@ func _on_new_pressed(slot: int) -> void:
 	var start := func() -> void:
 		SaveManager.start_new_game(slot)
 		get_tree().paused = false
-		get_tree().change_scene_to_file(GameState.island_scene())
+		get_tree().change_scene_to_file(GameState.WORLD_SCENE)
 	if SaveManager.read_slot(slot).status == SaveManager.SlotStatus.EMPTY:
 		start.call()
 	else:

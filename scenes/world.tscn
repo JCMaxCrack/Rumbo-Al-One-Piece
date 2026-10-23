@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_world"]
+[ext_resource type="Environment" path="res://assets/generated/environment.tres" id="2_env"]
+[ext_resource type="PackedScene" path="res://scenes/props/going_merry.tscn" id="3_ship"]
+[ext_resource type="Script" path="res://scripts/ship.gd" id="4_ship"]
+[ext_resource type="PackedScene" path="res://scenes/player/luffy.tscn" id="5_luffy"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="6_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="7_touch"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="8_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/end_screen.tscn" id="9_end"]
+[ext_resource type="AudioStream" path="res://assets/audio/music_combat.wav" id="10_chase"]
+[ext_resource type="AudioStream" path="res://assets/audio/victory.wav" id="11_victory"]
+[ext_resource type="AudioStream" path="res://assets/audio/defeat.wav" id="12_defeat"]
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_world")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.81915206, 0.3686878, -0.43938506, 0, 0.76604444, 0.6427876, 0.57357645, -0.52654076, 0.62750685, 0, 0, 0)
+light_color = Color(1, 0.95, 0.86, 1)
+light_energy = 1.5
+shadow_enabled = true
+directional_shadow_max_distance = 90.0
+
+[node name="Ocean" type="MeshInstance3D" parent="."]
+
+[node name="Islands" type="Node3D" parent="."]
+
+[node name="GoingMerry" parent="." instance=ExtResource("3_ship")]
+script = ExtResource("4_ship")
+
+[node name="Luffy" parent="." instance=ExtResource("5_luffy")]
+
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("7_touch")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("8_pause")]
+
+[node name="EndScreen" parent="." instance=ExtResource("9_end")]
+
+[node name="ExploreMusic" type="AudioStreamPlayer" parent="."]
+volume_db = -8.0
+
+[node name="ChaseMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_chase")
+volume_db = -40.0
+
+[node name="VictorySound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_victory")
+
+[node name="DefeatSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_defeat")
+
+[node name="DefeatTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true

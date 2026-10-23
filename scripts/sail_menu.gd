@@ -1,7 +1,7 @@
 class_name SailMenu
 extends CanvasLayer
-## Navigation chart (scenes/ui/sail_menu.tscn): opened at the helm of the Going Merry. It lists the
-## islands of the voyage; the ones already open can be chosen to sail there.
+## Navigation chart (scenes/ui/sail_menu.tscn): opened while steering the Going Merry. It lists the
+## islands of the voyage; an open one can be chosen as the course (the compass and the light point to it).
 
 signal sail_requested(island_id: String)
 signal closed

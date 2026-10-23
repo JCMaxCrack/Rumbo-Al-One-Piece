@@ -1,27 +1,15 @@
 [gd_scene format=4]
 
 [ext_resource type="Script" path="res://scripts/game_world.gd" id="1_bt5mj"]
-[ext_resource type="Environment" path="res://assets/generated/environment.tres" id="2_e1j6l"]
 [ext_resource type="PackedScene" path="res://assets/chunks/terrain_tiles.scn" id="3_5newe"]
 [ext_resource type="Shape3D" path="res://assets/generated/terrain_shape.res" id="4_bhx41"]
-[ext_resource type="PlaneMesh" path="res://assets/generated/water_mesh.res" id="5_qnb83"]
 [ext_resource type="ArrayOccluder3D" path="res://assets/generated/terrain_occluder.res" id="6_37s47"]
 [ext_resource type="Script" path="res://scripts/chunk_manager.gd" id="7_bt5mj"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="11_v2yb1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="12_js0lu"]
 [ext_resource type="PackedScene" path="res://scenes/player/zoro.tscn" id="13_bt5mj"]
-[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="13_gxtfn"]
-[ext_resource type="PackedScene" path="res://scenes/ui/end_screen.tscn" id="14_twgab"]
-[ext_resource type="PackedScene" path="res://scenes/player/luffy.tscn" id="15_02fa5"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/koby.tscn" id="16_nepv3"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/buggy.tscn" id="17_7025r"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/evil_mushroom.tscn" id="18_e1j6l"]
-[ext_resource type="PackedScene" path="res://scenes/props/going_merry.tscn" id="18_m4url"]
 [ext_resource type="PackedScene" path="res://scenes/items/meat.tscn" id="19_8ool0"]
-[ext_resource type="AudioStream" path="res://assets/audio/music_island.wav" id="20_pr1ej"]
-[ext_resource type="AudioStream" path="res://assets/audio/music_combat.wav" id="21_05nbr"]
-[ext_resource type="AudioStream" path="res://assets/audio/victory.wav" id="22_0sl42"]
-[ext_resource type="AudioStream" path="res://assets/audio/defeat.wav" id="23_oaba0"]
 [ext_resource type="PackedScene" path="res://scenes/props/checkpoint.tscn" id="60_ckpt"]
 
 [sub_resource type="Gradient" id="Gradient_1e25m"]
@@ -479,16 +467,6 @@ radius = 0.15
 [node name="Game" type="Node3D" unique_id=1345403979]
 script = ExtResource("1_bt5mj")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1928817107]
-environment = ExtResource("2_e1j6l")
-
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1537363612]
-transform = Transform3D(0.81915206, 0.3686878, -0.43938506, 0, 0.76604444, 0.6427876, 0.57357645, -0.52654076, 0.62750685, 0, 0, 0)
-light_color = Color(1, 0.95, 0.86, 1)
-light_energy = 1.5
-shadow_enabled = true
-directional_shadow_max_distance = 90.0
-
 [node name="Island" type="Node3D" parent="." unique_id=1541566489]
 
 [node name="TerrainTiles" parent="Island" unique_id=404491238 instance=ExtResource("3_5newe")]
@@ -499,11 +477,6 @@ collision_mask = 0
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Island/TerrainBody" unique_id=1528366104]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 220, 0, 220)
 shape = ExtResource("4_bhx41")
-
-[node name="Water" type="MeshInstance3D" parent="Island" unique_id=1891459577]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 220, 0, 220)
-cast_shadow = 0
-mesh = ExtResource("5_qnb83")
 
 [node name="Props" type="Node3D" parent="Island" unique_id=771053035]
 
@@ -1025,9 +998,8 @@ shape = SubResource("BoxShape3D_lyx10")
 [node name="MountainOccluder" type="OccluderInstance3D" parent="Island" unique_id=360235684]
 occluder = ExtResource("6_37s47")
 
-[node name="ChunkManager" type="Node3D" parent="." unique_id=1368876648 node_paths=PackedStringArray("target", "terrain_tiles")]
+[node name="ChunkManager" type="Node3D" parent="." unique_id=1368876648 node_paths=PackedStringArray("terrain_tiles")]
 script = ExtResource("7_bt5mj")
-target = NodePath("../Luffy")
 terrain_tiles = NodePath("../Island/TerrainTiles")
 
 [node name="PlayerStart" type="Marker3D" parent="." unique_id=1280905448]
@@ -1040,17 +1012,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.44, 11, 240.6)
 
 [node name="PatrolRight" type="Marker3D" parent="BuggyPatrol" unique_id=718288080]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 218.44, 11, 240.6)
-
-[node name="HUD" parent="." unique_id=1080060577 instance=ExtResource("11_v2yb1")]
-
-[node name="TouchControls" parent="." unique_id=585912515 instance=ExtResource("12_js0lu")]
-
-[node name="PauseMenu" parent="." unique_id=1730849230 instance=ExtResource("13_gxtfn")]
-
-[node name="EndScreen" parent="." unique_id=2007808378 instance=ExtResource("14_twgab")]
-
-[node name="Luffy" parent="." unique_id=1325825775 instance=ExtResource("15_02fa5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 239.56308, 2.2976663, 324.99075)
 
 [node name="Zoro" parent="." unique_id=836300224 instance=ExtResource("13_bt5mj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 7.21174, 162)
@@ -1075,13 +1036,12 @@ shape = SubResource("CylinderShape3D_sww3w")
 [node name="Koby" parent="." unique_id=659906218 instance=ExtResource("16_nepv3")]
 transform = Transform3D(0.78935224, 0, -0.6139406, 0, 1, 0, 0.6139406, 0, 0.78935224, 243.06308, 2.4342778, 320.49075)
 
-[node name="Buggy" parent="." unique_id=1486968825 node_paths=PackedStringArray("patrol_left", "patrol_right", "target") instance=ExtResource("17_7025r")]
+[node name="Buggy" parent="." unique_id=1486968825 node_paths=PackedStringArray("patrol_left", "patrol_right") instance=ExtResource("17_7025r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200.44, 11.2, 240.6)
 patrol_left = NodePath("../BuggyPatrol/PatrolLeft")
 patrol_right = NodePath("../BuggyPatrol/PatrolRight")
-target = NodePath("../Luffy")
 
-[node name="GoingMerry" parent="." unique_id=2125988302 groups=["minimap_ship"] instance=ExtResource("18_m4url")]
+[node name="ShipDock" type="Marker3D" parent="."]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 298.32, 1, 156.4)
 
 [node name="Collectibles" type="Node3D" parent="." unique_id=1244462564]
@@ -1120,46 +1080,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164.56, 16.955202, 246.4)
 
 [node name="EvilMushroom1" parent="MiniEnemies" unique_id=2031733337 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 6.90101, 185)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom2" parent="MiniEnemies" unique_id=1001188226 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.26749888, 0, 0.9635582, 0, 1, 0, -0.9635582, 0, 0.26749888, 185.86603, 15.650042, 268.5)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom3" parent="MiniEnemies" unique_id=1658103917 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(-0.8568887, 0, 0.51550144, 0, 1, 0, -0.51550144, 0, -0.8568887, 272, 1.771608, 292)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom4" parent="MiniEnemies" unique_id=1055108678 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(-0.72593224, 0, -0.68776625, 0, 1, 0, 0.68776625, 0, -0.72593224, 335, 5.1637435, 257)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom5" parent="MiniEnemies" unique_id=322593704 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.4685165, 0, -0.88345474, 0, 1, 0, 0.88345474, 0, 0.4685165, 355, 3.4554381, 205)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom6" parent="MiniEnemies" unique_id=1256565346 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.97658765, 0, 0.21511999, 0, 1, 0, -0.21511999, 0, 0.97658765, 315, 11.619318, 190)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom7" parent="MiniEnemies" unique_id=2018482999 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(0.05395523, 0, 0.9985434, 0, 1, 0, -0.9985434, 0, 0.05395523, 255, 2.629045, 140)
+drop_scene = ExtResource("19_8ool0")
 
 [node name="EvilMushroom8" parent="MiniEnemies" unique_id=483907102 instance=ExtResource("18_e1j6l")]
 transform = Transform3D(-0.9477217, 0, 0.319098, 0, 1, 0, -0.319098, 0, -0.9477217, 165.40192, 6.783624, 203.5)
-
-[node name="ExploreMusic" type="AudioStreamPlayer" parent="." unique_id=424666769]
-stream = ExtResource("20_pr1ej")
-volume_db = -8.0
-autoplay = true
-
-[node name="ChaseMusic" type="AudioStreamPlayer" parent="." unique_id=86910087]
-stream = ExtResource("21_05nbr")
-volume_db = -40.0
-
-[node name="VictorySound" type="AudioStreamPlayer" parent="." unique_id=1334791508]
-stream = ExtResource("22_0sl42")
-
-[node name="DefeatSound" type="AudioStreamPlayer" parent="." unique_id=533335089]
-stream = ExtResource("23_oaba0")
-
-[node name="DefeatTimer" type="Timer" parent="." unique_id=739735221]
-wait_time = 1.5
-one_shot = true
+drop_scene = ExtResource("19_8ool0")
 
 [node name="Checkpoints" type="Node3D" parent="." unique_id=1947251725]
 
@@ -1191,14 +1140,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 357, 2.530136, 224)
 checkpoint_id = "costa_este"
 display_name = "Costa este"
 
-[connection signal="look_dragged" from="TouchControls" to="Luffy" method="look"]
-[connection signal="save_requested" from="PauseMenu" to="." method="_on_pause_menu_save_requested"]
-[connection signal="died" from="Luffy" to="." method="_on_player_died"]
-[connection signal="health_changed" from="Luffy" to="HUD" method="set_health"]
+
+
+
+
 [connection signal="died" from="Zoro" to="." method="_on_zoro_died"]
-[connection signal="health_changed" from="Zoro" to="HUD" method="set_health2"]
+
 [connection signal="defeated" from="Buggy" to="." method="_on_buggy_defeated"]
-[connection signal="health_changed" from="Buggy" to="HUD" method="set_boss_health"]
+
 [connection signal="state_changed" from="Buggy" to="." method="_on_buggy_state_changed"]
 [connection signal="collected" from="Collectibles/Meat1" to="." method="_on_item_collected"]
 [connection signal="collected" from="Collectibles/Meat2" to="." method="_on_item_collected"]
@@ -1210,9 +1159,9 @@ display_name = "Costa este"
 [connection signal="collected" from="Collectibles/Meat8" to="." method="_on_item_collected"]
 [connection signal="collected" from="Collectibles/Meat9" to="." method="_on_item_collected"]
 [connection signal="collected" from="Collectibles/Meat10" to="." method="_on_item_collected"]
-[connection signal="finished" from="ExploreMusic" to="ExploreMusic" method="play"]
-[connection signal="finished" from="ChaseMusic" to="ChaseMusic" method="play"]
-[connection signal="timeout" from="DefeatTimer" to="." method="_on_defeat_timer_timeout"]
+
+
+
 [connection signal="reached" from="Checkpoints/Checkpoint1" to="." method="_on_checkpoint_reached"]
 [connection signal="reached" from="Checkpoints/Checkpoint2" to="." method="_on_checkpoint_reached"]
 [connection signal="reached" from="Checkpoints/Checkpoint3" to="." method="_on_checkpoint_reached"]

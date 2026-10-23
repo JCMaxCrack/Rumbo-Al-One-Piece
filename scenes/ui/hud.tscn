@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hqnrr"]
 [ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_bo48s"]
 [ext_resource type="Script" path="res://scripts/minimap.gd" id="3_8qguk"]
-[ext_resource type="Texture2D" path="res://assets/ui/minimap_island.png" id="4_136eg"]
 [ext_resource type="Script" path="res://scripts/item_slot.gd" id="5_slot"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qguk"]
@@ -504,7 +503,6 @@ offset_top = 16.0
 offset_right = -16.0
 offset_bottom = 216.0
 script = ExtResource("3_8qguk")
-map_texture = ExtResource("4_136eg")
 
 [node name="MessageTimer" type="Timer" parent="." unique_id=1664139517]
 wait_time = 2.0
