@@ -16,7 +16,7 @@ func show_result(won: bool, time_seconds: float, collected: int, total: int, bos
 	if won:
 		title_label.text = tr("¡Aventura completada!")
 		title_label.modulate = Color(1, 0.85, 0.4)
-		detail_label.text = tr("Luffy, Zoro, Usopp y Nami zarpan juntos rumbo al Grand Line.") + "\n" + tr("Nivel %d  ·  Tiempo: %d:%02d") % [GameState.level, t / 60, t % 60]
+		detail_label.text = tr("Luffy, Zoro, Usopp y Nami zarpan juntos rumbo al Grand Line.") + "\n" + tr("Nivel %d  ·  Tiempo: %d:%02d") % [GameState.hero(0).level, t / 60, t % 60]
 	else:
 		title_label.text = tr("¡Te derrotaron!")
 		title_label.modulate = Color(1, 0.45, 0.4)

@@ -59,9 +59,12 @@ func _ready() -> void:
 	var st: Dictionary = GameState.islands.get(island_id, {})
 	if not st.is_empty():
 		_apply_island(st)
+	# a crew member that a player plays is with the crew from the start: nobody recruits him
+	if GameSession.is_played(recruit_member):
+		recruited = true
 	# the crew member of the island travels with Luffy once he joins: this copy is not needed
 	var npc := recruit_node()
-	if npc and (GameState.has_crew(recruit_member) or (recruit_member == "zoro" and GameState.coop_zoro())):
+	if npc and (GameState.has_crew(recruit_member) or GameSession.is_played(recruit_member)):
 		remove_child(npc)
 		npc.queue_free()
 	_connect_nodes()
@@ -182,7 +185,7 @@ func recruit() -> void:
 		return
 	recruited = true
 	GameState.add_crew(recruit_member)
-	GameState.add_xp(30)
+	world.give_xp(30)
 	var npc := recruit_node()
 	if npc:
 		world.adopt_crew(recruit_member, npc)
@@ -196,7 +199,7 @@ func check_mission() -> void:
 	if mission == Mission.ACTIVE and _mission_goals_done():
 		mission = Mission.DONE
 		GameState.complete_island(island_id)
-		GameState.add_xp(50)
+		world.give_xp(50)
 		_update_mission_text()
 		world.on_island_completed(self)
 

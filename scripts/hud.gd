@@ -1,6 +1,8 @@
 class_name HUD
 extends CanvasLayer
 ## In-game interface. Nodes in scenes/ui/hud.tscn.
+## In co-op player 2 has his own copy of the level bar, the inventory and the skill box (made in
+## code from player 1's, see set_split()); the functions that fill them take the player index.
 
 const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha: cámara"
 
@@ -23,14 +25,9 @@ const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha
 @onready var player2_panel: Control = $Root/Player2Panel
 @onready var health_bar2: ProgressBar = $Root/Player2Panel/VBox/HealthBar
 @onready var health_label2: Label = $Root/Player2Panel/VBox/Row/HealthLabel
-@onready var level_label: Label = $Root/PlayerPanel/VBox/XpRow/LevelLabel
-@onready var xp_bar: ProgressBar = $Root/PlayerPanel/VBox/XpRow/XpBar
-@onready var points_label: Label = $Root/PlayerPanel/VBox/XpRow/PointsLabel
 @onready var inventory_slots: Array = $Root/Inventory/Slots.get_children()
 @onready var inventory_hint: Label = $Root/Inventory/Hint
 @onready var skill_box: Control = $Root/SkillBox
-@onready var skill_name: Label = $Root/SkillBox/VBox/SkillName
-@onready var skill_bar: ProgressBar = $Root/SkillBox/VBox/Cooldown
 @onready var skill_hint: Label = $Root/SkillBox/VBox/Hint
 @onready var interact_hint: Label = $Root/InteractHint
 @onready var banner: Control = $Root/Banner
@@ -45,6 +42,10 @@ var world: World
 var compass: Compass
 ## Minimap of player 2 (co-op only).
 var minimap2: Minimap
+## Player 2's level bar, inventory and skill box (co-op only).
+var _xp2: Control
+var _inventory2: Control
+var _skill_box2: Control
 var _banner_tween: Tween
 
 
@@ -71,7 +72,13 @@ func set_health(current: float, maximum: float) -> void:
 	health_label.text = "%d / %d" % [int(ceil(current)), int(maximum)]
 
 
-## Health of Zoro (player 2 in co-op, or the companion once he joins the crew).
+## Names in the panels of player 1 and of the second panel (player 2, or Zoro as a companion).
+func set_names(first: String, second: String) -> void:
+	$Root/PlayerPanel/VBox/Row/NameLabel.text = first
+	$Root/Player2Panel/VBox/Row/NameLabel.text = second
+
+
+## Health of player 2 in co-op (or of Zoro, once he joins the crew in single player).
 func set_health2(current: float, maximum: float) -> void:
 	health_bar2.max_value = maximum
 	health_bar2.value = current
@@ -111,6 +118,27 @@ func set_split(on: bool, p2: Player) -> void:
 		c.anchor_right = 0.5
 		c.offset_right = -16.0
 		c.offset_left = -16.0 - w
+	# player 2's own level bar, inventory (bottom left of his half) and skill box (bottom right)
+	if _xp2 == null:
+		_xp2 = $Root/PlayerPanel/VBox/XpRow.duplicate()
+		$Root/Player2Panel/VBox.add_child(_xp2)
+		_inventory2 = $Root/Inventory.duplicate()
+		_inventory2.name = "Inventory2"
+		$Root.add_child(_inventory2)
+		_skill_box2 = skill_box.duplicate()
+		_skill_box2.name = "SkillBox2"
+		$Root.add_child(_skill_box2)
+	_inventory2.anchor_left = 0.5
+	_inventory2.anchor_right = 0.5
+	_inventory2.offset_left = 16.0
+	_inventory2.offset_right = 280.0
+	var w := _skill_box2.offset_right - _skill_box2.offset_left
+	_skill_box2.anchor_left = 1.0
+	_skill_box2.anchor_right = 1.0
+	_skill_box2.offset_right = -16.0
+	_skill_box2.offset_left = -16.0 - w
+	_skill_box2.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_refresh_hints()
 
 
 ## Taking the wheel of the Going Merry: the hints show the controls of the ship.
@@ -119,6 +147,10 @@ func set_sailing(on: bool) -> void:
 	$Root/Inventory.visible = not on
 	if on:
 		skill_box.visible = false
+	if _inventory2:
+		_inventory2.visible = not on
+		if on:
+			_skill_box2.visible = false
 	_refresh_hints()
 
 
@@ -133,31 +165,41 @@ func set_count(current: int, total: int) -> void:
 	item_label.text = tr("Carne: %d / %d") % [current, total]
 
 
-## Level, experience bar and skill points.
-func set_xp(level: int, xp: int, needed: int, points: int) -> void:
-	level_label.text = tr("Nv. %d") % level
-	xp_bar.max_value = needed
-	xp_bar.value = xp
-	points_label.text = "★ %d" % points
-	points_label.modulate = Color(1, 0.85, 0.3) if points > 0 else Color(0.7, 0.7, 0.7)
+## Level, experience bar and skill points of a player.
+func set_xp(level: int, xp: int, needed: int, points: int, player := 0) -> void:
+	var row: Control = $Root/PlayerPanel/VBox/XpRow if player == 0 else _xp2
+	if row == null:
+		return
+	(row.get_node("LevelLabel") as Label).text = tr("Nv. %d") % level
+	var bar := row.get_node("XpBar") as ProgressBar
+	bar.max_value = needed
+	bar.value = xp
+	var pts := row.get_node("PointsLabel") as Label
+	pts.text = "★ %d" % points
+	pts.modulate = Color(1, 0.85, 0.3) if points > 0 else Color(0.7, 0.7, 0.7)
 
 
-## The slots of the inventory (GameState.inventory) and the one selected.
-func set_inventory(inv: Array, selected: int) -> void:
-	for i in inventory_slots.size():
-		var slot: ItemSlot = inventory_slots[i]
+## The slots of a player's inventory (HeroProgress.inventory) and the one selected.
+func set_inventory(inv: Array, selected: int, player := 0) -> void:
+	var slots: Array = inventory_slots if player == 0 else (_inventory2.get_node("Slots").get_children() if _inventory2 else [])
+	for i in slots.size():
+		var slot: ItemSlot = slots[i]
 		var e: Dictionary = inv[i] if i < inv.size() else {}
 		slot.set_item(str(e.get("id", "")), int(e.get("count", 0)), i == selected)
 
 
-## The equipped skill and how much of its waiting time is left (1 = just used, 0 = ready).
-func set_skill(id: String, cooldown: float) -> void:
-	skill_box.visible = id != "" and not sailing
+## A player's equipped skill and how much of its waiting time is left (1 = just used, 0 = ready).
+func set_skill(id: String, cooldown: float, player := 0) -> void:
+	var box: Control = skill_box if player == 0 else _skill_box2
+	if box == null:
+		return
+	box.visible = id != "" and not sailing
 	if id == "":
 		return
-	skill_name.text = GameState.skill_name(id)
-	skill_bar.value = 1.0 - clampf(cooldown, 0.0, 1.0)
-	skill_bar.modulate = Color(0.55, 1, 0.55) if cooldown <= 0.0 else Color(1, 1, 1, 0.8)
+	(box.get_node("VBox/SkillName") as Label).text = GameState.skill_name(id)
+	var bar := box.get_node("VBox/Cooldown") as ProgressBar
+	bar.value = 1.0 - clampf(cooldown, 0.0, 1.0)
+	bar.modulate = Color(0.55, 1, 0.55) if cooldown <= 0.0 else Color(1, 1, 1, 0.8)
 
 
 ## "[E] Hablar", "[E] Zarpar"... over the inventory (empty text hides it).
@@ -199,6 +241,11 @@ func _refresh_hints() -> void:
 	controls_hint.text = tr(TOUCH_HINT) if touch_mode and not sailing else hint
 	inventory_hint.text = tr("%s comer  ·  %s cambiar") % [k.call("use_item"), k.call("next_item")] if not touch_mode else ""
 	skill_hint.text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [k.call("skill"), k.call("next_skill"), k.call("shop")] if not touch_mode else ""
+	if _inventory2:
+		# player 2 plays with a gamepad
+		var g := func(a: String) -> String: return Preferences.event_text(a, true)
+		(_inventory2.get_node("Hint") as Label).text = tr("%s comer  ·  %s cambiar") % [g.call("use_item"), g.call("next_item")]
+		(_skill_box2.get_node("VBox/Hint") as Label).text = tr("%s usar  ·  %s cambiar  ·  %s tienda") % [g.call("skill"), g.call("next_skill"), g.call("shop")]
 
 
 func set_mission(text: String) -> void:

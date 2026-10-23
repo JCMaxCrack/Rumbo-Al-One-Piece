@@ -1,17 +1,13 @@
 extends Node
-## GameState (autoload, see project.godot): everything Luffy carries from one island to another.
+## GameState (autoload, see project.godot): everything the crew carries from one island to another.
 ##   - the voyage: island being played, islands that can be visited and islands completed;
 ##   - the crew (Zoro, Usopp, Nami) that already joined;
-##   - the inventory: INVENTORY_SIZE slots, each with one kind of item (meat and tangerines stack);
-##   - experience: defeating enemies gives XP; every full bar is a level and a skill point;
-##   - the skills (new attacks) learned in the skill shop and the one that is equipped.
+##   - `heroes`: one HeroProgress per player (one in single player, two in co-op), each with its
+##     own character, inventory (INVENTORY_SIZE slots; meat and tangerines stack), level and
+##     experience (every full bar is a level and a skill point) and the skills of its character
+##     learned in the skill shop. In co-op every enemy gives double XP to both players.
 ## The islands keep their own progress (mission, checkpoints, meat taken...) in `islands`.
 ## SaveManager writes all of it in the save slots (see collect() / restore()).
-
-signal inventory_changed
-signal xp_changed(level: int, xp: int, needed: int)
-signal leveled_up(level: int)
-signal skills_changed
 
 const ISLANDS := ["isla_inicio", "villa_syrup", "whisky_peak"]
 ## The voyage is one scene: the sea, the Going Merry, the crew and the interface. The islands are
@@ -53,40 +49,83 @@ const ITEMS := {
 	"key": {"name": "Llave de la mansión", "heal": 0.0, "stack": 1, "color": Color(0.95, 0.8, 0.3)},
 }
 
-## Skills of Luffy. "island": index of the island where they appear in the shop (2 per island).
+## Skills of every character (ids are unique among all of them). "island": index of the island
+## where they appear in the shop (2 per island). "effect" says what the skill does (Player):
+##   spin: hits all around; front: a strong hit in front; rapid: many hits in front; shield: no
+##   damage for a while and pushes everyone away; wave: a shock wave in front; storm: hits all
+##   around several times; shot: a projectile; spread: three projectiles.
 const SKILLS := {
-	"muchi": {"name": "Gomu Gomu no Muchi", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 22.0,
-		"text": "Patada giratoria: golpea a todos los enemigos a tu alrededor."},
-	"bazooka": {"name": "Gomu Gomu no Bazooka", "island": 0, "cost": 2, "cooldown": 6.0, "damage": 40.0,
-		"text": "Empujón con las dos palmas: mucho daño y lanza lejos al enemigo."},
-	"gatling": {"name": "Gomu Gomu no Gatling", "island": 1, "cost": 2, "cooldown": 7.0, "damage": 9.0,
-		"text": "Lluvia de puñetazos hacia delante: muchos golpes seguidos."},
-	"fusen": {"name": "Gomu Gomu no Fusen", "island": 1, "cost": 1, "cooldown": 10.0, "damage": 10.0,
-		"text": "Te inflas como un globo: nada te hace daño y empujas a los enemigos."},
-	"ono": {"name": "Gomu Gomu no Ono", "island": 2, "cost": 2, "cooldown": 8.0, "damage": 48.0,
-		"text": "Hachazo con el talón: una onda de choque delante de ti."},
-	"storm": {"name": "Gomu Gomu no Storm", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 14.0,
-		"text": "Tormenta de golpes en todas las direcciones."},
+	"luffy": {
+		"muchi": {"name": "Gomu Gomu no Muchi", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 22.0, "effect": "spin", "radius": 3.3, "push": 8.0,
+			"text": "Patada giratoria: golpea a todos los enemigos a tu alrededor."},
+		"bazooka": {"name": "Gomu Gomu no Bazooka", "island": 0, "cost": 2, "cooldown": 6.0, "damage": 40.0, "effect": "front", "radius": 1.9, "push": 18.0,
+			"text": "Empujón con las dos palmas: mucho daño y lanza lejos al enemigo."},
+		"gatling": {"name": "Gomu Gomu no Gatling", "island": 1, "cost": 2, "cooldown": 7.0, "damage": 9.0, "effect": "rapid", "radius": 1.5, "push": 2.5,
+			"text": "Lluvia de puñetazos hacia delante: muchos golpes seguidos."},
+		"fusen": {"name": "Gomu Gomu no Fusen", "island": 1, "cost": 1, "cooldown": 10.0, "damage": 10.0, "effect": "shield", "radius": 3.6, "push": 13.0,
+			"text": "Te inflas como un globo: nada te hace daño y empujas a los enemigos."},
+		"ono": {"name": "Gomu Gomu no Ono", "island": 2, "cost": 2, "cooldown": 8.0, "damage": 48.0, "effect": "wave", "radius": 2.8, "push": 10.0,
+			"text": "Hachazo con el talón: una onda de choque delante de ti."},
+		"storm": {"name": "Gomu Gomu no Storm", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 14.0, "effect": "storm", "radius": 4.2, "push": 6.0,
+			"text": "Tormenta de golpes en todas las direcciones."},
+	},
+	"zoro": {
+		"onigiri": {"name": "Oni Giri", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 26.0, "effect": "front", "radius": 1.9, "push": 14.0,
+			"text": "Corte cruzado con las tres espadas: mucho daño delante de ti."},
+		"tatsumaki": {"name": "Tatsu Maki", "island": 0, "cost": 2, "cooldown": 7.0, "damage": 30.0, "effect": "spin", "radius": 3.6, "push": 12.0,
+			"text": "Un tornado de cortes que golpea a todos a tu alrededor."},
+		"yakkodori": {"name": "Yakkodori", "island": 1, "cost": 1, "cooldown": 5.0, "damage": 34.0, "effect": "shot", "radius": 0.35, "push": 6.0,
+			"text": "Un corte que vuela: golpea a los enemigos lejanos."},
+		"rengoku": {"name": "Rengoku Oni Giri", "island": 1, "cost": 2, "cooldown": 7.0, "damage": 10.0, "effect": "rapid", "radius": 1.6, "push": 3.0,
+			"text": "Una ráfaga de cortes seguidos hacia delante."},
+		"sanjuroku": {"name": "Sanjuroku Pound Ho", "island": 2, "cost": 2, "cooldown": 8.0, "damage": 50.0, "effect": "wave", "radius": 2.9, "push": 11.0,
+			"text": "Un cañonazo de aire cortante: una onda de choque delante de ti."},
+		"ashura": {"name": "Asura", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 16.0, "effect": "storm", "radius": 4.2, "push": 7.0,
+			"text": "Nueve espadas: cortes en todas las direcciones."},
+	},
+	"usopp": {
+		"namari": {"name": "Namari Boshi", "island": 0, "cost": 1, "cooldown": 3.0, "damage": 22.0, "effect": "shot", "radius": 0.2, "push": 5.0,
+			"text": "Una bola de plomo: mucho daño a un enemigo lejano."},
+		"pound": {"name": "Usopp Pound", "island": 0, "cost": 1, "cooldown": 5.0, "damage": 28.0, "effect": "front", "radius": 1.8, "push": 14.0,
+			"text": "¡Martillazo de cinco toneladas! (o eso dice Usopp)."},
+		"kaen": {"name": "Kaen Boshi", "island": 1, "cost": 2, "cooldown": 6.0, "damage": 38.0, "effect": "shot", "radius": 0.3, "push": 8.0,
+			"text": "Una estrella de fuego que quema a quien toca."},
+		"tamago": {"name": "Tamago Boshi", "island": 1, "cost": 1, "cooldown": 6.0, "damage": 14.0, "effect": "spread", "radius": 0.2, "push": 4.0,
+			"text": "Tres huevos podridos a la vez: abanico de disparos."},
+		"kemuri": {"name": "Kemuri Boshi", "island": 2, "cost": 1, "cooldown": 10.0, "damage": 8.0, "effect": "shield", "radius": 3.4, "push": 12.0,
+			"text": "Una nube de humo: nada te hace daño y los enemigos retroceden."},
+		"kayaku": {"name": "Kayaku Boshi", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 18.0, "effect": "storm", "radius": 4.4, "push": 9.0,
+			"text": "Explosiones de pólvora a tu alrededor."},
+	},
+	"nami": {
+		"cyclone": {"name": "Cyclone Tempo", "island": 0, "cost": 1, "cooldown": 4.0, "damage": 18.0, "effect": "front", "radius": 2.2, "push": 22.0,
+			"text": "Un ciclón con el Clima-Tact que lanza lejos a los enemigos."},
+		"thunderbolt": {"name": "Thunderbolt Tempo", "island": 0, "cost": 2, "cooldown": 6.0, "damage": 34.0, "effect": "wave", "radius": 2.8, "push": 8.0,
+			"text": "Un rayo cae delante de ti."},
+		"cool_ball": {"name": "Cool Ball", "island": 1, "cost": 1, "cooldown": 6.0, "damage": 12.0, "effect": "spread", "radius": 0.25, "push": 4.0,
+			"text": "Tres burbujas de aire frío en abanico."},
+		"mirage": {"name": "Mirage Tempo", "island": 1, "cost": 1, "cooldown": 10.0, "damage": 8.0, "effect": "shield", "radius": 3.4, "push": 12.0,
+			"text": "Un espejismo: nada te hace daño y confundes a los enemigos."},
+		"heat_ball": {"name": "Heat Ball", "island": 2, "cost": 2, "cooldown": 7.0, "damage": 40.0, "effect": "shot", "radius": 0.35, "push": 8.0,
+			"text": "Una burbuja de aire caliente que estalla al tocar."},
+		"thunder_lance": {"name": "Thunder Lance Tempo", "island": 2, "cost": 3, "cooldown": 14.0, "damage": 18.0, "effect": "storm", "radius": 4.2, "push": 6.0,
+			"text": "Lanzas de rayo caen a tu alrededor."},
+	},
 }
+## Health of every character at level 1 (it grows HEALTH_PER_LEVEL with every level).
+const BASE_HEALTH := {"luffy": 100.0, "zoro": 120.0, "usopp": 90.0, "nami": 95.0}
+const HEALTH_PER_LEVEL := 5.0
 const MAX_LEVEL := 30
 
 var island := "isla_inicio"
 var unlocked: Array = ["isla_inicio"]
 var completed: Array = []
 var crew: Array = []
-## INVENTORY_SIZE entries: {} (empty) or {"id": "meat", "count": 3}.
-var inventory: Array = []
-var selected_slot := 0
-var level := 1
-var xp := 0
-var skill_points := 0
-var skills: Array = []
-var equipped := ""
+## One HeroProgress per player.
+var heroes: Array = []
 ## island id -> progress of that island (written and read by the island scripts).
 var islands := {}
 var play_time := 0.0
-## Luffy's health when he left the last island (0 = full).
-var health := 0.0
 
 
 func _ready() -> void:
@@ -100,23 +139,78 @@ func reset() -> void:
 	unlocked = ["isla_inicio"]
 	completed = []
 	crew = []
-	inventory = []
-	for i in INVENTORY_SIZE:
-		inventory.append({})
-	selected_slot = 0
-	level = 1
-	xp = 0
-	skill_points = 0
-	skills = []
-	equipped = ""
+	heroes = []
+	for who in GameSession.characters:
+		heroes.append(HeroProgress.new(who))
 	islands = {}
 	play_time = 0.0
-	health = 0.0
 
 
-## Local co-op: Zoro is player 2 from the first island.
-func coop_zoro() -> bool:
-	return GameSession.coop
+## The progress of player `i` (0 or 1).
+func hero(i: int = 0) -> HeroProgress:
+	return heroes[i] if i < heroes.size() else heroes[0]
+
+
+## The progress that belongs to a character on screen: player 2 has his own; the companions
+## (and anything else) use player 1's.
+func hero_of(p: Node) -> HeroProgress:
+	if p is Player and (p as Player).control == Player.Controller.PLAYER_TWO and heroes.size() > 1:
+		return heroes[1]
+	return heroes[0]
+
+
+## Items of the whole party (an item a mission asks for can be in the bag of either player).
+func party_count(id: String) -> int:
+	var n := 0
+	for h in heroes:
+		n += (h as HeroProgress).count_of(id)
+	return n
+
+
+## Takes items from the party (from `first` before the others). Returns false if there are not enough.
+func party_take(id: String, amount: int, first: HeroProgress = null) -> bool:
+	if party_count(id) < amount:
+		return false
+	var order := heroes.duplicate()
+	if first:
+		order.erase(first)
+		order.push_front(first)
+	var left := amount
+	for h in order:
+		left -= (h as HeroProgress).remove_item(id, left) if left > 0 else 0
+	return true
+
+
+## Experience for everyone: in co-op it is doubled and both players get it.
+func give_xp(amount: int) -> int:
+	var each := amount * (2 if heroes.size() > 1 else 1)
+	for h in heroes:
+		(h as HeroProgress).add_xp(each)
+	return each
+
+
+func xp_for_level(lv: int) -> int:
+	return 40 + 30 * (lv - 1)
+
+
+func max_health(character: String, lv: int) -> float:
+	return float(BASE_HEALTH.get(character, 100.0)) + HEALTH_PER_LEVEL * (lv - 1)
+
+
+## Spec of a skill of any character ({} if it does not exist).
+func skill_spec(id: String) -> Dictionary:
+	for who in SKILLS:
+		if (SKILLS[who] as Dictionary).has(id):
+			return SKILLS[who][id]
+	return {}
+
+
+## Index of the farthest island reached (the skill shop shows 2 skills more for each one).
+func reached_index() -> int:
+	var reached := island_index()
+	for id in unlocked:
+		reached = maxi(reached, island_index(id))
+	return reached
 
 
 func island_index(id: String = "") -> int:
@@ -150,184 +244,38 @@ func is_last_island(id: String) -> bool:
 	return island_index(id) == ISLANDS.size() - 1
 
 
-# ------------------------------------------------------------------ inventory
+# ------------------------------------------------------------------ names
 func item_name(id: String) -> String:
 	return tr(ITEMS[id].name) if ITEMS.has(id) else ""
 
 
-func count_of(id: String) -> int:
-	var n := 0
-	for s in inventory:
-		if s.get("id", "") == id:
-			n += int(s.count)
-	return n
-
-
-## Puts an item in the inventory. Returns false if there is no room for it.
-func add_item(id: String, amount: int = 1) -> bool:
-	if not ITEMS.has(id) or not can_add(id, amount):
-		return false
-	var left := amount
-	var stack: int = ITEMS[id].stack
-	for s in inventory:
-		if left > 0 and s.get("id", "") == id and int(s.count) < stack:
-			var put := mini(left, stack - int(s.count))
-			s.count = int(s.count) + put
-			left -= put
-	for i in inventory.size():
-		if left > 0 and (inventory[i] as Dictionary).is_empty():
-			var put := mini(left, stack)
-			inventory[i] = {"id": id, "count": put}
-			left -= put
-	inventory_changed.emit()
-	return true
-
-
-func can_add(id: String, amount: int = 1) -> bool:
-	var stack: int = ITEMS[id].stack
-	var room := 0
-	for s in inventory:
-		if (s as Dictionary).is_empty():
-			room += stack
-		elif s.id == id:
-			room += stack - int(s.count)
-	return room >= amount
-
-
-## Takes items out of the inventory (eating, giving them away). Returns false if there are not enough.
-func remove_item(id: String, amount: int = 1) -> bool:
-	if count_of(id) < amount:
-		return false
-	var left := amount
-	for i in range(inventory.size() - 1, -1, -1):
-		var s: Dictionary = inventory[i]
-		if left > 0 and s.get("id", "") == id:
-			var take := mini(left, int(s.count))
-			s.count = int(s.count) - take
-			left -= take
-			if int(s.count) <= 0:
-				inventory[i] = {}
-	inventory_changed.emit()
-	return true
-
-
-func selected_item() -> String:
-	return str((inventory[selected_slot] as Dictionary).get("id", ""))
-
-
-func select_slot(i: int) -> void:
-	selected_slot = posmod(i, INVENTORY_SIZE)
-	inventory_changed.emit()
-
-
-## Next slot with something in it (or simply the next one if they are all empty).
-func select_next(dir: int = 1) -> void:
-	for k in range(1, INVENTORY_SIZE + 1):
-		var i := posmod(selected_slot + k * dir, INVENTORY_SIZE)
-		if not (inventory[i] as Dictionary).is_empty():
-			select_slot(i)
-			return
-	select_slot(selected_slot + dir)
-
-
-# ------------------------------------------------------------------ experience
-func xp_needed(lv: int = -1) -> int:
-	var l := level if lv < 0 else lv
-	return 40 + 30 * (l - 1)
-
-
-## Experience for defeating an enemy (or finishing a mission).
-func add_xp(amount: int) -> void:
-	if amount <= 0 or level >= MAX_LEVEL:
-		return
-	xp += amount
-	var ups := 0
-	while xp >= xp_needed() and level < MAX_LEVEL:
-		xp -= xp_needed()
-		level += 1
-		skill_points += 1
-		ups += 1
-	if level >= MAX_LEVEL:
-		xp = 0
-	xp_changed.emit(level, xp, xp_needed())
-	if ups > 0:
-		leveled_up.emit(level)
-
-
-# ------------------------------------------------------------------ skills
-## Skills that appear in the shop: 2 more for every island that was reached.
-func shop_skills() -> Array:
-	var out := []
-	var reached := 0
-	for id in unlocked:
-		reached = maxi(reached, island_index(id))
-	reached = maxi(reached, island_index())
-	for id in SKILLS:
-		if int(SKILLS[id].island) <= reached:
-			out.append(id)
-	return out
-
-
-func can_learn(id: String) -> bool:
-	return SKILLS.has(id) and not skills.has(id) and shop_skills().has(id) and skill_points >= int(SKILLS[id].cost)
-
-
-func learn(id: String) -> bool:
-	if not can_learn(id):
-		return false
-	skill_points -= int(SKILLS[id].cost)
-	skills.append(id)
-	if equipped == "":
-		equipped = id
-	skills_changed.emit()
-	return true
-
-
-func equip(id: String) -> void:
-	if skills.has(id):
-		equipped = id
-		skills_changed.emit()
-
-
-func equip_next() -> void:
-	if skills.is_empty():
-		return
-	var i := skills.find(equipped)
-	equipped = skills[(i + 1) % skills.size()]
-	skills_changed.emit()
-
-
 func skill_name(id: String) -> String:
-	return tr(SKILLS[id].name) if SKILLS.has(id) else ""
+	var spec := skill_spec(id)
+	return tr(spec.name) if not spec.is_empty() else ""
 
 
 # ------------------------------------------------------------------ saving
 ## The part of a save document that does not belong to one island.
 func collect() -> Dictionary:
-	var inv := []
-	for s in inventory:
-		inv.append([str((s as Dictionary).get("id", "")), int((s as Dictionary).get("count", 0))])
-	return {
-		"level": level, "xp": xp, "points": skill_points, "skills": skills.duplicate(), "equipped": equipped,
-		"inventory": inv, "crew": crew.duplicate(), "unlocked": unlocked.duplicate(), "done": completed.duplicate(),
-	}
+	return {"crew": crew.duplicate(), "unlocked": unlocked.duplicate(), "done": completed.duplicate()}
 
 
-## Restores what collect() gave (the values were already validated by SaveManager).
-func restore(d: Dictionary, island_id: String, island_data: Dictionary, time: float) -> void:
+func collect_heroes() -> Array:
+	return heroes.map(func(h): return (h as HeroProgress).collect())
+
+
+## Restores what collect() and collect_heroes() gave (the values were already validated by SaveManager).
+func restore(voyage: Dictionary, hero_data: Array, island_id: String, island_data: Dictionary, time: float) -> void:
 	reset()
 	island = island_id
-	level = int(d.level)
-	xp = int(d.xp)
-	skill_points = int(d.points)
-	skills = (d.skills as Array).duplicate()
-	equipped = str(d.equipped)
-	crew = (d.crew as Array).duplicate()
-	unlocked = (d.unlocked as Array).duplicate()
-	completed = (d.done as Array).duplicate()
-	for i in INVENTORY_SIZE:
-		var e: Array = d.inventory[i]
-		inventory[i] = {} if str(e[0]) == "" else {"id": str(e[0]), "count": int(e[1])}
+	crew = (voyage.crew as Array).duplicate()
+	unlocked = (voyage.unlocked as Array).duplicate()
+	completed = (voyage.done as Array).duplicate()
+	heroes = []
+	for d in hero_data:
+		var h := HeroProgress.new(str(d.character))
+		h.restore(d)
+		heroes.append(h)
 	islands = island_data.duplicate(true)
 	play_time = time
 

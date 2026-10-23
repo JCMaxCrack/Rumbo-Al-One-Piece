@@ -75,10 +75,18 @@ static func describe(info: Dictionary) -> String:
 	var date := "%02d/%02d/%d %02d:%02d" % [dt.day, dt.month, dt.year, dt.hour, dt.minute]
 	if d.completed:
 		return TranslationServer.translate("¡Aventura completada!") + "  ·  %d:%02d  ·  %s" % [t / 60, t % 60, date]
-	var p: Dictionary = d.player
-	var crew := 1 + (p.crew as Array).size()
+	var heroes: Array = d.heroes
+	var who := []
+	for h in heroes:
+		who.append("%s %s" % [TranslationServer.translate(str(h.character).capitalize()), TranslationServer.translate("Nv. %d") % int(h.level)])
+	if heroes.size() > 1:
+		who[0] = TranslationServer.translate("Cooperativo") + ": " + who[0]
+	var crew := ["luffy"]
+	for c in d.voyage.crew + heroes.map(func(h): return h.character):
+		if not crew.has(c):
+			crew.append(c)
 	return "%s  ·  %s  ·  %s  ·  %d:%02d  ·  %s" % [TranslationServer.translate(GameState.ISLAND_NAMES[d.island]),
-		TranslationServer.translate("Nv. %d") % int(p.level), TranslationServer.translate("Tripulación: %d") % crew, t / 60, t % 60, date]
+		" + ".join(who), TranslationServer.translate("Tripulación: %d") % crew.size(), t / 60, t % 60, date]
 
 
 func _ask(text: String, action: Callable) -> void:
@@ -94,6 +102,8 @@ func _on_main_pressed(slot: int) -> void:
 		if SaveManager.load_game(slot):
 			get_tree().paused = false
 			get_tree().change_scene_to_file(GameState.WORLD_SCENE)
+		elif info.status == SaveManager.SlotStatus.VALID and (info.data.heroes as Array).size() > 1:
+			status_label.text = tr("Es una partida cooperativa: conecta un mando para el jugador 2.")
 		else:
 			status_label.text = tr("Esa partida no se puede cargar.")
 	elif info.status == SaveManager.SlotStatus.EMPTY:

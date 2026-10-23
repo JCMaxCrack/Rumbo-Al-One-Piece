@@ -11,14 +11,17 @@ extends Node3D
 ##   - Sea fog: on open water the fog gets thick, so the next island is only seen when close. To
 ##     find it: the compass of the HUD (name and meters), its mark in the minimap and a column of
 ##     light over its port that is seen through the fog.
-##   - Single player or local co-op (split screen, each player with his minimap); the crew that
-##     already joined follows Luffy everywhere.
+##   - Single player (Luffy) or local co-op (split screen, each player with his minimap and his
+##     own character, inventory, level and skills: GameState.heroes). Player 1 is `player`,
+##     player 2 is `player2`; Luffy, if nobody plays him, is a companion. The crew that already
+##     joined follows player 1 everywhere.
 ##   - Dialogues, inventory, skills, experience, the skill shop, the navigation chart (to choose
 ##     where to go), saving and the end of the game.
 ## Nodes: Luffy, GoingMerry (Ship), Islands, Ocean, Sun, WorldEnvironment, HUD, TouchControls,
 ## PauseMenu, EndScreen, ExploreMusic, ChaseMusic, VictorySound, DefeatSound, DefeatTimer.
 
-const CREW_SCENES := {"zoro": "res://scenes/player/zoro.tscn", "usopp": "res://scenes/player/usopp.tscn", "nami": "res://scenes/player/nami.tscn"}
+const CREW_SCENES := {"luffy": "res://scenes/player/luffy.tscn", "zoro": "res://scenes/player/zoro.tscn",
+	"usopp": "res://scenes/player/usopp.tscn", "nami": "res://scenes/player/nami.tscn"}
 const SKILL_SHOP_SCENE := "res://scenes/ui/skill_shop.tscn"
 const SAIL_MENU_SCENE := "res://scenes/ui/sail_menu.tscn"
 const OCEAN_SHADER := "res://assets/shaders/ocean.gdshader"
@@ -55,7 +58,9 @@ var islands := {}
 var current: IslandWorld
 ## Island the compass, the minimap and the light point to ("" = none).
 var destination := ""
-## Crew members in the world: "zoro" -> Player.
+## Player 2 in co-op (null in single player).
+var player2: Player
+## Crew members in the world besides player 1 (player 2 too): "zoro" -> Player.
 var crew_nodes := {}
 var finished := false
 var skill_shop: SkillShop
@@ -80,6 +85,7 @@ func _ready() -> void:
 	get_tree().paused = false
 	get_viewport().disable_3d = false
 	add_to_group("world")
+	_setup_heroes()
 	skill_shop = (load(SKILL_SHOP_SCENE) as PackedScene).instantiate()
 	add_child(skill_shop)
 	skill_shop.closed.connect(_on_menu_closed)
@@ -91,7 +97,7 @@ func _ready() -> void:
 	hud.hide_dialog()
 	hud.world = self
 	hud.set_player(player)
-	player.set_max_health(_luffy_max_health(), true)
+	player.set_max_health(GameState.hero(0).max_health(), true)
 	ship.can_sail = _can_sail
 	ship.blocked.connect(_on_ship_blocked)
 	world_map = WorldMap.new()
@@ -112,9 +118,9 @@ func _ready() -> void:
 	if current.chunks:
 		current.chunks.load_around(player.global_position)
 	_setup_crew()
-	if GameState.health > 0.0:
-		player.health = minf(GameState.health, player.max_health)
-		player.health_changed.emit(player.health, player.max_health)
+	_restore_health(player, GameState.hero(0))
+	if player2:
+		_restore_health(player2, GameState.hero(1))
 	hud.set_health(player.health, player.max_health)
 	player.health_changed.connect(hud.set_health)
 	player.died.connect(_on_player_died)
@@ -123,18 +129,21 @@ func _ready() -> void:
 	defeat_timer.timeout.connect(_on_defeat_timer_timeout)
 	explore_music.finished.connect(explore_music.play)
 	chase_music.finished.connect(chase_music.play)
-	GameState.inventory_changed.connect(_on_inventory_changed)
-	GameState.xp_changed.connect(_on_xp_changed)
-	GameState.leveled_up.connect(_on_leveled_up)
-	GameState.skills_changed.connect(_on_skills_changed)
+	for i in GameState.heroes.size():
+		var h := GameState.hero(i)
+		h.inventory_changed.connect(_on_inventory_changed.bind(i))
+		h.xp_changed.connect(_on_xp_changed.bind(i))
+		h.leveled_up.connect(_on_leveled_up.bind(i))
+		h.skills_changed.connect(_on_skills_changed.bind(i))
 	_apply_graphics()
 	GraphicsSettings.changed.connect(_apply_graphics)
 	destination = _default_destination()
 	explore_music.stream = current.music
 	explore_music.volume_db = -8.0
 	explore_music.play()
-	_on_inventory_changed()
-	_on_xp_changed(GameState.level, GameState.xp, GameState.xp_needed())
+	for i in GameState.heroes.size():
+		_on_inventory_changed(i)
+		_on_skills_changed(i)
 	current.activate()
 	if loaded.is_empty() and SaveManager.current_slot > 0:
 		save_game(SaveManager.current_slot)
@@ -143,7 +152,7 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	get_viewport().disable_3d = false
-	GameState.health = player.health if is_instance_valid(player) and not player.dead else 0.0
+	_store_health()
 
 
 # ------------------------------------------------------------------ islands
@@ -246,9 +255,62 @@ func set_destination(id: String) -> void:
 
 
 # ------------------------------------------------------------------ crew and co-op
+## Player 1's character takes the place of Luffy (who is in the scene); then Luffy sails with the
+## crew: as player 2 or as a companion.
+func _setup_heroes() -> void:
+	var first := GameState.hero(0).character
+	if first == "luffy":
+		return
+	var luffy := player
+	player = (load(CREW_SCENES[first]) as PackedScene).instantiate() as Player
+	player.name = first.capitalize()
+	player.control = Player.Controller.PLAYER_ONE
+	add_child(player)
+	player.global_transform = luffy.global_transform
+	for label in ["NameLabel", "PromptLabel"]:
+		var l := player.get_node_or_null(label) as Node3D
+		if l:
+			l.visible = false
+	luffy.control = Player.Controller.AI
+	luffy.remove_from_group("player")
+	var ai := CompanionAI.new()
+	ai.name = "CompanionAI"
+	luffy.add_child(ai)
+	crew_nodes["luffy"] = luffy
+
+
+## The character of player 2 ("" in single player).
+func _p2_character() -> String:
+	return GameState.hero(1).character if GameState.heroes.size() > 1 else ""
+
+
+## The characters on screen: player 1, then player 2 (if there is one).
+func hero_node(i: int) -> Player:
+	return player if i == 0 else player2
+
+
+func _restore_health(p: Player, h: HeroProgress) -> void:
+	p.set_max_health(h.max_health(), true)
+	if h.health > 0.0:
+		p.health = minf(h.health, p.max_health)
+		p.health_changed.emit(p.health, p.max_health)
+
+
+## The health of the players is kept in their HeroProgress (it is saved and goes between scenes).
+func _store_health() -> void:
+	for i in GameState.heroes.size():
+		var p := hero_node(i)
+		GameState.hero(i).health = p.health if is_instance_valid(p) and not p.dead else 0.0
+
+
 func _setup_crew() -> void:
+	if crew_nodes.has("luffy") and crew_nodes.luffy.get_parent() == self:
+		var luffy: Player = crew_nodes.luffy
+		crew_nodes.erase("luffy")
+		luffy.global_position = current.on_ground(player.global_position - player.facing * 2.0)
+		_add_crew_node("luffy", luffy)
 	for member in GameState.CREW:
-		var wanted: bool = GameState.has_crew(member) or (member == "zoro" and GameState.coop_zoro())
+		var wanted: bool = GameState.has_crew(member) or member == _p2_character()
 		if not wanted or crew_nodes.has(member):
 			continue
 		var node := (load(CREW_SCENES[member]) as PackedScene).instantiate() as Player
@@ -256,9 +318,9 @@ func _setup_crew() -> void:
 		add_child(node)
 		node.global_position = current.on_ground(player.global_position - player.facing * (2.0 + crew_nodes.size()) + Vector3(1.2 * crew_nodes.size(), 0.3, 0))
 		_add_crew_node(member, node)
-	var zoro := crew_nodes.get("zoro") as Player
-	if GameState.coop_zoro() and zoro:
-		zoro.global_position = player.global_position + Vector3(1.6, 0.3, 0.8)
+	player2 = crew_nodes.get(_p2_character()) as Player
+	if player2:
+		player2.global_position = player.global_position + Vector3(1.6, 0.3, 0.8)
 		touch_controls.active = false
 		_setup_split_screen()
 	_update_crew()
@@ -272,8 +334,6 @@ func _add_crew_node(member: String, node: Player) -> void:
 		ai.slot = crew_nodes.size() - 1
 	if not node.died.is_connected(_on_crew_died):
 		node.died.connect(_on_crew_died.bind(node))
-	if member == "zoro" and not node.health_changed.is_connected(hud.set_health2):
-		node.health_changed.connect(hud.set_health2)
 
 
 ## The crew member of an island joined: he leaves the island (so he is not freed with it).
@@ -284,11 +344,11 @@ func adopt_crew(member: String, node: Player) -> void:
 	_update_crew()
 
 
-## Who follows Luffy and who is player 2.
+## Who follows player 1 and who is player 2.
 func _update_crew() -> void:
 	for member in crew_nodes:
 		var p: Player = crew_nodes[member]
-		if member == "zoro" and GameState.coop_zoro():
+		if member == _p2_character():
 			p.control = Player.Controller.PLAYER_TWO
 		else:
 			p.control = Player.Controller.AI
@@ -300,10 +360,18 @@ func _update_crew() -> void:
 			prompt.visible = false
 		if p.global_position.distance_to(player.global_position) > 25.0 and not ship.steering:
 			p.global_position = current.on_ground(player.global_position - player.facing * 2.5)
-	var zoro := crew_nodes.get("zoro") as Player
-	hud.set_player2_visible(zoro != null)
-	if zoro:
-		zoro.health_changed.emit(zoro.health, zoro.max_health)
+	# the second panel: player 2, or Zoro when he is a companion
+	var second := player2 if player2 else crew_nodes.get("zoro") as Player
+	for p in [player] + crew_nodes.values():
+		var pl := p as Player
+		if pl != second and pl.health_changed.is_connected(hud.set_health2):
+			pl.health_changed.disconnect(hud.set_health2)
+	hud.set_player2_visible(second != null)
+	hud.set_names(player.display_name, second.display_name if second else "")
+	if second:
+		if not second.health_changed.is_connected(hud.set_health2):
+			second.health_changed.connect(hud.set_health2)
+		second.health_changed.emit(second.health, second.max_health)
 
 
 ## Co-op: two views side by side, each one following the camera of its player.
@@ -317,7 +385,7 @@ func _setup_split_screen() -> void:
 	box.add_theme_constant_override("separation", 4)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(box)
-	for p in [player, crew_nodes.zoro]:
+	for p in [player, player2]:
 		var container := SubViewportContainer.new()
 		container.stretch = true
 		container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -336,7 +404,7 @@ func _setup_split_screen() -> void:
 		_split_follow.append(follow)
 		_follow_camera(follow, (p as Player).camera, cam)
 	get_viewport().disable_3d = true
-	hud.set_split(true, crew_nodes.zoro)
+	hud.set_split(true, player2)
 
 
 ## Moves the RemoteTransform of a split view under another camera (the player's or the ship's).
@@ -379,7 +447,10 @@ func _process(delta: float) -> void:
 	_keep_above_ground()
 	_update_interact_target()
 	_update_sea(delta)
-	hud.set_skill(GameState.equipped, player.skill_cooldown(GameState.equipped) / maxf(0.01, float(GameState.SKILLS.get(GameState.equipped, {"cooldown": 1.0}).cooldown)))
+	for i in GameState.heroes.size():
+		var eq := GameState.hero(i).equipped
+		var spec := GameState.skill_spec(eq)
+		hud.set_skill(eq, hero_node(i).skill_cooldown(eq) / maxf(0.01, float(spec.get("cooldown", 1.0))), i)
 	if DisplayServer.get_name() == "headless" or touch_controls.active:
 		return
 	var free_mouse := get_tree().paused or finished
@@ -405,25 +476,32 @@ func _update_interact_target() -> void:
 		if ship.is_docking():
 			label = ""
 	elif not hud.is_dialog_open() and not finished and not player.dead:
-		var best_d := INF
-		for it in _interactables():
-			var n := it[0] as Node3D
-			if n == null or not is_instance_valid(n) or not n.is_visible_in_tree():
-				continue
-			var d := n.global_position.distance_to(player.global_position)
-			if d < float(it[1]) and d < best_d:
-				best = it
-				best_d = d
+		best = _interactable_near(player)
 		label = tr(best[2]) if not best.is_empty() else ""
 	_interact_target = best
 	hud.set_interact_hint(label)
 	touch_controls.set_interact_visible(hud.is_dialog_open() or label != "", tr("Seguir") if hud.is_dialog_open() else (label if label != "" else tr("Hablar")))
 
 
+## The closest thing that this player can use with "interact" ([] = none).
+func _interactable_near(p: Player) -> Array:
+	var best: Array = []
+	var best_d := INF
+	for it in _interactables():
+		var n := it[0] as Node3D
+		if n == null or not is_instance_valid(n) or not n.is_visible_in_tree():
+			continue
+		var d := n.global_position.distance_to(p.global_position)
+		if d < float(it[1]) and d < best_d:
+			best = it
+			best_d = d
+	return best
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if finished:
 		return
-	var p2 := GameState.coop_zoro()
+	var p2 := player2 != null
 	if event.is_action_pressed("pause") or (p2 and event.is_action_pressed("p2_pause")):
 		pause_menu.can_save = not player.dead
 		pause_menu.toggle()
@@ -442,30 +520,42 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact") or (p2 and event.is_action_pressed("p2_interact")):
 		if hud.is_dialog_open():
 			_next_dialog_line()
-		elif not _interact_target.is_empty():
-			(_interact_target[3] as Callable).call()
-	elif hud.is_dialog_open():
+			return
+		var target := _interact_target if event.is_action_pressed("interact") else _interactable_near(player2)
+		if not target.is_empty() and not (target[0] == ship.get_node("Helm") and not event.is_action_pressed("interact")):
+			(target[3] as Callable).call()
 		return
-	elif event.is_action_pressed("use_item"):
-		_use_selected_item()
-	elif event.is_action_pressed("next_item"):
-		GameState.select_next()
-	elif event.is_action_pressed("skill"):
-		_use_skill()
-	elif event.is_action_pressed("next_skill"):
-		GameState.equip_next()
-		if GameState.equipped != "":
-			hud.show_message(GameState.skill_name(GameState.equipped), 1.0)
-	elif event.is_action_pressed("shop"):
-		open_skill_shop()
-	elif event is InputEventKey and event.pressed and not event.echo:
+	if hud.is_dialog_open():
+		return
+	for i in GameState.heroes.size():
+		var pre := "p2_" if i == 1 else ""
+		if event.is_action_pressed(pre + "use_item"):
+			_use_selected_item(i)
+		elif event.is_action_pressed(pre + "next_item"):
+			GameState.hero(i).select_next()
+		elif event.is_action_pressed(pre + "skill"):
+			_use_skill(i)
+		elif event.is_action_pressed(pre + "next_skill"):
+			var h := GameState.hero(i)
+			h.equip_next()
+			if h.equipped != "":
+				hud.show_message(GameState.skill_name(h.equipped), 1.0)
+		elif event.is_action_pressed(pre + "shop"):
+			open_skill_shop(i)
+		else:
+			continue
+		return
+	if event is InputEventKey and event.pressed and not event.echo:
 		var k := (event as InputEventKey).physical_keycode
 		if k >= KEY_1 and k <= KEY_4:
-			GameState.select_slot(k - KEY_1)
+			GameState.hero(0).select_slot(k - KEY_1)
 
 
-func _use_selected_item() -> void:
-	var id := GameState.selected_item()
+## Eats the food of the selected slot of player i's inventory.
+func _use_selected_item(i := 0) -> void:
+	var h := GameState.hero(i)
+	var p := hero_node(i)
+	var id := h.selected_item()
 	if id == "":
 		hud.show_message(tr("No tienes nada en esa casilla"), 1.2)
 		return
@@ -473,27 +563,29 @@ func _use_selected_item() -> void:
 	if heal <= 0.0:
 		hud.show_message(tr("%s: se usa en otro lugar") % GameState.item_name(id), 1.5)
 		return
-	if player.health >= player.max_health:
+	if p.health >= p.max_health:
 		hud.show_message(tr("Ya tienes toda la vida"), 1.2)
 		return
-	if player.eat(id, heal):
-		GameState.remove_item(id)
+	if p.eat(id, heal):
+		h.remove_item(id)
 
 
-func _use_skill() -> void:
-	if GameState.equipped == "":
-		hud.show_message(tr("Aprende ataques en la tienda de habilidades (K)"), 1.8)
+func _use_skill(i := 0) -> void:
+	var h := GameState.hero(i)
+	var p := hero_node(i)
+	if h.equipped == "":
+		hud.show_message(tr("Aprende ataques en la tienda de habilidades (%s)") % Preferences.event_text("shop", i == 1), 1.8)
 		return
-	if not player.use_skill(GameState.equipped):
-		var cd := player.skill_cooldown(GameState.equipped)
+	if not p.use_skill(h.equipped, h.level):
+		var cd := p.skill_cooldown(h.equipped)
 		if cd > 0.0:
-			hud.show_message(tr("%s: espera %.1f s") % [GameState.skill_name(GameState.equipped), cd], 0.9)
+			hud.show_message(tr("%s: espera %.1f s") % [GameState.skill_name(h.equipped), cd], 0.9)
 
 
-func open_skill_shop() -> void:
-	if finished or player.dead or get_tree().paused:
+func open_skill_shop(i := 0) -> void:
+	if finished or hero_node(i).dead or get_tree().paused:
 		return
-	skill_shop.open()
+	skill_shop.open(GameState.hero(i))
 
 
 func _on_menu_closed() -> void:
@@ -708,35 +800,44 @@ func _update_sea(_delta: float) -> void:
 
 
 # ------------------------------------------------------------------ experience, music, boss
+## An enemy fell: its experience goes to every player (doubled in co-op, GameState.give_xp()).
 func award_xp(e: Node) -> void:
-	var amount := int(e.get("xp_reward")) if e.get("xp_reward") != null else 10
-	GameState.add_xp(amount)
+	var amount := give_xp(int(e.get("xp_reward")) if e.get("xp_reward") != null else 10)
 	if is_instance_valid(e) and e is Node3D:
 		FX.text(self, (e as Node3D).global_position + Vector3(0, 2.2, 0), "+%d XP" % amount, Color(0.6, 0.9, 1.0), 44)
 
 
-func _on_xp_changed(level: int, xp: int, needed: int) -> void:
-	hud.set_xp(level, xp, needed, GameState.skill_points)
+## Experience for the players (enemies, recruits, missions). Returns what each one got.
+func give_xp(amount: int) -> int:
+	return GameState.give_xp(amount)
 
 
-func _on_leveled_up(level: int) -> void:
-	player.set_max_health(_luffy_max_health(), true)
-	FX.level_up(self, player.global_position)
-	FX.text(self, player.global_position + Vector3(0, 2.4, 0), tr("¡Nivel %d!") % level, Color(1, 0.85, 0.3), 64, 1.6)
-	hud.show_message(tr("¡Subiste al nivel %d! Tienes %d punto(s) de habilidad: abre la tienda (K)") % [level, GameState.skill_points], 3.0)
-	hud.set_xp(level, GameState.xp, GameState.xp_needed(), GameState.skill_points)
+func _on_xp_changed(level: int, xp: int, needed: int, i: int) -> void:
+	hud.set_xp(level, xp, needed, GameState.hero(i).skill_points, i)
 
 
-func _on_skills_changed() -> void:
-	hud.set_xp(GameState.level, GameState.xp, GameState.xp_needed(), GameState.skill_points)
+func _on_leveled_up(level: int, i: int) -> void:
+	var h := GameState.hero(i)
+	var p := hero_node(i)
+	p.set_max_health(h.max_health(), true)
+	FX.level_up(self, p.global_position)
+	FX.text(self, p.global_position + Vector3(0, 2.4, 0), tr("¡Nivel %d!") % level, Color(1, 0.85, 0.3), 64, 1.6)
+	var shop := Preferences.event_text("shop", i == 1)
+	if player2:
+		hud.show_message(tr("¡%s subió al nivel %d! Tiene %d punto(s) de habilidad: abre la tienda (%s)") % [p.display_name, level, h.skill_points, shop], 3.0)
+	else:
+		hud.show_message(tr("¡Subiste al nivel %d! Tienes %d punto(s) de habilidad: abre la tienda (%s)") % [level, h.skill_points, shop], 3.0)
+	_on_skills_changed(i)
 
 
-func _on_inventory_changed() -> void:
-	hud.set_inventory(GameState.inventory, GameState.selected_slot)
+func _on_skills_changed(i: int) -> void:
+	var h := GameState.hero(i)
+	hud.set_xp(h.level, h.xp, h.xp_needed(), h.skill_points, i)
 
 
-func _luffy_max_health() -> float:
-	return SaveManager.PLAYER_MAX_HEALTH + SaveManager.HEALTH_PER_LEVEL * (GameState.level - 1)
+func _on_inventory_changed(i: int) -> void:
+	var h := GameState.hero(i)
+	hud.set_inventory(h.inventory, h.selected_slot, i)
 
 
 ## Chase music while a boss runs after Luffy.
@@ -818,8 +919,8 @@ func _apply_graphics() -> void:
 		if cam:
 			cam.far = player.camera.far
 			cam.fov = player.camera.fov
-	if crew_nodes.has("zoro"):
-		(crew_nodes.zoro as Player).camera.far = player.camera.far
+	if player2:
+		player2.camera.far = player.camera.far
 
 
 # ------------------------------------------------------------------ saving
@@ -827,12 +928,17 @@ func _apply_graphics() -> void:
 func collect_state(completed := false) -> Dictionary:
 	for id in islands:
 		GameState.islands[id] = (islands[id] as IslandWorld).collect_island()
+	_store_health()
+	var heroes := GameState.collect_heroes()
+	for i in heroes.size():
+		var p := hero_node(i)
+		heroes[i].health = clampi(ceili(p.health), 1, int(p.max_health))
 	return {
 		"play_time": int(GameState.play_time),
 		"completed": completed,
 		"island": current.island_id,
-		"health": clampi(ceili(player.health), 1, int(player.max_health)),
-		"player": GameState.collect(),
+		"voyage": GameState.collect(),
+		"heroes": heroes,
 		"islands": GameState.islands.duplicate(true),
 	}
 

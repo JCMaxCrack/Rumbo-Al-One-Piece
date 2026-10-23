@@ -77,8 +77,7 @@ func _talk_to_nami() -> void:
 	if mission == Mission.NOT_GIVEN:
 		open_dialog("Nami", ["Hola. Soy Nami, la mejor navegante de East Blue.", "¿Un pirata? Hmm... habla primero con ese chico de la Marina de la entrada."])
 		return
-	if not oranges_given and GameState.count_of("orange") >= ORANGES_FOR_NAMI:
-		GameState.remove_item("orange", ORANGES_FOR_NAMI)
+	if not oranges_given and GameState.party_take("orange", ORANGES_FOR_NAMI):
 		oranges_given = true
 		hud.show_message(tr("Le diste %d mandarinas a Nami") % ORANGES_FOR_NAMI, 2.0)
 		_update_mission_text()
@@ -88,7 +87,7 @@ func _talk_to_nami() -> void:
 			"¿Garp, el héroe de la Marina? Es fortísimo... ¡pero juntos le daremos una paliza! Vamos a la meseta del gran cactus.",
 		], recruit)
 	else:
-		open_dialog("Nami", [tr("Todavía me faltan mandarinas: tienes %d de %d. Crecen entre las rocas de cactus.") % [GameState.count_of("orange"), ORANGES_FOR_NAMI]])
+		open_dialog("Nami", [tr("Todavía me faltan mandarinas: tienes %d de %d. Crecen entre las rocas de cactus.") % [GameState.party_count("orange"), ORANGES_FOR_NAMI]])
 
 
 func _progress_line() -> String:
@@ -105,7 +104,9 @@ func _mission_text() -> String:
 	if mission == Mission.DONE:
 		return tr("¡Aventura completada!")
 	var m := func(done: bool) -> String: return "[X]" if done else "[  ]"
-	var have := mini(GameState.count_of("orange"), ORANGES_FOR_NAMI) if not oranges_given else ORANGES_FOR_NAMI
+	if GameSession.is_played("nami"):
+		return "%s %s" % [m.call(boss.is_defeated()), tr("Derrota al vicealmirante Garp")]
+	var have := mini(GameState.party_count("orange"), ORANGES_FOR_NAMI) if not oranges_given else ORANGES_FOR_NAMI
 	return "%s %s\n%s %s\n%s %s" % [
 		m.call(oranges_given or recruited), tr("Lleva mandarinas a Nami (%d/%d)") % [have, ORANGES_FOR_NAMI],
 		m.call(recruited), tr("Recluta a Nami"),

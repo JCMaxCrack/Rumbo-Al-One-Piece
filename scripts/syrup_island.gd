@@ -106,10 +106,9 @@ func _progress_line() -> String:
 
 
 func _try_gate() -> void:
-	if GameState.count_of("key") <= 0:
+	if not GameState.party_take("key", 1):
 		open_dialog(tr("Reja de la mansión"), ["La reja está cerrada con llave."])
 		return
-	GameState.remove_item("key")
 	flags.append("gate_open")
 	_set_gate_open(true)
 	hud.show_message(tr("¡La reja de la mansión está abierta!"), 2.0)
@@ -140,11 +139,13 @@ func _mission_text() -> String:
 	if mission == Mission.DONE:
 		return tr("¡Isla completada!") + "\n" + tr("Toma el timón del Going Merry y navega hasta Whisky Peak")
 	var m := func(done: bool) -> String: return "[X]" if done else "[  ]"
-	return "%s %s\n%s %s\n%s %s\n%s %s" % [
+	var text := "%s %s\n%s %s\n%s %s" % [
 		m.call(collected_items.has("KeyChest")), tr("Encuentra la llave en el cementerio"),
 		m.call(gate_open()), tr("Abre la reja de la mansión"),
-		m.call(boss.is_defeated()), tr("Derrota al Capitán Kuro en la mansión"),
-		m.call(recruited), tr("Recluta a Usopp en la colina")]
+		m.call(boss.is_defeated()), tr("Derrota al Capitán Kuro en la mansión")]
+	if not GameSession.is_played("usopp"):
+		text += "\n%s %s" % [m.call(recruited), tr("Recluta a Usopp en la colina")]
+	return text
 
 
 func _mission_goals_done() -> bool:

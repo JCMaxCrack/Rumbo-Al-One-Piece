@@ -2,9 +2,9 @@ extends IslandWorld
 ## First island, "Isla del Payaso" (scenes/islands/isla_inicio.tscn). See IslandWorld for what all
 ## the islands share.
 ## Koby gives Luffy the mission: defeat Buggy (in the volcano crater), collect all the meat of the
-## island and, in single player, recruit Zoro: he is tied to a post in the north-west forest and
-## joins the crew if Luffy gives him 3 pieces of meat from the inventory. In local co-op Zoro is
-## player 2 from the start. The Going Merry is moored at the dock of the north-east inlet; when
+## island and recruit Zoro: he is tied to a post in the north-west forest and joins the crew if
+## Luffy gives him 3 pieces of meat from the inventory. If a player plays Zoro (co-op), he is with
+## the crew from the start. The Going Merry is moored at the dock of the north-east inlet; when
 ## the mission is done Luffy takes its wheel and sails to Villa Syrup.
 ## Signals of Buggy, the checkpoints and the meat are connected in the scene.
 
@@ -27,13 +27,6 @@ func _island_ready() -> void:
 	var borders := get_node_or_null("Island/Borders") as CollisionObject3D
 	if borders:
 		borders.collision_layer = 0
-	if GameSession.coop:
-		recruited = true
-
-
-func _apply_island_extra(_st: Dictionary) -> void:
-	if GameSession.coop:
-		recruited = true
 
 
 func activate() -> void:
@@ -58,13 +51,13 @@ func _interactables() -> Array:
 
 
 func _zoro_near() -> bool:
-	return is_instance_valid(zoro) and zoro.get_parent() == self and not GameSession.coop and not recruited \
+	return is_instance_valid(zoro) and zoro.get_parent() == self and not recruited \
 		and zoro.global_position.distance_to(player.global_position) < 3.2
 
 
 func _process(_delta: float) -> void:
 	if is_instance_valid(zoro) and zoro.get_parent() == self:
-		zoro.get_node("NameLabel").visible = not GameSession.coop and not recruited
+		zoro.get_node("NameLabel").visible = not recruited
 		zoro.get_node("PromptLabel").visible = _zoro_near() and not hud.is_dialog_open()
 
 
@@ -79,7 +72,7 @@ func _talk_to_koby() -> void:
 	match mission:
 		Mission.NOT_GIVEN:
 			lines = Array(koby.mission_lines)
-			lines.append(KOBY_COOP_LINE if GameSession.coop else KOBY_ZORO_LINE)
+			lines.append(KOBY_COOP_LINE if GameSession.is_played("zoro") else KOBY_ZORO_LINE)
 		Mission.ACTIVE:
 			lines = [_progress_line()]
 		_:
@@ -89,17 +82,16 @@ func _talk_to_koby() -> void:
 
 ## Zoro, tied up: he joins the crew when Luffy gives him some meat.
 func _talk_to_zoro() -> void:
-	if GameState.count_of("meat") >= MEAT_FOR_ZORO:
+	if GameState.party_count("meat") >= MEAT_FOR_ZORO:
 		open_dialog("Zoro", ["¡Por fin comida! ...Está bien, me uniré a tu tripulación.", "Pero escucha: mi sueño es ser el mejor espadachín del mundo. ¡Que no se te olvide, capitán!"], _recruit_zoro)
 	else:
 		open_dialog("Zoro", ["¿Y tú quién eres? Soy Roronoa Zoro. Los marines me ataron aquí y llevo días sin comer...",
-			tr("Si me traes %d carnes, me uniré a tu tripulación. (Tienes %d)") % [MEAT_FOR_ZORO, GameState.count_of("meat")]])
+			tr("Si me traes %d carnes, me uniré a tu tripulación. (Tienes %d)") % [MEAT_FOR_ZORO, GameState.party_count("meat")]])
 
 
 func _recruit_zoro() -> void:
-	if recruited or GameState.count_of("meat") < MEAT_FOR_ZORO:
+	if recruited or not GameState.party_take("meat", MEAT_FOR_ZORO):
 		return
-	GameState.remove_item("meat", MEAT_FOR_ZORO)
 	zoro.get_node("NameLabel").visible = false
 	zoro.get_node("PromptLabel").visible = false
 	recruit()
@@ -125,7 +117,7 @@ func _mission_text() -> String:
 	var meat_mark := "[X]" if _meat_taken() >= _meat_total() else "[  ]"
 	var zoro_mark := "[X]" if recruited else "[  ]"
 	var text := "%s %s\n%s %s" % [boss_mark, tr("Derrota a Buggy el Payaso"), meat_mark, tr("Recolecta la carne (%d/%d)") % [_meat_taken(), _meat_total()]]
-	if not GameSession.coop:
+	if not GameSession.is_played("zoro"):
 		text += "\n%s %s" % [zoro_mark, tr("Recluta a Zoro")]
 	return text
 
