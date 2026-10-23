@@ -27,17 +27,19 @@ const CREW := ["zoro", "usopp", "nami"]
 ## Where every island is in the sea and what the voyage needs to know about it without loading it:
 ##   offset: position of the island scene; size: side of its map (meters, from the offset);
 ##   center / radius: the land (in the island's own coordinates), for the fog and for loading it;
-##   dock / dock_yaw: where the Going Merry is moored in its port (own coordinates);
+##   dock / dock_yaw: where the Going Merry is moored in its port (own coordinates), alongside the
+##   pier; gangway_side: side of the ship where the pier is (1 = the ship's +x, -1 = -x);
+##   gangway_drop: from the deck where the gangway is hinged down to the pier;
 ##   map / shore: picture for the minimap and foam mask for the sea.
 const ISLAND_PLACES := {
 	"isla_inicio": {"offset": Vector3(0, 0, 0), "size": 440.0, "center": Vector2(220, 220), "radius": 225.0,
-		"dock": Vector3(298.32, 1.0, 156.4), "dock_yaw": 180.0,
+		"dock": Vector3(298.32, 1.0, 156.4), "dock_yaw": 180.0, "gangway_side": 1.0, "gangway_drop": 0.9,
 		"map": "res://assets/ui/minimap_island.png", "shore": "res://assets/generated/shore_mask.res"},
 	"villa_syrup": {"offset": Vector3(700, 0, -1000), "size": 400.0, "center": Vector2(200, 190), "radius": 175.0,
-		"dock": Vector3(200, 1.0, 372), "dock_yaw": 0.0,
+		"dock": Vector3(208.4, 1.0, 373), "dock_yaw": 0.0, "gangway_side": -1.0, "gangway_drop": 0.35,
 		"map": "res://assets/ui/minimap_villa_syrup.png", "shore": "res://assets/generated/villa_syrup_shore_mask.res"},
 	"whisky_peak": {"offset": Vector3(1500, 0, -2000), "size": 400.0, "center": Vector2(200, 190), "radius": 170.0,
-		"dock": Vector3(200, 1.0, 372), "dock_yaw": 0.0,
+		"dock": Vector3(208.4, 1.0, 373), "dock_yaw": 0.0, "gangway_side": -1.0, "gangway_drop": 0.35,
 		"map": "res://assets/ui/minimap_whisky_peak.png", "shore": "res://assets/generated/whisky_peak_shore_mask.res"},
 }
 ## The sea that can be sailed (x, z): the Going Merry turns back at its border.

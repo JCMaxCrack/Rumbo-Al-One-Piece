@@ -100,6 +100,7 @@ func _ready() -> void:
 	if not GameState.unlocked.has(id):
 		GameState.unlocked.append(id)
 	ship.moor(GameState.dock_transform(id))
+	_lower_gangway(id, false)
 	current = _load_island_now(id)
 	player.global_position = current.spawn_position()
 	player.velocity = Vector3.ZERO
@@ -524,6 +525,7 @@ func take_helm() -> void:
 	if ship.steering or player.dead or finished:
 		return
 	ship.take_helm(player, crew_nodes.values())
+	ship.set_gangway(false, 1.0, 0.0)
 	if _split_follow.is_empty():
 		ship.camera.current = true
 	else:
@@ -559,7 +561,13 @@ func _ship_interact() -> void:
 	ship.dock(GameState.dock_transform(port), _on_docked.bind(port))
 
 
+func _lower_gangway(id: String, animate := true) -> void:
+	var place := _place(id)
+	ship.set_gangway(true, float(place.gangway_side), float(place.gangway_drop), animate)
+
+
 func _on_docked(id: String) -> void:
+	_lower_gangway(id)
 	_restore_camera()
 	var isl := _load_island_now(id)
 	var was := current
