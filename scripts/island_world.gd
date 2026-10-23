@@ -174,7 +174,7 @@ func _arrival_message(loaded: bool) -> void:
 func _setup_crew() -> void:
 	for member in GameState.CREW:
 		var node := get_node_or_null(member.capitalize()) as Player
-		var wanted := GameState.has_crew(member) or (member == "zoro" and GameState.coop_zoro())
+		var wanted: bool = GameState.has_crew(member) or (member == "zoro" and GameState.coop_zoro())
 		if node == null and wanted:
 			node = (load(CREW_SCENES[member]) as PackedScene).instantiate() as Player
 			node.name = member.capitalize()
@@ -206,7 +206,7 @@ func _update_crew() -> void:
 		if member == "zoro" and GameState.coop_zoro():
 			p.control = Player.Controller.PLAYER_TWO
 			continue
-		var joined := GameState.has_crew(member) or (member == recruit_member and recruited)
+		var joined: bool = GameState.has_crew(member) or (member == recruit_member and recruited)
 		p.control = Player.Controller.AI if joined else Player.Controller.NONE
 		var label := p.get_node_or_null("NameLabel") as Label3D
 		if label:
