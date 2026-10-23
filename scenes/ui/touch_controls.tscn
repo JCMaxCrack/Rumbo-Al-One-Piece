@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://hetcbyqkr1sc"]
 
-[ext_resource type="Script" path="res://scripts/touch_controls.gd" id="1_nk8ty"]
-[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_sayjt"]
-[ext_resource type="Script" path="res://scripts/touch_joystick.gd" id="3_vs7rr"]
-[ext_resource type="Script" path="res://scripts/touch_button.gd" id="4_0l8t7"]
+[ext_resource type="Script" uid="uid://dwdpfyybbty7l" path="res://scripts/touch_controls.gd" id="1_nk8ty"]
+[ext_resource type="Theme" uid="uid://doqmg5x3av45d" path="res://assets/ui/theme.tres" id="2_sayjt"]
+[ext_resource type="Script" uid="uid://cylmhgget56r0" path="res://scripts/touch_joystick.gd" id="3_vs7rr"]
+[ext_resource type="Script" uid="uid://coyi7242c7qyv" path="res://scripts/touch_button.gd" id="4_0l8t7"]
 
 [node name="TouchControls" type="CanvasLayer" unique_id=585912515]
 layer = 4
@@ -14,6 +14,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("2_sayjt")
 
@@ -40,6 +42,7 @@ offset_right = -40.0
 offset_bottom = -40.0
 mouse_filter = 2
 script = ExtResource("4_0l8t7")
+text = "Jump"
 font_size = 26
 
 [node name="AttackButton" type="Control" parent="Root" unique_id=1509979057]
@@ -55,7 +58,7 @@ offset_bottom = -20.0
 mouse_filter = 2
 script = ExtResource("4_0l8t7")
 action = "attack"
-text = "Golpe"
+text = "Punch"
 font_size = 24
 
 [node name="InteractButton" type="Control" parent="Root" unique_id=273432006]
@@ -71,7 +74,7 @@ offset_bottom = -200.0
 mouse_filter = 2
 script = ExtResource("4_0l8t7")
 action = "interact"
-text = "Hablar"
+text = "Talk"
 
 [node name="PauseButton" type="Control" parent="Root" unique_id=2066805298]
 anchors_preset = 0

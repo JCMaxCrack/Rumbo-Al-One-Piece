@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://8u8aw2hmc8q3"]
 
-[ext_resource type="Script" path="res://scripts/koby.gd" id="1_8n8yv"]
-[ext_resource type="PackedScene" path="res://assets/models/characters/koby/koby.fbx" id="2_cv8fu"]
+[ext_resource type="Script" uid="uid://bnse236acoxj8" path="res://scripts/koby.gd" id="1_8n8yv"]
+[ext_resource type="PackedScene" uid="uid://dg0mxt1xxycmp" path="res://assets/models/characters/koby/koby.fbx" id="2_cv8fu"]
 [ext_resource type="AnimationLibrary" path="res://assets/animations/koby_animations.res" id="3_m7ph2"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p5gu7"]
@@ -14,7 +14,6 @@ radius = 3.2
 [node name="Koby" type="StaticBody3D" unique_id=659906218]
 collision_mask = 0
 script = ExtResource("1_8n8yv")
-mission_lines = PackedStringArray("¡Luffy-san! ¡Qué bueno que llegaste a la isla!", "Buggy el Payaso se escondió en el cráter del volcán, en el centro de la isla, y tiene a todos aterrorizados.", "Tu misión: ¡derrota a Buggy y recolecta toda la carne que está repartida por la isla!", "Cada carne te devuelve vida. Y el Going Merry está anclado en la ensenada del noreste: sube por el puente del muelle.")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1958805768]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
@@ -51,7 +50,7 @@ visible = false
 pixel_size = 0.006
 billboard = 1
 modulate = Color(0.93, 0.78, 0.42, 1)
-text = "[E] Hablar"
+text = "[E] Talk"
 font_size = 40
 
 [node name="MissionMarker" type="Label3D" parent="." unique_id=710790149]

@@ -9,7 +9,7 @@ signal reached(checkpoint: Checkpoint)
 
 ## Id saved in the JSON (it must be one of SaveManager.CHECKPOINT_IDS).
 @export var checkpoint_id := "playa_sur"
-@export var display_name := "Playa del sur"
+@export var display_name := "South beach"
 @export var inactive_color := Color(0.75, 0.2, 0.15)
 @export var active_color := Color(1.0, 0.82, 0.25)
 
@@ -24,6 +24,7 @@ var _flag_mat: StandardMaterial3D
 
 
 func _ready() -> void:
+	add_to_group("checkpoints")
 	name_label.text = display_name
 	_flag_mat = StandardMaterial3D.new()
 	_flag_mat.emission_enabled = true

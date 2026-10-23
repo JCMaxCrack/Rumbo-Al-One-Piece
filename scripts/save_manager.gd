@@ -34,7 +34,8 @@ enum SlotStatus { EMPTY, VALID, TAMPERED }
 
 const SLOT_COUNT := 4
 const FILE_PATH := "user://saves/partidas.json"
-const VERSION := 1
+## 2 = Zoro added ("zoro": recruited). Saves of version 1 are still valid (Zoro not recruited).
+const VERSION := 2
 ## Ids of the Checkpoint nodes of scenes/game.tscn (anything else in a save is rejected).
 const CHECKPOINT_IDS := ["playa_sur", "entrada_crater", "muelle", "peninsula_oeste", "bosque_noroeste", "costa_este"]
 const FIRST_CHECKPOINT := "playa_sur"
@@ -194,7 +195,8 @@ func _key() -> PackedByteArray:
 
 
 func _sign(slot: int, data: Dictionary) -> String:
-	var message := "slot:%d|v%d|%s" % [slot, VERSION, JSON.stringify(data, "", true, true)]
+	# each document is signed with its own version (old saves keep their valid signature)
+	var message := "slot:%d|v%d|%s" % [slot, int(data.get("version", VERSION)), JSON.stringify(data, "", true, true)]
 	return Crypto.new().hmac_digest(HashingContext.HASH_SHA256, _key(), message.to_utf8_buffer()).hex_encode()
 
 
@@ -220,12 +222,14 @@ func _valid_data(d: Dictionary, slot: int) -> bool:
 	for i in range(1, MEAT_COUNT + 1):
 		meat_names.append("Meat%d" % i)
 	var keys := ["version", "slot", "saved_at", "play_time", "health", "mission", "completed", "checkpoint", "checkpoints", "meat", "boss_health", "boss_defeated"]
+	if d.get("version") is float and int(d.version) >= 2:
+		keys.append("zoro")
 	for k in keys:
 		if not d.has(k):
 			return false
 	if d.size() != keys.size():
 		return false
-	if not _is_number(d.version) or int(d.version) != VERSION or not _is_number(d.slot) or int(d.slot) != slot:
+	if not _is_number(d.version) or int(d.version) < 1 or int(d.version) > VERSION or not _is_number(d.slot) or int(d.slot) != slot:
 		return false
 	if not _is_number(d.saved_at) or not _is_number(d.play_time) or float(d.play_time) < 0.0 or float(d.play_time) > 1.0e7:
 		return false
@@ -246,6 +250,8 @@ func _valid_data(d: Dictionary, slot: int) -> bool:
 	if d.boss_defeated != (float(d.boss_health) <= 0.0):
 		return false
 	# a finished game must really have everything done
-	if d.completed and (int(d.mission) != 1 or not d.boss_defeated or d.meat.size() != MEAT_COUNT):
+	if d.has("zoro") and typeof(d.zoro) != TYPE_BOOL:
+		return false
+	if d.completed and (int(d.mission) != 1 or not d.boss_defeated or d.meat.size() != MEAT_COUNT or not d.get("zoro", true)):
 		return false
 	return true

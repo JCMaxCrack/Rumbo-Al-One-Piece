@@ -16,6 +16,8 @@ extends Node3D
 ## levels of detail (TerrainTiles, see apply_quality()), and its collision is one height map.
 
 @export var target: Node3D
+## Other characters that also need the world around them (player 2 in co-op).
+var extra_targets: Array[Node3D] = []
 ## Node with the terrain tiles: children "Tile_XX_ZZ" (near, detailed) and "Tile_XX_ZZ_Far".
 @export var terrain_tiles: Node3D
 @export var chunk_size := 40.0
@@ -89,7 +91,7 @@ func _process(delta: float) -> void:
 	var added := 0
 	while added < max_instances_per_frame and not _waiting.is_empty():
 		var item: Array = _waiting.pop_front()
-		if not _loaded.has(item[0]) and distance_to_chunk(target.global_position, item[0]) <= load_radius + unload_margin:
+		if not _loaded.has(item[0]) and _distance(item[0]) <= load_radius + unload_margin:
 			_add_chunk(item[0], item[1])
 			added += 1
 	_timer -= delta
@@ -103,11 +105,20 @@ func _process(delta: float) -> void:
 	_update(p)
 
 
+## Distance from a chunk to the closest character that needs the world.
+func _distance(c: Vector2i) -> float:
+	var d := distance_to_chunk(target.global_position, c) if target else INF
+	for t in extra_targets:
+		if is_instance_valid(t):
+			d = minf(d, distance_to_chunk(t.global_position, c))
+	return d
+
+
 func _update(p: Vector3) -> void:
 	for c in _exists:
 		if not _exists[c]:
 			continue
-		var d := distance_to_chunk(p, c)
+		var d := minf(distance_to_chunk(p, c), _distance(c))
 		if d <= load_radius:
 			if not _loaded.has(c) and not _requested.has(c) and not _is_waiting(c):
 				var path := chunk_path(c)

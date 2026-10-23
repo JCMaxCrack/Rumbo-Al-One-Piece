@@ -1,27 +1,15 @@
 extends Node
-## GraphicsSettings (autoload, see project.godot): graphics quality of the game.
-##
-## Three presets (Bajo / Medio / Alto) change shadows, draw distance (how far chunks are loaded),
-## vegetation distance and density, terrain detail, ambient occlusion, glow, antialiasing, the
-## number of dynamic lights and occlusion culling. The render resolution (50-100 %) is separate:
-## a lower value draws the 3D world with fewer pixels (FSR upscaling on Forward+/Mobile).
-## The choice is kept in user://ajustes.cfg (not in the save slots). The first time, a preset is
-## chosen from the device (phone -> Bajo/Medio, integrated GPU -> Medio, dedicated GPU -> Alto).
-##
-## The game scene calls apply_world() with its nodes; the rest (viewport, shadow atlas) is global.
-## Light budget: lights in the group "dynamic_lights" are switched on only if they are among the
-## N closest to the camera and inside the preset distance. A light that the game wants off (for
-## example an inactive checkpoint) has the meta "wanted" = false.
+
 
 signal changed
 
 enum Preset { LOW, MEDIUM, HIGH }
 
-const NAMES := ["Bajo", "Medio", "Alto"]
+const NAMES := ["Low", "Regular", "High"]
 const FILE := "user://ajustes.cfg"
 const PRESETS := {
 	Preset.LOW: {
-		"description": "Para teléfonos y PC de gama baja: sin sombras ni efectos, menos distancia.",
+		"description": "For phones a low cuallity PC's: no shadow, no effects, less distance.",
 		"shadows": false, "shadow_mode": DirectionalLight3D.SHADOW_ORTHOGONAL, "shadow_distance": 0.0, "shadow_atlas": 1024, "soft_shadows": 0,
 		"chunk_radius": 110.0, "camera_far": 320.0, "fog_density": 0.0034,
 		"grass_range": 30.0, "grass_density": 0.35, "bush_range": 65.0, "rock_range": 90.0, "terrain_detail_range": 60.0,
@@ -29,7 +17,7 @@ const PRESETS := {
 		"lights": 2, "light_distance": 18.0, "lod_threshold": 4.0, "occlusion": false,
 	},
 	Preset.MEDIUM: {
-		"description": "Equilibrado: sombras cercanas, brillo y más distancia de dibujo.",
+		"description": "Balanced: Close shadows, highlights and more draw distance  .",
 		"shadows": true, "shadow_mode": DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS, "shadow_distance": 60.0, "shadow_atlas": 2048, "soft_shadows": 1,
 		"chunk_radius": 160.0, "camera_far": 450.0, "fog_density": 0.0026,
 		"grass_range": 45.0, "grass_density": 0.65, "bush_range": 100.0, "rock_range": 140.0, "terrain_detail_range": 100.0,
@@ -37,7 +25,7 @@ const PRESETS := {
 		"lights": 6, "light_distance": 35.0, "lod_threshold": 2.0, "occlusion": true,
 	},
 	Preset.HIGH: {
-		"description": "Para PC potentes: sombras suaves lejanas, oclusión ambiental y toda la isla.",
+		"description": "For powerful PC's: distant soft shadows, ambient occlusion, and whole-island shadows.",
 		"shadows": true, "shadow_mode": DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS, "shadow_distance": 110.0, "shadow_atlas": 4096, "soft_shadows": 3,
 		"chunk_radius": 240.0, "camera_far": 700.0, "fog_density": 0.0016,
 		"grass_range": 70.0, "grass_density": 1.0, "bush_range": 170.0, "rock_range": 230.0, "terrain_detail_range": 150.0,
@@ -50,6 +38,9 @@ var preset: int = Preset.MEDIUM
 ## 0.5 - 1.0 of the window resolution for the 3D world (the interface is always sharp).
 var render_scale := 1.0
 var show_fps := false
+## PC: full screen (F11 or Alt+Enter also switch it). The image always fills the screen: the 3D
+## view takes the whole window and the interface keeps its proportions (stretch "expand").
+var fullscreen := true
 var _light_timer := 0.0
 
 
@@ -58,6 +49,7 @@ func _ready() -> void:
 	if not _load():
 		_pick_default()
 	apply_global()
+	apply_window()
 
 
 func settings() -> Dictionary:
@@ -80,6 +72,35 @@ func set_render_scale(s: float) -> void:
 	_save()
 	apply_global()
 	changed.emit()
+
+
+func set_fullscreen(on: bool) -> void:
+	fullscreen = on
+	_save()
+	apply_window()
+	changed.emit()
+
+
+func can_change_window() -> bool:
+	return not (OS.has_feature("mobile") or OS.has_feature("web") or DisplayServer.get_name() == "headless")
+
+
+func apply_window() -> void:
+	if not can_change_window():
+		return
+	var want := DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
+	var now := DisplayServer.window_get_mode()
+	if fullscreen and (now == DisplayServer.WINDOW_MODE_FULLSCREEN or now == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN):
+		return
+	if not fullscreen and (now == DisplayServer.WINDOW_MODE_WINDOWED or now == DisplayServer.WINDOW_MODE_MAXIMIZED):
+		return
+	DisplayServer.window_set_mode(want)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("toggle_fullscreen") and can_change_window():
+		get_viewport().set_input_as_handled()
+		set_fullscreen(not fullscreen)
 
 
 func set_show_fps(on: bool) -> void:
@@ -177,6 +198,7 @@ func _load() -> bool:
 	preset = clampi(int(cfg.get_value("graficos", "preset", Preset.MEDIUM)), Preset.LOW, Preset.HIGH)
 	render_scale = clampf(float(cfg.get_value("graficos", "escala_render", 1.0)), 0.5, 1.0)
 	show_fps = bool(cfg.get_value("graficos", "mostrar_fps", false))
+	fullscreen = bool(cfg.get_value("graficos", "pantalla_completa", true))
 	return true
 
 
@@ -185,4 +207,5 @@ func _save() -> void:
 	cfg.set_value("graficos", "preset", preset)
 	cfg.set_value("graficos", "escala_render", render_scale)
 	cfg.set_value("graficos", "mostrar_fps", show_fps)
+	cfg.set_value("graficos", "pantalla_completa", fullscreen)
 	cfg.save(FILE)

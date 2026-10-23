@@ -14,7 +14,7 @@ extends CharacterBody3D
 
 enum State { PATROL, CHASE, ATTACK, RETURN, DEFEATED }
 
-const STATE_TEXT := {State.PATROL: "Patrullando", State.CHASE: "¡Persiguiendo!", State.ATTACK: "¡Atacando!", State.RETURN: "Regresando", State.DEFEATED: "Derrotado"}
+const STATE_TEXT := {State.PATROL: "Patrolling", State.CHASE: "¡Chasing!", State.ATTACK: "¡Attacking!", State.RETURN: "Go back", State.DEFEATED: "Defeted"}
 const STATE_COLOR := {State.PATROL: Color(0.8, 0.95, 1.0), State.CHASE: Color(1, 0.45, 0.3), State.ATTACK: Color(1, 0.2, 0.2), State.RETURN: Color(1, 0.9, 0.4), State.DEFEATED: Color(0.6, 0.6, 0.6)}
 
 signal state_changed(new_state: int)
@@ -166,7 +166,9 @@ func _player_ok() -> bool:
 
 # ------------------------------------------------------------------ signals (connected in the scene)
 func _on_detection_area_body_entered(body: Node3D) -> void:
-	if body == target and _player_ok() and (state == State.PATROL or state == State.RETURN):
+	# in co-op Buggy goes after whoever comes into his area first (Luffy or Zoro)
+	if body is Player and (state == State.PATROL or state == State.RETURN) and not (body as Player).dead and (body as Player).control != Player.Controller.NONE:
+		target = body
 		_set_state(State.CHASE)
 
 
@@ -244,6 +246,9 @@ func _physics_process(delta: float) -> void:
 			if _flat_distance(global_position, back) < 0.6:
 				patrol_target = patrol_right if _flat_distance(global_position, patrol_left.global_position) < _flat_distance(global_position, patrol_right.global_position) else patrol_left
 				_set_state(State.PATROL)
+				for b in detection_area.get_overlapping_bodies():
+					if b is Player and not (b as Player).dead and (b as Player).control != Player.Controller.NONE:
+						target = b
 				if _player_ok() and detection_area.overlaps_body(target):
 					_set_state(State.CHASE)
 			else:
