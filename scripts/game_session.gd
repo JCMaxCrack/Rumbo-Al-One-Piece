@@ -10,7 +10,7 @@ extends Node
 ## gamepad event of "jump" becomes an event of "p2_jump" for player 2's device, and so on.
 
 const ACTIONS := ["move_left", "move_right", "move_forward", "move_back", "look_left", "look_right", "look_up", "look_down",
-	"sprint", "jump", "attack", "interact", "pause", "map"]
+	"sprint", "jump", "attack", "interact", "pause", "map", "use_item", "next_item", "skill", "next_skill", "shop"]
 
 var coop := false
 ## Gamepad of player 2 in co-op (-1 = none).
@@ -25,6 +25,14 @@ func _ready() -> void:
 			_original[a] = InputMap.action_get_events(a).duplicate()
 	setup_input(false)
 	Input.joy_connection_changed.connect(func(_d, _c): setup_input(coop))
+
+
+## Preferences changed a key or a button: the InputMap is made again from the new bindings.
+func refresh_bindings() -> void:
+	for a in Preferences.bindings:
+		if _original.has(a):
+			_original[a] = (Preferences.bindings[a] as Array).duplicate()
+	setup_input(coop)
 
 
 func gamepads() -> Array[int]:

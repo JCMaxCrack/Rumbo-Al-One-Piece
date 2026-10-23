@@ -17,6 +17,8 @@ extends Node
 var _body: Player
 var _stuck := 0.0
 var _last := Vector3.ZERO
+var _running := false
+var _following := false
 
 
 func _ready() -> void:
@@ -43,12 +45,17 @@ func _physics_process(delta: float) -> void:
 			_body.ai_attack = true
 		else:
 			goal = to_enemy
-		_body.ai_run = to_enemy.length() > 4.0
-	elif to_leader.length() > follow_distance:
-		goal = to_leader
-		_body.ai_run = to_leader.length() > run_distance
+		_running = _hysteresis(_running, to_enemy.length(), 4.0, 2.5)
+		_body.ai_run = _running
 	else:
-		_body.ai_run = false
+		# Starts following / running at the far distance but only stops when he is really close,
+		# so the walk and run animations do not restart at the limit.
+		var d := to_leader.length()
+		_following = _hysteresis(_following, d, follow_distance, follow_distance - 1.2)
+		_running = _hysteresis(_running, d, run_distance, follow_distance) and _following
+		if _following:
+			goal = to_leader
+		_body.ai_run = _running
 	_body.ai_move = goal.normalized() if goal.length() > 0.3 else Vector3.ZERO
 	# stuck against a rock or a wall: jump
 	var moved := Vector2(me.x - _last.x, me.z - _last.z).length()
@@ -60,6 +67,13 @@ func _physics_process(delta: float) -> void:
 			_stuck = 0.0
 	else:
 		_stuck = 0.0
+
+
+## On when value goes above `on_above`, off again only below `off_below`.
+func _hysteresis(state: bool, value: float, on_above: float, off_below: float) -> bool:
+	if state:
+		return value > off_below
+	return value > on_above
 
 
 func _leader_forward() -> Vector3:

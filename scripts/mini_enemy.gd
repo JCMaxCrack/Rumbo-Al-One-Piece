@@ -31,6 +31,11 @@ enum State { WANDER, CHASE, ATTACK, HURT, DEAD }
 @export var attack_range := 1.5
 @export var gravity := 22.0
 @export var knockback_strength := 5.0
+## Experience that Luffy gets for defeating it.
+@export var xp_reward := 12
+## Pickup scene that it can leave when it is defeated (meat or tangerines) and the chance (0..1).
+@export var drop_scene: PackedScene
+@export var drop_chance := 0.35
 
 @onready var model: Node3D = $Model
 @onready var anim: AnimationPlayer = $AnimationPlayer
@@ -183,6 +188,12 @@ func _on_attack_impact() -> void:
 		target.receive_hit(damage, global_position)
 
 
+## Strong pushes of Luffy's skills.
+func apply_knockback(v: Vector3) -> void:
+	if state != State.DEAD:
+		knockback = Vector3(v.x, 0.0, v.z)
+
+
 ## Called by the attacks of Luffy and Zoro.
 func receive_hit(amount: float, from_pos: Vector3) -> void:
 	if state == State.DEAD:
@@ -213,6 +224,11 @@ func _die() -> void:
 	death_sound.play()
 	_play("death", true)
 	defeated.emit(self)
+	if drop_scene and randf() < drop_chance:
+		var item := drop_scene.instantiate() as Node3D
+		item.set_meta("dynamic", true)
+		get_parent().add_child(item)
+		item.global_position = global_position + Vector3(0, 0.6, 0)
 	get_tree().create_timer(2.5).timeout.connect(queue_free)
 
 

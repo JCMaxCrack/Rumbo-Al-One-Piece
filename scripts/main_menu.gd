@@ -33,9 +33,9 @@ func _on_play_button_pressed() -> void:
 
 func _update_mode_info() -> void:
 	if GameSession.can_play_coop():
-		mode_info.text = "Cooperative: Split screen. Player 1 (Luffy): keyboard and mouse. Player 2 (Zoro): controller."
+		mode_info.text = "Cooperativo: pantalla dividida. Jugador 1 (Luffy): teclado y mouse. Jugador 2 (Zoro): mando."
 	else:
-		mode_info.text = "For cooperative mode, connect a controller: Player 2 (Zoro) plays whit it."
+		mode_info.text = "Para el modo cooperativo conecta un mando: el jugador 2 (Zoro) juega con él."
 
 
 func _on_solo_button_pressed() -> void:

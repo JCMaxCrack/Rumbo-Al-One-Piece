@@ -3,7 +3,7 @@ extends CanvasLayer
 ## Pause menu. Nodes in scenes/ui/pause_menu.tscn.
 ## "Guardar partida" opens SaveSlots (save mode): the game is saved in a new slot or replaces one.
 
-## Connected in scenes/game.tscn to game_world.gd, which collects the progress and saves it.
+## Connected by world.gd (scenes/world.tscn), which collects the progress and saves it.
 signal save_requested(slot: int)
 
 @onready var panel: Control = $Panel

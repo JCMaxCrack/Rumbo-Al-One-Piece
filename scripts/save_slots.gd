@@ -43,7 +43,7 @@ func open(new_mode: Mode) -> void:
 
 
 func refresh() -> void:
-	title_label.text = "Choose your game " if mode == Mode.LOAD else "Saved Game"
+	title_label.text = tr("Elige una partida") if mode == Mode.LOAD else tr("Guardar partida")
 	var slots := SaveManager.list_slots()
 	for i in rows.size():
 		var info: Dictionary = slots[i]
@@ -52,8 +52,8 @@ func refresh() -> void:
 		var main: Button = row.get_node("HBox/MainButton")
 		var new_button: Button = row.get_node("HBox/NewButton")
 		var delete_button: Button = row.get_node("HBox/DeleteButton")
-		label.text = "Game %d  ·  %s" % [i + 1, describe(info)]
-		main.text = "Charge" if mode == Mode.LOAD else "Saved Here"
+		label.text = tr("Partida %d") % (i + 1) + "  ·  " + describe(info)
+		main.text = tr("Cargar") if mode == Mode.LOAD else tr("Guardar aquí")
 		new_button.visible = mode == Mode.LOAD
 		delete_button.disabled = info.status == SaveManager.SlotStatus.EMPTY
 		if mode == Mode.LOAD:
@@ -66,16 +66,19 @@ func refresh() -> void:
 static func describe(info: Dictionary) -> String:
 	match info.status:
 		SaveManager.SlotStatus.EMPTY:
-			return "Empty"
+			return TranslationServer.translate("Vacía")
 		SaveManager.SlotStatus.TAMPERED:
-			return "¡Saved file is modified or corrupted! Cannot load"
+			return TranslationServer.translate("¡Guardado modificado o dañado! No se puede cargar")
 	var d: Dictionary = info.data
 	var t := int(d.play_time)
 	var dt := Time.get_datetime_dict_from_unix_time(int(d.saved_at) + int(Time.get_time_zone_from_system().bias) * 60)
 	var date := "%02d/%02d/%d %02d:%02d" % [dt.day, dt.month, dt.year, dt.hour, dt.minute]
 	if d.completed:
-		return "¡Mission completed!  ·  %d:%02d  ·  %s" % [t / 60, t % 60, date]
-	return "Meat %d/%d  ·  Buggy: %s  ·  %d:%02d  ·  %s" % [d.meat.size(), SaveManager.MEAT_COUNT, "defeted" if d.boss_defeated else "Alive", t / 60, t % 60, date]
+		return TranslationServer.translate("¡Aventura completada!") + "  ·  %d:%02d  ·  %s" % [t / 60, t % 60, date]
+	var p: Dictionary = d.player
+	var crew := 1 + (p.crew as Array).size()
+	return "%s  ·  %s  ·  %s  ·  %d:%02d  ·  %s" % [TranslationServer.translate(GameState.ISLAND_NAMES[d.island]),
+		TranslationServer.translate("Nv. %d") % int(p.level), TranslationServer.translate("Tripulación: %d") % crew, t / 60, t % 60, date]
 
 
 func _ask(text: String, action: Callable) -> void:
@@ -90,30 +93,30 @@ func _on_main_pressed(slot: int) -> void:
 	if mode == Mode.LOAD:
 		if SaveManager.load_game(slot):
 			get_tree().paused = false
-			get_tree().change_scene_to_file("res://scenes/game.tscn")
+			get_tree().change_scene_to_file(GameState.WORLD_SCENE)
 		else:
-			status_label.text = "That game cannot be loaded."
+			status_label.text = tr("Esa partida no se puede cargar.")
 	elif info.status == SaveManager.SlotStatus.EMPTY:
 		save_requested.emit(slot)
 	else:
-		_ask("¿Repalce game %d with current proegress?" % slot, save_requested.emit.bind(slot))
+		_ask(tr("¿Reemplazar la Partida %d con el progreso actual?") % slot, save_requested.emit.bind(slot))
 
 
 func _on_new_pressed(slot: int) -> void:
 	var start := func() -> void:
 		SaveManager.start_new_game(slot)
 		get_tree().paused = false
-		get_tree().change_scene_to_file("res://scenes/game.tscn")
+		get_tree().change_scene_to_file(GameState.WORLD_SCENE)
 	if SaveManager.read_slot(slot).status == SaveManager.SlotStatus.EMPTY:
 		start.call()
 	else:
-		_ask("¿Start a new game in Game %d? You'll lose your progress.." % slot, start)
+		_ask(tr("¿Empezar una partida nueva en la Partida %d? Se perderá lo que tenía.") % slot, start)
 
 
 func _on_delete_pressed(slot: int) -> void:
-	_ask("¿Delete game %d?" % slot, func() -> void:
+	_ask(tr("¿Borrar la Partida %d?") % slot, func() -> void:
 		SaveManager.delete_slot(slot)
-		status_label.text = "Partida %d borrada." % slot
+		status_label.text = tr("Partida %d borrada.") % slot
 		refresh())
 
 
@@ -137,5 +140,5 @@ func _on_back_button_pressed() -> void:
 
 ## Called by the pause menu after saving.
 func show_saved(slot: int, ok: bool) -> void:
-	status_label.text = ("Game %d saved." % slot) if ok else "Cannot save."
+	status_label.text = (tr("Partida %d guardada.") % slot) if ok else tr("No se pudo guardar.")
 	refresh()

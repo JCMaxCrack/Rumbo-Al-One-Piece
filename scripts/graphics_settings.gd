@@ -1,15 +1,27 @@
 extends Node
-
+## GraphicsSettings (autoload, see project.godot): graphics quality of the game.
+##
+## Three presets (Bajo / Medio / Alto) change shadows, draw distance (how far chunks are loaded),
+## vegetation distance and density, terrain detail, ambient occlusion, glow, antialiasing, the
+## number of dynamic lights and occlusion culling. The render resolution (50-100 %) is separate:
+## a lower value draws the 3D world with fewer pixels (FSR upscaling on Forward+/Mobile).
+## The choice is kept in user://ajustes.cfg (not in the save slots). The first time, a preset is
+## chosen from the device (phone -> Bajo/Medio, integrated GPU -> Medio, dedicated GPU -> Alto).
+##
+## The game scene calls apply_world() with its nodes; the rest (viewport, shadow atlas) is global.
+## Light budget: lights in the group "dynamic_lights" are switched on only if they are among the
+## N closest to the camera and inside the preset distance. A light that the game wants off (for
+## example an inactive checkpoint) has the meta "wanted" = false.
 
 signal changed
 
 enum Preset { LOW, MEDIUM, HIGH }
 
-const NAMES := ["Low", "Regular", "High"]
+const NAMES := ["Bajo", "Medio", "Alto"]
 const FILE := "user://ajustes.cfg"
 const PRESETS := {
 	Preset.LOW: {
-		"description": "For phones a low cuallity PC's: no shadow, no effects, less distance.",
+		"description": "Para teléfonos y PC de gama baja: sin sombras ni efectos, menos distancia.",
 		"shadows": false, "shadow_mode": DirectionalLight3D.SHADOW_ORTHOGONAL, "shadow_distance": 0.0, "shadow_atlas": 1024, "soft_shadows": 0,
 		"chunk_radius": 110.0, "camera_far": 320.0, "fog_density": 0.0034,
 		"grass_range": 30.0, "grass_density": 0.35, "bush_range": 65.0, "rock_range": 90.0, "terrain_detail_range": 60.0,
@@ -17,7 +29,7 @@ const PRESETS := {
 		"lights": 2, "light_distance": 18.0, "lod_threshold": 4.0, "occlusion": false,
 	},
 	Preset.MEDIUM: {
-		"description": "Balanced: Close shadows, highlights and more draw distance  .",
+		"description": "Equilibrado: sombras cercanas, brillo y más distancia de dibujo.",
 		"shadows": true, "shadow_mode": DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS, "shadow_distance": 60.0, "shadow_atlas": 2048, "soft_shadows": 1,
 		"chunk_radius": 160.0, "camera_far": 450.0, "fog_density": 0.0026,
 		"grass_range": 45.0, "grass_density": 0.65, "bush_range": 100.0, "rock_range": 140.0, "terrain_detail_range": 100.0,
@@ -25,7 +37,7 @@ const PRESETS := {
 		"lights": 6, "light_distance": 35.0, "lod_threshold": 2.0, "occlusion": true,
 	},
 	Preset.HIGH: {
-		"description": "For powerful PC's: distant soft shadows, ambient occlusion, and whole-island shadows.",
+		"description": "Para PC potentes: sombras suaves lejanas, oclusión ambiental y toda la isla.",
 		"shadows": true, "shadow_mode": DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS, "shadow_distance": 110.0, "shadow_atlas": 4096, "soft_shadows": 3,
 		"chunk_radius": 240.0, "camera_far": 700.0, "fog_density": 0.0016,
 		"grass_range": 70.0, "grass_density": 1.0, "bush_range": 170.0, "rock_range": 230.0, "terrain_detail_range": 150.0,

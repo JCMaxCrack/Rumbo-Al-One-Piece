@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dvcw2qcx80647"]
 
-[ext_resource type="Script" uid="uid://cv8n2taymoils" path="res://scripts/hud.gd" id="1_hqnrr"]
-[ext_resource type="Theme" uid="uid://doqmg5x3av45d" path="res://assets/ui/theme.tres" id="2_bo48s"]
-[ext_resource type="Script" uid="uid://bm7q2flbogokg" path="res://scripts/minimap.gd" id="3_8qguk"]
-[ext_resource type="Texture2D" uid="uid://cgvmbc8h4ec0d" path="res://assets/ui/minimap_island.png" id="4_136eg"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hqnrr"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_bo48s"]
+[ext_resource type="Script" path="res://scripts/minimap.gd" id="3_8qguk"]
+[ext_resource type="Script" path="res://scripts/item_slot.gd" id="5_slot"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qguk"]
 content_margin_left = 10.0
@@ -77,6 +77,28 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.4, 0.65, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skill"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.75, 0.25, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [node name="HUD" type="CanvasLayer" unique_id=1080060577]
 script = ExtResource("1_hqnrr")
 
@@ -125,13 +147,38 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_136eg")
 value = 100.0
 show_percentage = false
 
+[node name="XpRow" type="HBoxContainer" parent="Root/PlayerPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LevelLabel" type="Label" parent="Root/PlayerPanel/VBox/XpRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.65, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Nv. 1"
+
+[node name="XpBar" type="ProgressBar" parent="Root/PlayerPanel/VBox/XpRow"]
+custom_minimum_size = Vector2(160, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp")
+value = 0.0
+show_percentage = false
+
+[node name="PointsLabel" type="Label" parent="Root/PlayerPanel/VBox/XpRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 16
+text = "★ 0"
+
 [node name="Player2Panel" type="PanelContainer" parent="Root" unique_id=764535388]
 visible = false
 layout_mode = 0
 offset_left = 16.0
-offset_top = 94.0
+offset_top = 126.0
 offset_right = 340.0
-offset_bottom = 164.0
+offset_bottom = 196.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8qguk")
 
 [node name="VBox" type="VBoxContainer" parent="Root/Player2Panel" unique_id=1879329139]
@@ -175,7 +222,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_oj5la")
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 22
-text = "Meat: 0 / 10"
+text = "Carne: 0 / 10"
 
 [node name="MissionPanel" type="PanelContainer" parent="Root" unique_id=1466234601]
 layout_mode = 0
@@ -194,13 +241,13 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 18
-text = "Koby's mission"
+text = "Misión de Koby"
 
 [node name="MissionText" type="Label" parent="Root/MissionPanel/VBox" unique_id=707929874]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
 theme_override_font_sizes/font_size = 17
-text = "Talk to Koby"
+text = "Habla con Koby"
 autowrap_mode = 3
 
 [node name="BossBox" type="VBoxContainer" parent="Root" unique_id=1797542616]
@@ -217,7 +264,7 @@ offset_bottom = 110.0
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.6, 0.45, 1)
 theme_override_font_sizes/font_size = 26
-text = "Buggy the Clown"
+text = "Buggy el Payaso"
 horizontal_alignment = 1
 
 [node name="BossHealthBar" type="ProgressBar" parent="Root/BossBox" unique_id=498245571]
@@ -243,7 +290,7 @@ vertical_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
 theme_override_font_sizes/font_size = 18
-text = "IA: Patrolling"
+text = "IA: Patrullando"
 horizontal_alignment = 1
 
 [node name="Message" type="Label" parent="Root" unique_id=728073357]
@@ -293,7 +340,7 @@ autowrap_mode = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
 theme_override_font_sizes/font_size = 16
-text = "Press E to continue"
+text = "Pulsa E para continuar"
 horizontal_alignment = 2
 
 [node name="ControlsHint" type="Label" parent="Root" unique_id=1139240993]
@@ -308,19 +355,144 @@ offset_right = 600.0
 offset_bottom = -12.0
 theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
 theme_override_font_sizes/font_size = 16
-text = "WASD move  ·  Shift run  ·  Espacio jump/swim  ·  Clic/J punch  ·  E talk  ·  Mouse camera  ·  F1 see IA  ·  Esc pause"
+text = "WASD mover  ·  Shift correr  ·  Espacio saltar/nadar  ·  Clic/J golpe  ·  E hablar  ·  Mouse cámara  ·  F1 ver IA  ·  Esc pausa"
 horizontal_alignment = 1
 
 [node name="FpsLabel" type="Label" parent="Root" unique_id=1992622063]
 visible = false
 layout_mode = 0
 offset_left = 18.0
-offset_top = 172.0
+offset_top = 204.0
 offset_right = 200.0
-offset_bottom = 196.0
+offset_bottom = 228.0
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
 theme_override_font_sizes/font_size = 16
 text = "60 FPS"
+
+[node name="Inventory" type="VBoxContainer" parent="Root"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -130.0
+offset_right = 280.0
+offset_bottom = -46.0
+mouse_filter = 2
+
+[node name="Slots" type="HBoxContainer" parent="Root/Inventory"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Slot1" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 1
+
+[node name="Slot2" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 2
+
+[node name="Slot3" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 3
+
+[node name="Slot4" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 4
+
+[node name="Hint" type="Label" parent="Root/Inventory"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="SkillBox" type="PanelContainer" parent="Root"]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -270.0
+offset_top = -136.0
+offset_right = -16.0
+offset_bottom = -46.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_oj5la")
+
+[node name="VBox" type="VBoxContainer" parent="Root/SkillBox"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="Root/SkillBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "Habilidad"
+
+[node name="Cooldown" type="ProgressBar" parent="Root/SkillBox/VBox"]
+custom_minimum_size = Vector2(220, 10)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_skill")
+max_value = 1.0
+step = 0.001
+value = 1.0
+show_percentage = false
+
+[node name="Hint" type="Label" parent="Root/SkillBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="InteractHint" type="Label" parent="Root"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -180.0
+offset_right = 300.0
+offset_bottom = -140.0
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
+[node name="Banner" type="VBoxContainer" parent="Root"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.3
+anchor_right = 0.5
+anchor_bottom = 0.3
+offset_left = -450.0
+offset_right = 450.0
+offset_bottom = 120.0
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Root/Banner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 56
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Banner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="Minimap" type="Control" parent="Root" unique_id=1317081625]
 anchors_preset = 0
@@ -331,7 +503,6 @@ offset_top = 16.0
 offset_right = -16.0
 offset_bottom = 216.0
 script = ExtResource("3_8qguk")
-map_texture = ExtResource("4_136eg")
 
 [node name="MessageTimer" type="Timer" parent="." unique_id=1664139517]
 wait_time = 2.0
