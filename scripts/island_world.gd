@@ -498,7 +498,9 @@ func _update_hud_state() -> void:
 func _meat_total() -> int:
 	var n := 0
 	for c in collectibles.get_children():
-		if (c as Collectible).item_id == "meat":
+		# a taken pickup stays in the tree until its sound ends: it is already in _meat_taken()
+		var item := c as Collectible
+		if item and not item.taken and item.item_id == "meat":
 			n += 1
 	return n + _meat_taken()
 
