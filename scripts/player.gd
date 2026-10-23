@@ -456,12 +456,34 @@ func _end_busy() -> void:
 # ------------------------------------------------------------------ Usopp's slingshot
 func _shoot() -> void:
 	var pellet := Pellet.new()
-	pellet.direction = facing
+	var muzzle := global_position + Vector3(0, 1.3, 0) + facing * 0.6
+	pellet.direction = _aim_from(muzzle)
 	pellet.damage = punch_damage
 	pellet.shooter = self
 	get_parent().add_child(pellet)
-	pellet.global_position = global_position + Vector3(0, 1.3, 0) + facing * 0.6
+	pellet.global_position = muzzle
 	punch_sound.play()
+
+
+## Usopp's aim: the closest enemy in front of him (also small ones, like the mushrooms), at the
+## height of its body; straight ahead if there is none.
+func _aim_from(muzzle: Vector3) -> Vector3:
+	var best: Node3D = null
+	var best_d := 22.0
+	for e in get_tree().get_nodes_in_group("enemies"):
+		var n := e as Node3D
+		if n == null or (n.has_method("is_defeated") and n.is_defeated()):
+			continue
+		var to := n.global_position - global_position
+		to.y = 0.0
+		var d := to.length()
+		if d < best_d and d > 0.1 and to.normalized().dot(facing) > 0.8:
+			best = n
+			best_d = d
+	if best == null:
+		return facing
+	var height := 1.0 if best.is_in_group("bosses") else 0.55
+	return (best.global_position + Vector3(0, height, 0) - muzzle).normalized()
 
 
 ## Called by Buggy and the mini enemies when their attack connects.

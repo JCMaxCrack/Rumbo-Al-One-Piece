@@ -257,6 +257,7 @@ func _add_crew_node(member: String, node: Player) -> void:
 	var ai := node.get_node_or_null("CompanionAI") as CompanionAI
 	if ai:
 		ai.leader = player
+		ai.slot = crew_nodes.size() - 1
 	if not node.died.is_connected(_on_crew_died):
 		node.died.connect(_on_crew_died.bind(node))
 	if member == "zoro" and not node.health_changed.is_connected(hud.set_health2):
