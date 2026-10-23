@@ -60,6 +60,7 @@ var crew_nodes := {}
 var finished := false
 var skill_shop: SkillShop
 var sail_menu: SailMenu
+var world_map: WorldMap
 var _loading := {}  # id -> path being loaded in a thread
 var _stream_timer := 0.0
 var _dialog: PackedStringArray = []
@@ -93,6 +94,10 @@ func _ready() -> void:
 	player.set_max_health(_luffy_max_health(), true)
 	ship.can_sail = _can_sail
 	ship.blocked.connect(_on_ship_blocked)
+	world_map = WorldMap.new()
+	world_map.name = "WorldMap"
+	world_map.world = self
+	add_child(world_map)
 	_build_ocean()
 	_build_beacon()
 	var loaded := SaveManager.take_pending()
@@ -144,6 +149,12 @@ func _exit_tree() -> void:
 # ------------------------------------------------------------------ islands
 func _place(id: String) -> Dictionary:
 	return GameState.ISLAND_PLACES[id]
+
+
+## The big map shows what is on an island that is far: it is loaded now (and freed again when far).
+func load_island(id: String) -> void:
+	if GameState.unlocked.has(id) and not islands.has(id) and not _loading.has(id):
+		_load_island_now(id)
 
 
 func _load_island_now(id: String) -> IslandWorld:
@@ -417,11 +428,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		pause_menu.can_save = not player.dead
 		pause_menu.toggle()
 		return
-	if event.is_action_pressed("map"):
-		hud.toggle_map(0)
-		return
-	if p2 and event.is_action_pressed("p2_map"):
-		hud.toggle_map(1)
+	if event.is_action_pressed("map") or (p2 and event.is_action_pressed("p2_map")):
+		world_map.open()
 		return
 	if ship.steering:
 		if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

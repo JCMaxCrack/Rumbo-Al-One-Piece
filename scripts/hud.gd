@@ -82,14 +82,6 @@ func set_player2_visible(on: bool) -> void:
 	player2_panel.visible = on
 
 
-## M / D-pad up: small map around the player <-> the chart of the whole sea (index: which player).
-func toggle_map(index := 0) -> void:
-	if index == 1 and minimap2:
-		minimap2.toggle_big()
-	else:
-		minimap.toggle_big()
-
-
 ## The player that the minimap of player 1 follows.
 func set_player(p: Player) -> void:
 	minimap.target = p
