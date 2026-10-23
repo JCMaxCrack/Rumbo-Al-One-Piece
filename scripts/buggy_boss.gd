@@ -14,7 +14,7 @@ extends CharacterBody3D
 
 enum State { PATROL, CHASE, ATTACK, RETURN, DEFEATED }
 
-const STATE_TEXT := {State.PATROL: "Patrullando", State.CHASE: "¡Persiguiendo!", State.ATTACK: "¡Atacando!", State.RETURN: "Regresando", State.DEFEATED: "Derrotado"}
+const STATE_TEXT := {State.PATROL: "Patrolling", State.CHASE: "¡Chasing!", State.ATTACK: "¡Attacking!", State.RETURN: "Go back", State.DEFEATED: "Defeted"}
 const STATE_COLOR := {State.PATROL: Color(0.8, 0.95, 1.0), State.CHASE: Color(1, 0.45, 0.3), State.ATTACK: Color(1, 0.2, 0.2), State.RETURN: Color(1, 0.9, 0.4), State.DEFEATED: Color(0.6, 0.6, 0.6)}
 
 signal state_changed(new_state: int)

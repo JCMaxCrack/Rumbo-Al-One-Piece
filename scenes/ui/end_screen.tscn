@@ -1,7 +1,7 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://wblv8e7abibe"]
 
-[ext_resource type="Script" path="res://scripts/end_screen.gd" id="1_n8r4t"]
-[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_wgyui"]
+[ext_resource type="Script" uid="uid://cwg8csjjgody6" path="res://scripts/end_screen.gd" id="1_n8r4t"]
+[ext_resource type="Theme" uid="uid://doqmg5x3av45d" path="res://assets/ui/theme.tres" id="2_wgyui"]
 
 [node name="EndScreen" type="CanvasLayer" unique_id=2007808378]
 process_mode = 3
@@ -33,15 +33,15 @@ theme_override_constants/separation = 12
 
 [node name="Title" type="Label" parent="Panel/VBox" unique_id=967243471]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
 theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
-text = "¡Lo lograste!"
+theme_override_font_sizes/font_size = 40
+text = "¡You did it!"
 horizontal_alignment = 1
 
 [node name="Detail" type="Label" parent="Panel/VBox" unique_id=1097192783]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 autowrap_mode = 3
 
@@ -54,12 +54,12 @@ text = "Volver al punto de control"
 [node name="RetryButton" type="Button" parent="Panel/VBox" unique_id=2104482167]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Jugar de nuevo"
+text = "Play again"
 
 [node name="MenuButton" type="Button" parent="Panel/VBox" unique_id=977666539]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Menú principal"
+text = "Main menu"
 
 [connection signal="pressed" from="Panel/VBox/CheckpointButton" to="." method="_on_checkpoint_button_pressed"]
 [connection signal="pressed" from="Panel/VBox/RetryButton" to="." method="_on_retry_button_pressed"]

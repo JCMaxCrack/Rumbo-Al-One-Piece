@@ -28,6 +28,10 @@ func _process(delta: float) -> void:
 	_reject_cooldown = maxf(0.0, _reject_cooldown - delta)
 
 
+func _ready() -> void:
+	add_to_group("minimap_meat")
+
+
 func _on_body_entered(body: Node3D) -> void:
 	if taken or not body is Player or (body as Player).dead:
 		return

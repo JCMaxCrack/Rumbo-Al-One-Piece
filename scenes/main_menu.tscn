@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bfku8o0cdet1u"]
 
 [ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_wu84c"]
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="2_8ln24"]
@@ -90,12 +90,17 @@ theme_override_constants/separation = 10
 [node name="PlayButton" type="Button" parent="MenuPanel/VBox" unique_id=1800050192]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Jugar"
+text = "Play"
 
 [node name="ControlsButton" type="Button" parent="MenuPanel/VBox" unique_id=497101732]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Controles"
+text = "Controls"
+
+[node name="OptionsButton" type="Button" parent="MenuPanel/VBox" unique_id=2146560129]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+text = "Options"
 
 [node name="OptionsButton" type="Button" parent="MenuPanel/VBox" unique_id=2146560129]
 custom_minimum_size = Vector2(260, 0)
@@ -105,7 +110,7 @@ text = "Opciones"
 [node name="QuitButton" type="Button" parent="MenuPanel/VBox" unique_id=1012483671]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Salir"
+text = "Quit"
 
 [node name="ControlsPanel" type="PanelContainer" parent="." unique_id=14210955]
 visible = false
@@ -136,19 +141,66 @@ theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
 theme_override_font_sizes/font_size = 17
 text = "Habla con Koby: te pedirá derrotar a Buggy y recolectar toda la carne (cada carne te cura).
 
-WASD / flechas: mover  ·  Shift: correr
-Espacio: saltar (en el agua: impulso)
-Clic izquierdo / J: Gomu Gomu no Pistol
-E: hablar  ·  Mouse: cámara  ·  Esc: pausa
-F1: mostrar u ocultar la IA de Buggy
+WASD / arrow keys: move  ·  Shift: run
+Spacebar: jump (in water: boost)
+Left-click / J: Gomu Gomu no Pistol
+E: talk  ·  Mouse: camera  ·  Esc: pause
+F1: show or hide Buggy’s AI
 
-En el teléfono: joystick a la izquierda, arrastra a la derecha para la cámara y usa los botones."
+On mobile: use the joystick on the left, swipe right to control the camera, and use the buttons."
 autowrap_mode = 3
 
 [node name="BackButton" type="Button" parent="ControlsPanel/VBox" unique_id=610512963]
 custom_minimum_size = Vector2(260, 0)
 layout_mode = 2
-text = "Volver"
+text = "Return"
+
+[node name="ModePanel" type="PanelContainer" parent="." unique_id=1474062645]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = -40.0
+offset_right = 270.0
+offset_bottom = 290.0
+
+[node name="VBox" type="VBoxContainer" parent="ModePanel" unique_id=1907266168]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="ModePanel/VBox" unique_id=523060204]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 28
+text = "¿How do you want to play?"
+horizontal_alignment = 1
+
+[node name="SoloButton" type="Button" parent="ModePanel/VBox" unique_id=599244459]
+layout_mode = 2
+text = "One player"
+
+[node name="CoopButton" type="Button" parent="ModePanel/VBox" unique_id=2006795252]
+layout_mode = 2
+text = "Cooperative (2 players)"
+
+[node name="Info" type="Label" parent="ModePanel/VBox" unique_id=1852359234]
+custom_minimum_size = Vector2(500, 90)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="ModePanel/VBox" unique_id=231337459]
+layout_mode = 2
+text = "Return"
+
+[node name="SaveSlots" parent="." unique_id=1879231917 instance=ExtResource("3_8ln24")]
+layout_mode = 1
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ModePanel" type="PanelContainer" parent="." unique_id=1474062645]
 visible = false
