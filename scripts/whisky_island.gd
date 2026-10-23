@@ -4,9 +4,10 @@ extends IslandWorld
 ## Admiral Garp (Luffy's grandfather!) arrived to take him to the Navy... by force. And Nami, the
 ## best navigator of East Blue, is in the town square: she would join a crew that brings her
 ## tangerines.
-##   1. defeat Garp, who waits on the plateau of the great cactus, north of the town;
-##   2. pick 5 tangerines from among the cactus rocks and give them to Nami;
-##   3. Nami joins the crew as navigator. It is the last island of this version: the voyage ends.
+##   1. pick 5 tangerines from among the cactus rocks and give them to Nami: she joins the crew as
+##      navigator at once (and fights Garp with Luffy);
+##   2. defeat Garp, who waits on the plateau of the great cactus, north of the town. He is the
+##      hardest boss of the voyage. It is the last island of this version: the voyage ends.
 
 const ORANGES_FOR_NAMI := 5
 
@@ -64,7 +65,7 @@ func _talk_to_koby() -> void:
 				"Quiere llevarte a la Marina a puñetazos. Te espera en la meseta del gran cactus, al norte del pueblo.",
 				"Y en la plaza está Nami, la mejor navegante de East Blue. Sin ella nunca llegarán al Grand Line.",
 				tr("Dice que solo se unirá a una tripulación que le traiga %d mandarinas de los árboles entre los cactus.") % ORANGES_FOR_NAMI,
-				"Tu misión: ¡derrota a Garp, lleva las mandarinas a Nami y recluta a tu navegante!",
+				"Garp es muy fuerte: ¡recluta primero a Nami para que te ayude y luego derrota a Garp!",
 			], give_mission)
 		Mission.ACTIVE:
 			open_dialog("Koby", [_progress_line()])
@@ -81,23 +82,21 @@ func _talk_to_nami() -> void:
 		oranges_given = true
 		hud.show_message(tr("Le diste %d mandarinas a Nami") % ORANGES_FOR_NAMI, 2.0)
 		_update_mission_text()
-	if oranges_given and boss.is_defeated():
+	if oranges_given:
 		open_dialog("Nami", [
-			"¡Mis mandarinas! Y además derrotaste al mismísimo Garp...",
-			"Está bien, capitán: desde hoy soy la navegante de los Piratas del Sombrero de Paja. ¡Rumbo al Grand Line!",
+			"¡Mis mandarinas! Está bien, capitán: desde hoy soy la navegante de los Piratas del Sombrero de Paja.",
+			"¿Garp, el héroe de la Marina? Es fortísimo... ¡pero juntos le daremos una paliza! Vamos a la meseta del gran cactus.",
 		], recruit)
-	elif oranges_given:
-		open_dialog("Nami", ["¡Gracias por las mandarinas! Ahora derrota a Garp en la meseta del gran cactus."])
 	else:
 		open_dialog("Nami", [tr("Todavía me faltan mandarinas: tienes %d de %d. Crecen entre las rocas de cactus.") % [GameState.count_of("orange"), ORANGES_FOR_NAMI]])
 
 
 func _progress_line() -> String:
-	if not boss.is_defeated():
-		return tr("Garp te espera en la meseta del gran cactus, al norte. ¡Lanza balas de cañón desde lejos!")
-	if not oranges_given:
+	if not recruited and not oranges_given:
 		return tr("Busca las mandarinas entre las rocas de cactus y llévaselas a Nami, en la plaza.")
-	return tr("¡Nami te espera en la plaza!")
+	if not recruited:
+		return tr("¡Nami te espera en la plaza!")
+	return tr("Garp te espera en la meseta del gran cactus, al norte. ¡Lanza balas de cañón desde lejos!")
 
 
 func _mission_text() -> String:
@@ -108,9 +107,9 @@ func _mission_text() -> String:
 	var m := func(done: bool) -> String: return "[X]" if done else "[  ]"
 	var have := mini(GameState.count_of("orange"), ORANGES_FOR_NAMI) if not oranges_given else ORANGES_FOR_NAMI
 	return "%s %s\n%s %s\n%s %s" % [
-		m.call(boss.is_defeated()), tr("Derrota al vicealmirante Garp"),
-		m.call(oranges_given), tr("Lleva mandarinas a Nami (%d/%d)") % [have, ORANGES_FOR_NAMI],
-		m.call(recruited), tr("Recluta a Nami")]
+		m.call(oranges_given or recruited), tr("Lleva mandarinas a Nami (%d/%d)") % [have, ORANGES_FOR_NAMI],
+		m.call(recruited), tr("Recluta a Nami"),
+		m.call(boss.is_defeated()), tr("Derrota al vicealmirante Garp")]
 
 
 func _mission_goals_done() -> bool:
@@ -122,4 +121,4 @@ func _on_item_taken(_item: Collectible) -> void:
 
 
 func _on_boss_down() -> void:
-	hud.show_message(tr("¡Derrotaste a Garp! Lleva las mandarinas a Nami"), 2.5)
+	hud.show_message(tr("¡Derrotaste al vicealmirante Garp!") if recruited else tr("¡Derrotaste a Garp! Ahora recluta a Nami"), 2.5)

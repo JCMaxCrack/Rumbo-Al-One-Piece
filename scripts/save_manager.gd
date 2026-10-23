@@ -60,7 +60,7 @@ const ISLAND_SPECS := {
 	"villa_syrup": {"checkpoints": ["puerto_syrup", "aldea_syrup", "colina_syrup", "jardin_mansion"],
 		"items": ["Meat1", "Meat2", "Meat3", "Meat4", "Meat5", "Meat6", "Meat7", "Meat8", "Orange1", "Orange2", "Orange3", "KeyChest"], "boss_max": 420.0, "flags": ["gate_open"]},
 	"whisky_peak": {"checkpoints": ["puerto_whisky", "arco_whisky", "plaza_whisky", "cactus_whisky"],
-		"items": ["Meat1", "Meat2", "Meat3", "Meat4", "Meat5", "Meat6", "Meat7", "Meat8", "Orange1", "Orange2", "Orange3", "Orange4", "Orange5"], "boss_max": 480.0, "flags": ["oranges_given"]},
+		"items": ["Meat1", "Meat2", "Meat3", "Meat4", "Meat5", "Meat6", "Meat7", "Meat8", "Orange1", "Orange2", "Orange3", "Orange4", "Orange5"], "boss_max": 720.0, "flags": ["oranges_given"]},
 }
 ## Luffy's health grows a little with every level.
 const HEALTH_PER_LEVEL := 5.0
