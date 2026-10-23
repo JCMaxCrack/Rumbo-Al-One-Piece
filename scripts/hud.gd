@@ -2,8 +2,8 @@ class_name HUD
 extends CanvasLayer
 ## In-game interface. Nodes in scenes/ui/hud.tscn.
 
-const KEYBOARD_HINT := "WASD mover  ·  Shift correr  ·  Espacio saltar/nadar  ·  Clic/J golpe  ·  E hablar  ·  Mouse cámara  ·  F1 ver IA  ·  Esc pausa"
-const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha: cámara"
+const KEYBOARD_HINT := "WASD move  ·  Shift run  ·  Espace jump/swim  ·  Clic/J punch  ·  E talk  ·  M map  ·  Mouse camera  ·  Esc pause"
+const TOUCH_HINT := "Joystick: move (to the edge, run)  ·  Drag right: camera"
 
 @onready var health_bar: ProgressBar = $Root/PlayerPanel/VBox/HealthBar
 @onready var health_label: Label = $Root/PlayerPanel/VBox/Row/HealthLabel
@@ -20,6 +20,10 @@ const TOUCH_HINT := "Joystick: mover (al borde corre)  ·  Arrastra a la derecha
 @onready var dialog_hint: Label = $Root/DialogPanel/VBox/Hint
 @onready var controls_hint: Label = $Root/ControlsHint
 @onready var fps_label: Label = $Root/FpsLabel
+@onready var minimap: Minimap = $Root/Minimap
+@onready var player2_panel: Control = $Root/Player2Panel
+@onready var health_bar2: ProgressBar = $Root/Player2Panel/VBox/HealthBar
+@onready var health_label2: Label = $Root/Player2Panel/VBox/Row/HealthLabel
 
 var touch_mode := false
 
@@ -30,8 +34,24 @@ func set_health(current: float, maximum: float) -> void:
 	health_label.text = "%d / %d" % [int(ceil(current)), int(maximum)]
 
 
+## Health of Zoro (player 2 in co-op, or the companion once he joins the crew).
+func set_health2(current: float, maximum: float) -> void:
+	health_bar2.max_value = maximum
+	health_bar2.value = current
+	health_label2.text = "%d / %d" % [int(ceil(current)), int(maximum)]
+
+
+func set_player2_visible(on: bool) -> void:
+	player2_panel.visible = on
+
+
+## M / D-pad up: small map around the player <-> the whole island.
+func toggle_map() -> void:
+	minimap.toggle_big()
+
+
 func set_count(current: int, total: int) -> void:
-	item_label.text = "Carne: %d / %d" % [current, total]
+	item_label.text = "Meat: %d / %d" % [current, total]
 
 
 func set_mission(text: String) -> void:
@@ -68,8 +88,8 @@ func show_dialog(speaker: String, text: String, last: bool) -> void:
 	dialog_panel.visible = true
 	dialog_speaker.text = speaker
 	dialog_text.text = text
-	var key := "Toca «Seguir»" if touch_mode else "Pulsa E"
-	dialog_hint.text = key + (" para cerrar" if last else " para continuar")
+	var key := "Press <<follow>>" if touch_mode else "Press E"
+	dialog_hint.text = key + (" to close" if last else " to continue")
 
 
 func hide_dialog() -> void:

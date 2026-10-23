@@ -14,13 +14,13 @@ func show_result(won: bool, time_seconds: float, collected: int, total: int, bos
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	var t := int(time_seconds)
 	if won:
-		title_label.text = "¡Misión cumplida!"
+		title_label.text = "¡Mission Completed!"
 		title_label.modulate = Color(1, 0.85, 0.4)
-		detail_label.text = "Derrotaste a Buggy el Payaso y recolectaste toda la carne (%d/%d).\nTiempo: %d:%02d" % [collected, total, t / 60, t % 60]
+		detail_label.text = "You defeted Buggy the Clown and collected all the meat (%d/%d).\nTime: %d:%02d" % [collected, total, t / 60, t % 60]
 	else:
-		title_label.text = "¡Buggy te derrotó!"
+		title_label.text = "¡Buggy defeated you!"
 		title_label.modulate = Color(1, 0.45, 0.4)
-		detail_label.text = "Buggy: %s  ·  Carne recogida: %d/%d\nTiempo: %d:%02d" % ["derrotado" if boss_defeated else "sigue en pie", collected, total, t / 60, t % 60]
+		detail_label.text = "Buggy: %s  ·  Meat collectd: %d/%d\nTime: %d:%02d" % ["defeted" if boss_defeated else "still alive", collected, total, t / 60, t % 60]
 	# with a save slot, losing sends you back to the last checkpoint (starting over would erase it)
 	var has_save: bool = not won and SaveManager.current_slot > 0 and SaveManager.read_slot(SaveManager.current_slot).status == SaveManager.SlotStatus.VALID
 	checkpoint_button.visible = has_save

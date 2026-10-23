@@ -31,7 +31,7 @@ func toggle() -> void:
 
 ## Esc / Start closes the pause (game_world.gd does not receive input while paused).
 func _unhandled_input(event: InputEvent) -> void:
-	if visible and event.is_action_pressed("pause"):
+	if visible and (event.is_action_pressed("pause") or (GameSession.coop and event.is_action_pressed("p2_pause"))):
 		get_viewport().set_input_as_handled()
 		if save_slots.visible:
 			save_slots._on_back_button_pressed()

@@ -1,25 +1,27 @@
-[gd_scene format=4]
+[gd_scene format=4 uid="uid://bkt60a0mxlagy"]
 
-[ext_resource type="Script" path="res://scripts/game_world.gd" id="1_bt5mj"]
-[ext_resource type="Environment" path="res://assets/generated/environment.tres" id="2_e1j6l"]
+[ext_resource type="Script" uid="uid://brckd7xx2cytl" path="res://scripts/game_world.gd" id="1_bt5mj"]
+[ext_resource type="Environment" uid="uid://o83n5kk8b466" path="res://assets/generated/environment.tres" id="2_e1j6l"]
 [ext_resource type="PackedScene" path="res://assets/chunks/terrain_tiles.scn" id="3_5newe"]
 [ext_resource type="Shape3D" path="res://assets/generated/terrain_shape.res" id="4_bhx41"]
 [ext_resource type="PlaneMesh" path="res://assets/generated/water_mesh.res" id="5_qnb83"]
 [ext_resource type="ArrayOccluder3D" path="res://assets/generated/terrain_occluder.res" id="6_37s47"]
-[ext_resource type="Script" path="res://scripts/chunk_manager.gd" id="7_bt5mj"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="11_v2yb1"]
-[ext_resource type="PackedScene" path="res://scenes/ui/touch_controls.tscn" id="12_js0lu"]
-[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="13_gxtfn"]
-[ext_resource type="PackedScene" path="res://scenes/ui/end_screen.tscn" id="14_twgab"]
+[ext_resource type="Script" uid="uid://ds5hhcdgckt7h" path="res://scripts/chunk_manager.gd" id="7_bt5mj"]
+[ext_resource type="PackedScene" uid="uid://dvcw2qcx80647" path="res://scenes/ui/hud.tscn" id="11_v2yb1"]
+[ext_resource type="PackedScene" uid="uid://hetcbyqkr1sc" path="res://scenes/ui/touch_controls.tscn" id="12_js0lu"]
+[ext_resource type="PackedScene" uid="uid://b7jyok52qtdev" path="res://scenes/player/zoro.tscn" id="13_bt5mj"]
+[ext_resource type="PackedScene" uid="uid://d4flq7bsbndos" path="res://scenes/ui/pause_menu.tscn" id="13_gxtfn"]
+[ext_resource type="PackedScene" uid="uid://wblv8e7abibe" path="res://scenes/ui/end_screen.tscn" id="14_twgab"]
 [ext_resource type="PackedScene" path="res://scenes/player/luffy.tscn" id="15_02fa5"]
-[ext_resource type="PackedScene" path="res://scenes/npcs/koby.tscn" id="16_nepv3"]
+[ext_resource type="PackedScene" uid="uid://8u8aw2hmc8q3" path="res://scenes/npcs/koby.tscn" id="16_nepv3"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/buggy.tscn" id="17_7025r"]
-[ext_resource type="PackedScene" path="res://scenes/props/going_merry.tscn" id="18_m4url"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/evil_mushroom.tscn" id="18_e1j6l"]
+[ext_resource type="PackedScene" uid="uid://biuexp7wqysje" path="res://scenes/props/going_merry.tscn" id="18_m4url"]
 [ext_resource type="PackedScene" path="res://scenes/items/meat.tscn" id="19_8ool0"]
-[ext_resource type="AudioStream" path="res://assets/audio/music_island.wav" id="20_pr1ej"]
-[ext_resource type="AudioStream" path="res://assets/audio/music_combat.wav" id="21_05nbr"]
-[ext_resource type="AudioStream" path="res://assets/audio/victory.wav" id="22_0sl42"]
-[ext_resource type="AudioStream" path="res://assets/audio/defeat.wav" id="23_oaba0"]
+[ext_resource type="AudioStream" uid="uid://cyurybgn081ma" path="res://assets/audio/music_island.wav" id="20_pr1ej"]
+[ext_resource type="AudioStream" uid="uid://bu3gfqa7cs2jr" path="res://assets/audio/music_combat.wav" id="21_05nbr"]
+[ext_resource type="AudioStream" uid="uid://bxkkrq87lotxn" path="res://assets/audio/victory.wav" id="22_0sl42"]
+[ext_resource type="AudioStream" uid="uid://c26205a8f2f2q" path="res://assets/audio/defeat.wav" id="23_oaba0"]
 [ext_resource type="PackedScene" path="res://scenes/props/checkpoint.tscn" id="60_ckpt"]
 
 [sub_resource type="Gradient" id="Gradient_1e25m"]
@@ -454,6 +456,25 @@ size = Vector3(0.9, 0.9, 0.9)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_lyx10"]
 size = Vector3(18.489624, 30, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pl11u"]
+albedo_color = Color(0.42, 0.28, 0.16, 1)
+roughness = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_bhx41"]
+material = SubResource("StandardMaterial3D_pl11u")
+top_radius = 0.12
+bottom_radius = 0.14
+height = 2.4
+radial_segments = 10
+
+[sub_resource type="BoxMesh" id="BoxMesh_qnb83"]
+material = SubResource("StandardMaterial3D_pl11u")
+size = Vector3(1.9, 0.16, 0.16)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_sww3w"]
+height = 2.4
+radius = 0.15
 
 [node name="Game" type="Node3D" unique_id=1345403979]
 script = ExtResource("1_bt5mj")
@@ -1031,6 +1052,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 218.44, 11, 240.6)
 [node name="Luffy" parent="." unique_id=1325825775 instance=ExtResource("15_02fa5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 239.56308, 2.2976663, 324.99075)
 
+[node name="Zoro" parent="." unique_id=836300224 instance=ExtResource("13_bt5mj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 7.21174, 162)
+
+[node name="ZoroPost" type="Node3D" parent="." unique_id=1833034073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 160, 7.11174, 161.45)
+
+[node name="Post" type="MeshInstance3D" parent="ZoroPost" unique_id=284959673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+mesh = SubResource("CylinderMesh_bhx41")
+
+[node name="CrossBeam" type="MeshInstance3D" parent="ZoroPost" unique_id=972740765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
+mesh = SubResource("BoxMesh_qnb83")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="ZoroPost" unique_id=655624250]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ZoroPost/StaticBody3D" unique_id=266296644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("CylinderShape3D_sww3w")
+
 [node name="Koby" parent="." unique_id=659906218 instance=ExtResource("16_nepv3")]
 transform = Transform3D(0.78935224, 0, -0.6139406, 0, 1, 0, 0.6139406, 0, 0.78935224, 243.06308, 2.4342778, 320.49075)
 
@@ -1040,7 +1081,7 @@ patrol_left = NodePath("../BuggyPatrol/PatrolLeft")
 patrol_right = NodePath("../BuggyPatrol/PatrolRight")
 target = NodePath("../Luffy")
 
-[node name="GoingMerry" parent="." unique_id=2125988302 instance=ExtResource("18_m4url")]
+[node name="GoingMerry" parent="." unique_id=2125988302 groups=["minimap_ship"] instance=ExtResource("18_m4url")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 298.32, 1, 156.4)
 
 [node name="Collectibles" type="Node3D" parent="." unique_id=1244462564]
@@ -1075,6 +1116,32 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 256.08, 3.6955042, 168.96)
 [node name="Meat10" parent="Collectibles" unique_id=576719108 instance=ExtResource("19_8ool0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164.56, 16.955202, 246.4)
 
+[node name="MiniEnemies" type="Node3D" parent="." unique_id=202352758]
+
+[node name="EvilMushroom1" parent="MiniEnemies" unique_id=2031733337 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 6.90101, 185)
+
+[node name="EvilMushroom2" parent="MiniEnemies" unique_id=1001188226 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(0.26749888, 0, 0.9635582, 0, 1, 0, -0.9635582, 0, 0.26749888, 185.86603, 15.650042, 268.5)
+
+[node name="EvilMushroom3" parent="MiniEnemies" unique_id=1658103917 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(-0.8568887, 0, 0.51550144, 0, 1, 0, -0.51550144, 0, -0.8568887, 272, 1.771608, 292)
+
+[node name="EvilMushroom4" parent="MiniEnemies" unique_id=1055108678 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(-0.72593224, 0, -0.68776625, 0, 1, 0, 0.68776625, 0, -0.72593224, 335, 5.1637435, 257)
+
+[node name="EvilMushroom5" parent="MiniEnemies" unique_id=322593704 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(0.4685165, 0, -0.88345474, 0, 1, 0, 0.88345474, 0, 0.4685165, 355, 3.4554381, 205)
+
+[node name="EvilMushroom6" parent="MiniEnemies" unique_id=1256565346 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(0.97658765, 0, 0.21511999, 0, 1, 0, -0.21511999, 0, 0.97658765, 315, 11.619318, 190)
+
+[node name="EvilMushroom7" parent="MiniEnemies" unique_id=2018482999 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(0.05395523, 0, 0.9985434, 0, 1, 0, -0.9985434, 0, 0.05395523, 255, 2.629045, 140)
+
+[node name="EvilMushroom8" parent="MiniEnemies" unique_id=483907102 instance=ExtResource("18_e1j6l")]
+transform = Transform3D(-0.9477217, 0, 0.319098, 0, 1, 0, -0.319098, 0, -0.9477217, 165.40192, 6.783624, 203.5)
+
 [node name="ExploreMusic" type="AudioStreamPlayer" parent="." unique_id=424666769]
 stream = ExtResource("20_pr1ej")
 volume_db = -8.0
@@ -1102,32 +1169,34 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 234.5631, 2.376976, 322.9908)
 [node name="Checkpoint2" parent="Checkpoints" unique_id=1264925162 instance=ExtResource("60_ckpt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 209.4, 16.08245, 196)
 checkpoint_id = "entrada_crater"
-display_name = "Entrada del cráter"
+display_name = "Craters' Entrance"
 
 [node name="Checkpoint3" parent="Checkpoints" unique_id=2083005628 instance=ExtResource("60_ckpt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 290.22, 1.367783, 224.8377)
 checkpoint_id = "muelle"
-display_name = "Muelle del Going Merry"
+display_name = "Going Merry Pier"
 
 [node name="Checkpoint4" parent="Checkpoints" unique_id=1094361836 instance=ExtResource("60_ckpt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 92, 2.874039, 190)
 checkpoint_id = "peninsula_oeste"
-display_name = "Península del oeste"
+display_name = "Western Peninsula"
 
 [node name="Checkpoint5" parent="Checkpoints" unique_id=263396957 instance=ExtResource("60_ckpt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 152, 8.755409, 150)
 checkpoint_id = "bosque_noroeste"
-display_name = "Bosque del noroeste"
+display_name = "Northwestern Forest"
 
 [node name="Checkpoint6" parent="Checkpoints" unique_id=313315879 instance=ExtResource("60_ckpt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 357, 2.530136, 224)
 checkpoint_id = "costa_este"
-display_name = "Costa este"
+display_name = "East Coast"
 
 [connection signal="look_dragged" from="TouchControls" to="Luffy" method="look"]
 [connection signal="save_requested" from="PauseMenu" to="." method="_on_pause_menu_save_requested"]
 [connection signal="died" from="Luffy" to="." method="_on_player_died"]
 [connection signal="health_changed" from="Luffy" to="HUD" method="set_health"]
+[connection signal="died" from="Zoro" to="." method="_on_zoro_died"]
+[connection signal="health_changed" from="Zoro" to="HUD" method="set_health2"]
 [connection signal="defeated" from="Buggy" to="." method="_on_buggy_defeated"]
 [connection signal="health_changed" from="Buggy" to="HUD" method="set_boss_health"]
 [connection signal="state_changed" from="Buggy" to="." method="_on_buggy_state_changed"]
