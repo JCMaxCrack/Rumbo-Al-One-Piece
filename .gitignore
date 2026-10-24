@@ -17,3 +17,7 @@ export_credentials.cfg
 *~
 .DS_Store
 Thumbs.db
+
+# Hand tracker build (made by gesture/build_tracker.py, ~200 MB, too big for git)
+gesture/build/
+gesture_bin/*.zip

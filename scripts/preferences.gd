@@ -1,5 +1,6 @@
 extends Node
-## Preferences (autoload, see project.godot): language and controls chosen in "Options".
+## Preferences (autoload, see project.godot): language, controls and gesture control (the PC
+## camera, GestureControl) chosen in "Options".
 ## Kept in user://preferencias.cfg (not in the save slots).
 ##
 ## Language: English (the texts of the game, and the default) or Spanish (assets/i18n/translations.csv,
@@ -23,6 +24,8 @@ const REMAPPABLE := [
 ]
 
 var language := "en"
+## Play with hand gestures in front of the camera (GestureControl).
+var gesture_control := false
 ## Events of every remappable action as the player chose them (any device). GameSession builds the
 ## real InputMap from them (one gamepad per player in co-op).
 var bindings := {}
@@ -65,6 +68,11 @@ func set_language(code: String) -> void:
 	TranslationServer.set_locale(code)
 	_save()
 	language_changed.emit()
+
+
+func set_gesture_control(on: bool) -> void:
+	gesture_control = on
+	_save()
 
 
 # ------------------------------------------------------------------ controls
@@ -188,6 +196,7 @@ func _load() -> void:
 	language = str(cfg.get_value("general", "language", "en"))
 	if not LANGUAGES.has(language):
 		language = "en"
+	gesture_control = bool(cfg.get_value("general", "gesture_control", false))
 	for spec in REMAPPABLE:
 		var a: String = spec[0]
 		for gamepad in [false, true]:
@@ -201,6 +210,7 @@ func _load() -> void:
 func _save() -> void:
 	var cfg := ConfigFile.new()
 	cfg.set_value("general", "language", language)
+	cfg.set_value("general", "gesture_control", gesture_control)
 	for spec in REMAPPABLE:
 		var a: String = spec[0]
 		cfg.set_value("controles", "teclado_" + a, _to_text(get_event(a, false)))

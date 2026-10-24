@@ -24,6 +24,7 @@ Preferences="*res://scripts/preferences.gd"
 GameSession="*res://scripts/game_session.gd"
 GraphicsSettings="*res://scripts/graphics_settings.gd"
 GameState="*res://scripts/game_state.gd"
+GestureControl="*res://scripts/gesture_control.gd"
 
 [display]
 
