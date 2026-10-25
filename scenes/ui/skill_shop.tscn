@@ -1,0 +1,73 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://scripts/skill_shop.gd" id="2_s"]
+[ext_resource type="AudioStream" path="res://assets/audio/confirm.wav" id="3_a"]
+
+[node name="SkillShop" type="CanvasLayer"]
+process_mode = 3
+layer = 6
+visible = false
+script = ExtResource("2_s")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -280.0
+offset_right = 380.0
+offset_bottom = 280.0
+theme = ExtResource("1_theme")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 30
+text = "Skill shop"
+horizontal_alignment = 1
+
+[node name="Points" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Panel/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Info" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 17
+custom_minimum_size = Vector2(0, 28)
+horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "Close"
+
+[node name="BuySound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_a")
+
+[connection signal="pressed" from="Panel/VBox/CloseButton" to="." method="_on_close_button_pressed"]

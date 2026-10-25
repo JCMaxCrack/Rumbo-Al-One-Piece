@@ -1,0 +1,26 @@
+# Godot cache and local data
+.godot/
+.import/
+export_credentials.cfg
+
+# Exported builds
+/builds/**
+!/builds/.gdignore
+!/builds/*/
+!/builds/*/.gitkeep
+*.exe
+*.pck
+*.apk
+*.aab
+/android/
+
+# Backups and OS files
+*.bak
+*.tmp
+*~
+.DS_Store
+Thumbs.db
+
+# Hand tracker build (made by gesture/build_tracker.py, ~200 MB, too big for git)
+gesture/build/
+gesture_bin/*.zip

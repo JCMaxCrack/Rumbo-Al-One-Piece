@@ -1,0 +1,121 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_y7u37"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/nami/nami.glb" id="2_7l77f"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/nami_animations.res" id="3_umhec"]
+[ext_resource type="AudioStream" path="res://assets/audio/hurt.wav" id="4_yq34g"]
+[ext_resource type="AudioStream" path="res://assets/audio/splash.wav" id="5_paeie"]
+[ext_resource type="AudioStream" path="res://assets/audio/stretch.wav" id="6_viqtb"]
+[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="7_xxloq"]
+[ext_resource type="Script" path="res://scripts/companion_ai.gd" id="8_8t7km"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pyym4"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ti5j0"]
+radius = 0.25
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ynw32"]
+radius = 1.2
+
+[node name="Nami" type="CharacterBody3D" unique_id=1325825775]
+collision_layer = 2
+floor_max_angle = 0.87266463
+floor_snap_length = 0.4
+script = ExtResource("1_y7u37")
+display_name = "Nami"
+anim_library = "nami"
+max_health = 95.0
+punch_damage = 16.0
+punch_reach = 1.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2084463036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_pyym4")
+
+[node name="Model" parent="." unique_id=437929640 instance=ExtResource("2_7l77f")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=853466169]
+root_node = NodePath("../Model")
+libraries/nami = ExtResource("3_umhec")
+autoplay = &"nami/idle"
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1417963850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=1010481075]
+transform = Transform3D(1, 0, 0, 0, 0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0.5, 0, 0)
+shape = SubResource("SphereShape3D_ti5j0")
+spring_length = 4.8
+margin = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=310205440]
+fov = 68.0
+far = 600.0
+
+[node name="PunchHitbox" type="Area3D" parent="." unique_id=360561045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 1.7)
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PunchHitbox" unique_id=990038049]
+shape = SubResource("SphereShape3D_ynw32")
+
+[node name="HurtSound" type="AudioStreamPlayer3D" parent="." unique_id=1024871921]
+stream = ExtResource("4_yq34g")
+unit_size = 12.0
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="." unique_id=443197221]
+stream = ExtResource("5_paeie")
+volume_db = -14.0
+unit_size = 12.0
+
+[node name="SplashSound" type="AudioStreamPlayer3D" parent="." unique_id=1976039233]
+stream = ExtResource("5_paeie")
+volume_db = -4.0
+unit_size = 12.0
+
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=1282916527]
+stream = ExtResource("6_viqtb")
+volume_db = -2.0
+unit_size = 12.0
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=1413812292]
+stream = ExtResource("7_xxloq")
+unit_size = 12.0
+
+[node name="InvulnerabilityTimer" type="Timer" parent="." unique_id=206651069]
+wait_time = 1.2
+one_shot = true
+
+[node name="HurtTimer" type="Timer" parent="." unique_id=1967409819]
+wait_time = 0.45
+one_shot = true
+
+[node name="AttackTimer" type="Timer" parent="." unique_id=325337742]
+wait_time = 0.7285714285714286
+one_shot = true
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1185535537]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.03, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(1, 0.6, 0.3, 1)
+text = "Nami"
+font_size = 44
+
+[node name="PromptLabel" type="Label3D" parent="." unique_id=1440745717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.33, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.93, 0.78, 0.42, 1)
+text = "[E] Talk"
+font_size = 40
+
+[node name="CompanionAI" type="Node" parent="." unique_id=667405463]
+script = ExtResource("8_8t7km")

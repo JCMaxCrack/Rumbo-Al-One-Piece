@@ -1,0 +1,145 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="1_ek1q5"]
+[ext_resource type="Script" path="res://scripts/graphics_options.gd" id="2_ewesi"]
+[ext_resource type="PackedScene" path="res://scenes/ui/controls_menu.tscn" id="3_ctrl"]
+
+[node name="GraphicsOptions" type="Control" unique_id=896974404]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_ek1q5")
+script = ExtResource("2_ewesi")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=541467627]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1204199133]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -330.0
+offset_top = -310.0
+offset_right = 330.0
+offset_bottom = 310.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=806882165]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Panel/VBox" unique_id=290553980]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 30
+text = "Graphics options"
+horizontal_alignment = 1
+
+[node name="PresetRow" type="HBoxContainer" parent="Panel/VBox" unique_id=514179449]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/PresetRow" unique_id=2112181868]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "Quality"
+
+[node name="PresetButton" type="OptionButton" parent="Panel/VBox/PresetRow" unique_id=1420438918]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Low"
+popup/item_0/id = 0
+popup/item_1/text = "Medium"
+popup/item_1/id = 1
+popup/item_2/text = "High"
+popup/item_2/id = 2
+
+[node name="ScaleRow" type="HBoxContainer" parent="Panel/VBox" unique_id=645564939]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Label" type="Label" parent="Panel/VBox/ScaleRow" unique_id=955494656]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "Render resolution"
+
+[node name="ScaleSlider" type="HSlider" parent="Panel/VBox/ScaleRow" unique_id=1053725167]
+custom_minimum_size = Vector2(200, 24)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = 50.0
+step = 5.0
+value = 100.0
+
+[node name="ScaleValue" type="Label" parent="Panel/VBox/ScaleRow" unique_id=1094909603]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "100 %"
+horizontal_alignment = 2
+
+[node name="LanguageRow" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/LanguageRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 20
+text = "Language"
+
+[node name="LanguageButton" type="OptionButton" parent="Panel/VBox/LanguageRow"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="FullscreenCheck" type="CheckBox" parent="Panel/VBox" unique_id=501626632]
+layout_mode = 2
+text = "Fullscreen  (F11 / Alt+Enter)"
+
+[node name="FpsCheck" type="CheckBox" parent="Panel/VBox" unique_id=776509971]
+layout_mode = 2
+text = "Show FPS"
+
+[node name="Info" type="Label" parent="Panel/VBox" unique_id=229960902]
+custom_minimum_size = Vector2(600, 70)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 3
+
+[node name="ControlsButton" type="Button" parent="Panel/VBox"]
+layout_mode = 2
+text = "Controls"
+
+[node name="BackButton" type="Button" parent="Panel/VBox" unique_id=238681698]
+layout_mode = 2
+text = "Back"
+
+[node name="ControlsMenu" parent="." instance=ExtResource("3_ctrl")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="item_selected" from="Panel/VBox/PresetRow/PresetButton" to="." method="_on_preset_button_item_selected"]
+[connection signal="value_changed" from="Panel/VBox/ScaleRow/ScaleSlider" to="." method="_on_scale_slider_value_changed"]
+[connection signal="toggled" from="Panel/VBox/FullscreenCheck" to="." method="_on_fullscreen_check_toggled"]
+[connection signal="toggled" from="Panel/VBox/FpsCheck" to="." method="_on_fps_check_toggled"]
+[connection signal="pressed" from="Panel/VBox/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="item_selected" from="Panel/VBox/LanguageRow/LanguageButton" to="." method="_on_language_button_item_selected"]
+[connection signal="pressed" from="Panel/VBox/ControlsButton" to="." method="_on_controls_button_pressed"]

@@ -1,0 +1,109 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/boss.gd" id="1_fwej4"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/garp/garp.fbx" id="2_du5n3"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/garp/garp_mesh_1.res" id="3_23dqa"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/garp/garp_mesh_2.res" id="4_g2iis"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/garp_animations.res" id="5_ffwsx"]
+[ext_resource type="AudioStream" path="res://assets/audio/boss_roar.wav" id="6_prip6"]
+[ext_resource type="AudioStream" path="res://assets/audio/swing.wav" id="7_enx0b"]
+[ext_resource type="AudioStream" path="res://assets/audio/hit.wav" id="8_m52aw"]
+[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="9_s7dv3"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_n7fdc"]
+radius = 0.55
+height = 2.09
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1tgm3"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.05, 0.05, 0.08, 0.85)
+
+[sub_resource type="QuadMesh" id="QuadMesh_k1jwg"]
+material = SubResource("StandardMaterial3D_1tgm3")
+size = Vector2(1.3, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hle7k"]
+render_priority = 1
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.9, 0.18, 0.15, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_4cnex"]
+material = SubResource("StandardMaterial3D_hle7k")
+size = Vector2(1.26, 0.09)
+center_offset = Vector3(0.63, 0, 0)
+
+[node name="Garp" type="CharacterBody3D" unique_id=70791850]
+collision_layer = 4
+floor_snap_length = 0.4
+script = ExtResource("1_fwej4")
+display_name = "Vice Admiral Garp"
+anim_library = "garp"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1017891572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.045, 0)
+shape = SubResource("CapsuleShape3D_n7fdc")
+
+[node name="Model" parent="." unique_id=677389807 instance=ExtResource("2_du5n3")]
+transform = Transform3D(105.22064, 0, 0, 0, 105.22064, 0, 0, 0, 105.22064, 0, 0.006634562, 0)
+
+[node name="Icosphere" parent="Model" index="0" unique_id=463218337]
+visible = false
+
+[node name="Object_11" parent="Model" index="1" unique_id=1637432317]
+visible = false
+
+[node name="Object_7" parent="Model/Sketchfab_model/12002_fbx/RootNode2/12002/Object_4/Skeleton3D" parent_id_path=PackedInt32Array(677389807, 1993378605) index="0" unique_id=1808663659]
+mesh = ExtResource("3_23dqa")
+
+[node name="Object_9" parent="Model/Sketchfab_model/12002_fbx/RootNode2/12002/Object_4/Skeleton3D" parent_id_path=PackedInt32Array(677389807, 1993378605) index="1"]
+mesh = ExtResource("4_g2iis")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1381900328]
+libraries/garp = ExtResource("5_ffwsx")
+autoplay = &"garp/idle"
+
+[node name="Eye" type="Marker3D" parent="." unique_id=84325535]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.936, 0)
+
+[node name="HealthBar" type="Node3D" parent="." unique_id=484246114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.55, 0)
+
+[node name="Back" type="MeshInstance3D" parent="HealthBar" unique_id=238813707]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_k1jwg")
+
+[node name="Fill" type="MeshInstance3D" parent="HealthBar" unique_id=648173861]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.63, 0, 0.01)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_4cnex")
+
+[node name="RoarSound" type="AudioStreamPlayer3D" parent="." unique_id=97178319]
+stream = ExtResource("6_prip6")
+unit_size = 14.0
+
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=927127691]
+stream = ExtResource("7_enx0b")
+volume_db = -2.0
+unit_size = 14.0
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="." unique_id=1099960085]
+stream = ExtResource("8_m52aw")
+unit_size = 14.0
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=719427477]
+stream = ExtResource("9_s7dv3")
+unit_size = 14.0
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1303143746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, 0)
+pixel_size = 0.006
+billboard = 1
+modulate = Color(1, 0.45, 0.4, 1)
+text = "Vice Admiral Garp"
+font_size = 46
+
+[editable path="Model"]

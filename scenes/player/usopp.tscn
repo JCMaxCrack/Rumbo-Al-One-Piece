@@ -1,0 +1,140 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_2mnda"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/usopp/usopp.fbx" id="2_ribph"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/usopp/usopp_mesh_1.res" id="3_7vo8g"]
+[ext_resource type="ArrayMesh" path="res://assets/models/characters/usopp/usopp_mesh_2.res" id="4_0wvsu"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/usopp_animations.res" id="5_isdm4"]
+[ext_resource type="AudioStream" path="res://assets/audio/hurt.wav" id="6_yvo2t"]
+[ext_resource type="AudioStream" path="res://assets/audio/splash.wav" id="7_3ckv3"]
+[ext_resource type="AudioStream" path="res://assets/audio/stretch.wav" id="8_if2p4"]
+[ext_resource type="AudioStream" path="res://assets/audio/punch.wav" id="9_k6jqo"]
+[ext_resource type="Script" path="res://scripts/companion_ai.gd" id="10_j0lux"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pyym4"]
+radius = 0.35
+height = 1.75
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ti5j0"]
+radius = 0.25
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ynw32"]
+radius = 1.2
+
+[node name="Usopp" type="CharacterBody3D" unique_id=1325825775]
+collision_layer = 2
+floor_max_angle = 0.87266463
+floor_snap_length = 0.4
+script = ExtResource("1_2mnda")
+display_name = "Usopp"
+anim_library = "usopp"
+ranged_attack = true
+max_health = 90.0
+punch_damage = 14.0
+punch_reach = 1.4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2084463036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CapsuleShape3D_pyym4")
+
+[node name="Model" parent="." unique_id=641493734 instance=ExtResource("2_ribph")]
+transform = Transform3D(100.15995, 0, 0, 0, 100.15995, 0, 0, 0, 100.15995, 0, 0.0077645676, 0)
+
+[node name="Icosphere" parent="Model" index="0" unique_id=643365339]
+visible = false
+
+[node name="Icosphere_001" parent="Model" index="1" unique_id=2107190477]
+visible = false
+
+[node name="Object_10" parent="Model/Sketchfab_model_001/f86543af7138496a98f9f9f4037eb2ae_fbx_001/RootNode_001/Object_3/Skeleton3D" parent_id_path=PackedInt32Array(641493734, 1591437556) index="3" unique_id=541235748]
+mesh = ExtResource("3_7vo8g")
+
+[node name="Object_6" parent="Model/Sketchfab_model_001/f86543af7138496a98f9f9f4037eb2ae_fbx_001/RootNode_001/Object_3/Skeleton3D" parent_id_path=PackedInt32Array(641493734, 1591437556) index="4" unique_id=1766218623]
+mesh = ExtResource("4_0wvsu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=853466169]
+root_node = NodePath("../Model")
+libraries/usopp = ExtResource("5_isdm4")
+autoplay = &"usopp/idle"
+
+[node name="CameraPivot" type="Node3D" parent="." unique_id=1417963850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot" unique_id=1010481075]
+transform = Transform3D(1, 0, 0, 0, 0.97589743, 0.21822962, 0, -0.21822962, 0.97589743, 0.5, 0, 0)
+shape = SubResource("SphereShape3D_ti5j0")
+spring_length = 4.8
+margin = 0.25
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=310205440]
+fov = 68.0
+far = 600.0
+
+[node name="PunchHitbox" type="Area3D" parent="." unique_id=360561045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 1.7)
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PunchHitbox" unique_id=990038049]
+shape = SubResource("SphereShape3D_ynw32")
+
+[node name="HurtSound" type="AudioStreamPlayer3D" parent="." unique_id=1024871921]
+stream = ExtResource("6_yvo2t")
+unit_size = 12.0
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="." unique_id=443197221]
+stream = ExtResource("7_3ckv3")
+volume_db = -14.0
+unit_size = 12.0
+
+[node name="SplashSound" type="AudioStreamPlayer3D" parent="." unique_id=1976039233]
+stream = ExtResource("7_3ckv3")
+volume_db = -4.0
+unit_size = 12.0
+
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="." unique_id=1282916527]
+stream = ExtResource("8_if2p4")
+volume_db = -2.0
+unit_size = 12.0
+
+[node name="PunchSound" type="AudioStreamPlayer3D" parent="." unique_id=1413812292]
+stream = ExtResource("9_k6jqo")
+unit_size = 12.0
+
+[node name="InvulnerabilityTimer" type="Timer" parent="." unique_id=206651069]
+wait_time = 1.2
+one_shot = true
+
+[node name="HurtTimer" type="Timer" parent="." unique_id=1967409819]
+wait_time = 0.45
+one_shot = true
+
+[node name="AttackTimer" type="Timer" parent="." unique_id=325337742]
+wait_time = 0.6756410256410257
+one_shot = true
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1093748249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(1, 0.85, 0.5, 1)
+text = "Usopp"
+font_size = 44
+
+[node name="PromptLabel" type="Label3D" parent="." unique_id=816071857]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.45, 0)
+visible = false
+pixel_size = 0.006
+billboard = 1
+modulate = Color(0.93, 0.78, 0.42, 1)
+text = "[E] Talk"
+font_size = 40
+
+[node name="CompanionAI" type="Node" parent="." unique_id=1767011566]
+script = ExtResource("10_j0lux")
+fight_radius = 14.0
+attack_range = 9.0
+
+[editable path="Model"]

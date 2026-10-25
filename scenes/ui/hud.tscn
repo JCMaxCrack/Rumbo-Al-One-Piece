@@ -1,0 +1,511 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/hud.gd" id="1_hqnrr"]
+[ext_resource type="Theme" path="res://assets/ui/theme.tres" id="2_bo48s"]
+[ext_resource type="Script" path="res://scripts/minimap.gd" id="3_8qguk"]
+[ext_resource type="Script" path="res://scripts/item_slot.gd" id="5_slot"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8qguk"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.05, 0.07, 0.12, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.78, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_136eg"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.3, 0.85, 0.4, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oj5la"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.05, 0.07, 0.12, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.78, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gss2c"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.05, 0.07, 0.12, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.93, 0.78, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h022r"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.9, 0.2, 0.17, 1)
+border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.4, 0.65, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_skill"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0.75, 0.25, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="HUD" type="CanvasLayer" unique_id=1080060577]
+script = ExtResource("1_hqnrr")
+
+[node name="Root" type="Control" parent="." unique_id=897110396]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_bo48s")
+
+[node name="PlayerPanel" type="PanelContainer" parent="Root" unique_id=1245543918]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 340.0
+offset_bottom = 86.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8qguk")
+
+[node name="VBox" type="VBoxContainer" parent="Root/PlayerPanel" unique_id=1814636599]
+layout_mode = 2
+
+[node name="Row" type="HBoxContainer" parent="Root/PlayerPanel/VBox" unique_id=193319455]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Root/PlayerPanel/VBox/Row" unique_id=1446674367]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 22
+text = "Luffy"
+
+[node name="HealthLabel" type="Label" parent="Root/PlayerPanel/VBox/Row" unique_id=44929703]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 18
+text = "100 / 100"
+horizontal_alignment = 2
+
+[node name="HealthBar" type="ProgressBar" parent="Root/PlayerPanel/VBox" unique_id=1375543481]
+custom_minimum_size = Vector2(300, 16)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_136eg")
+value = 100.0
+show_percentage = false
+
+[node name="XpRow" type="HBoxContainer" parent="Root/PlayerPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LevelLabel" type="Label" parent="Root/PlayerPanel/VBox/XpRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.65, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Lv. 1"
+
+[node name="XpBar" type="ProgressBar" parent="Root/PlayerPanel/VBox/XpRow"]
+custom_minimum_size = Vector2(160, 10)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/fill = SubResource("StyleBoxFlat_xp")
+value = 0.0
+show_percentage = false
+
+[node name="PointsLabel" type="Label" parent="Root/PlayerPanel/VBox/XpRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_font_sizes/font_size = 16
+text = "★ 0"
+
+[node name="Player2Panel" type="PanelContainer" parent="Root" unique_id=764535388]
+visible = false
+layout_mode = 0
+offset_left = 16.0
+offset_top = 126.0
+offset_right = 340.0
+offset_bottom = 196.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8qguk")
+
+[node name="VBox" type="VBoxContainer" parent="Root/Player2Panel" unique_id=1879329139]
+layout_mode = 2
+
+[node name="Row" type="HBoxContainer" parent="Root/Player2Panel/VBox" unique_id=1557081333]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Root/Player2Panel/VBox/Row" unique_id=341126032]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 1, 0.55, 1)
+theme_override_font_sizes/font_size = 22
+text = "Zoro"
+
+[node name="HealthLabel" type="Label" parent="Root/Player2Panel/VBox/Row" unique_id=452746934]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 18
+text = "100 / 100"
+horizontal_alignment = 2
+
+[node name="HealthBar" type="ProgressBar" parent="Root/Player2Panel/VBox" unique_id=672082033]
+custom_minimum_size = Vector2(300, 16)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_136eg")
+value = 100.0
+show_percentage = false
+
+[node name="ItemPanel" type="PanelContainer" parent="Root" unique_id=918468354]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -250.0
+offset_top = 224.0
+offset_right = -16.0
+offset_bottom = 272.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_oj5la")
+
+[node name="ItemLabel" type="Label" parent="Root/ItemPanel" unique_id=522394012]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 22
+text = "Meat: 0 / 10"
+
+[node name="MissionPanel" type="PanelContainer" parent="Root" unique_id=1466234601]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -350.0
+offset_top = 282.0
+offset_right = -16.0
+offset_bottom = 358.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_gss2c")
+
+[node name="VBox" type="VBoxContainer" parent="Root/MissionPanel" unique_id=1133880556]
+layout_mode = 2
+
+[node name="MissionTitle" type="Label" parent="Root/MissionPanel/VBox" unique_id=1293861553]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 18
+text = "Koby's Mission"
+
+[node name="MissionText" type="Label" parent="Root/MissionPanel/VBox" unique_id=707929874]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 17
+text = "Talk to Koby"
+autowrap_mode = 3
+
+[node name="BossBox" type="VBoxContainer" parent="Root" unique_id=1797542616]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230.0
+offset_top = 16.0
+offset_right = 230.0
+offset_bottom = 110.0
+
+[node name="BossName" type="Label" parent="Root/BossBox" unique_id=4143544]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.6, 0.45, 1)
+theme_override_font_sizes/font_size = 26
+text = "Buggy the Clown"
+horizontal_alignment = 1
+
+[node name="BossHealthBar" type="ProgressBar" parent="Root/BossBox" unique_id=498245571]
+custom_minimum_size = Vector2(400, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/fill = SubResource("StyleBoxFlat_h022r")
+max_value = 150.0
+value = 150.0
+show_percentage = false
+
+[node name="BossHealthLabel" type="Label" parent="Root/BossBox/BossHealthBar" unique_id=49935404]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 15
+text = "150 / 150"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BossState" type="Label" parent="Root/BossBox" unique_id=58846179]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "AI: Patrolling"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="Root" unique_id=728073357]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -500.0
+offset_top = 120.0
+offset_right = 500.0
+offset_bottom = 180.0
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 40
+horizontal_alignment = 1
+
+[node name="DialogPanel" type="PanelContainer" parent="Root" unique_id=34010598]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -420.0
+offset_top = -240.0
+offset_right = 420.0
+offset_bottom = -70.0
+theme = ExtResource("2_bo48s")
+
+[node name="VBox" type="VBoxContainer" parent="Root/DialogPanel" unique_id=1178998731]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Speaker" type="Label" parent="Root/DialogPanel/VBox" unique_id=1336414972]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 24
+text = "Koby"
+
+[node name="Text" type="Label" parent="Root/DialogPanel/VBox" unique_id=1163346024]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_font_sizes/font_size = 21
+autowrap_mode = 3
+
+[node name="Hint" type="Label" parent="Root/DialogPanel/VBox" unique_id=418460270]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "Press E to continue"
+horizontal_alignment = 2
+
+[node name="ControlsHint" type="Label" parent="Root" unique_id=1139240993]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -40.0
+offset_right = 600.0
+offset_bottom = -12.0
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "WASD move  ·  Shift run  ·  Space jump/swim  ·  Click/J punch  ·  E talk  ·  Mouse camera  ·  F1 show AI  ·  Esc pause"
+horizontal_alignment = 1
+
+[node name="FpsLabel" type="Label" parent="Root" unique_id=1992622063]
+visible = false
+layout_mode = 0
+offset_left = 18.0
+offset_top = 204.0
+offset_right = 200.0
+offset_bottom = 228.0
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 16
+text = "60 FPS"
+
+[node name="Inventory" type="VBoxContainer" parent="Root"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -130.0
+offset_right = 280.0
+offset_bottom = -46.0
+mouse_filter = 2
+
+[node name="Slots" type="HBoxContainer" parent="Root/Inventory"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Slot1" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 1
+
+[node name="Slot2" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 2
+
+[node name="Slot3" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 3
+
+[node name="Slot4" type="Control" parent="Root/Inventory/Slots"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+script = ExtResource("5_slot")
+slot_number = 4
+
+[node name="Hint" type="Label" parent="Root/Inventory"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="SkillBox" type="PanelContainer" parent="Root"]
+visible = false
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -270.0
+offset_top = -136.0
+offset_right = -16.0
+offset_bottom = -46.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_oj5la")
+
+[node name="VBox" type="VBoxContainer" parent="Root/SkillBox"]
+layout_mode = 2
+
+[node name="SkillName" type="Label" parent="Root/SkillBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 20
+text = "Skill"
+
+[node name="Cooldown" type="ProgressBar" parent="Root/SkillBox/VBox"]
+custom_minimum_size = Vector2(220, 10)
+layout_mode = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_skill")
+max_value = 1.0
+step = 0.001
+value = 1.0
+show_percentage = false
+
+[node name="Hint" type="Label" parent="Root/SkillBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="InteractHint" type="Label" parent="Root"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -180.0
+offset_right = 300.0
+offset_bottom = -140.0
+theme_override_colors/font_color = Color(1, 0.95, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
+[node name="Banner" type="VBoxContainer" parent="Root"]
+visible = false
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.3
+anchor_right = 0.5
+anchor_bottom = 0.3
+offset_left = -450.0
+offset_right = 450.0
+offset_bottom = 120.0
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="Root/Banner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 56
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Root/Banner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.94, 0.88, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Minimap" type="Control" parent="Root" unique_id=1317081625]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -216.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 216.0
+script = ExtResource("3_8qguk")
+
+[node name="MessageTimer" type="Timer" parent="." unique_id=1664139517]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="MessageTimer" to="." method="_on_message_timer_timeout"]

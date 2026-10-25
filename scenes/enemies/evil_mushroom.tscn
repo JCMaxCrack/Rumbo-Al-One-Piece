@@ -1,0 +1,78 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/mini_enemy.gd" id="1_mcdjf"]
+[ext_resource type="PackedScene" path="res://assets/models/enemies/evil_mushroom/evil_mushroom.fbx" id="2_ymrdn"]
+[ext_resource type="AnimationLibrary" path="res://assets/animations/mushroom_animations.res" id="3_d7cki"]
+[ext_resource type="AudioStream" path="res://assets/audio/hit.wav" id="4_w6xrf"]
+[ext_resource type="AudioStream" path="res://assets/audio/swing.wav" id="5_3vhen"]
+[ext_resource type="AudioStream" path="res://assets/audio/death.wav" id="6_sfyp1"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_e5bdf"]
+radius = 0.42
+height = 1.15
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pxoy7"]
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.05, 0.05, 0.08, 0.85)
+
+[sub_resource type="QuadMesh" id="QuadMesh_00yxk"]
+material = SubResource("StandardMaterial3D_pxoy7")
+size = Vector2(0.9, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ltb0"]
+render_priority = 1
+transparency = 1
+no_depth_test = true
+shading_mode = 0
+albedo_color = Color(0.9, 0.18, 0.15, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_4i3a6"]
+material = SubResource("StandardMaterial3D_0ltb0")
+size = Vector2(0.86, 0.08)
+center_offset = Vector3(0.43, 0, 0)
+
+[node name="EvilMushroom" type="CharacterBody3D" unique_id=2031733337]
+collision_layer = 4
+floor_snap_length = 0.4
+script = ExtResource("1_mcdjf")
+display_name = "Evil Mushroom"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1242161069]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, 0)
+shape = SubResource("CapsuleShape3D_e5bdf")
+
+[node name="Model" parent="." unique_id=2100452043 instance=ExtResource("2_ymrdn")]
+transform = Transform3D(1.0684857, 0, 0, 0, 1.0684857, 0, 0, 0, 1.0684857, 0, 0.2103554, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1731143298]
+libraries/mushroom = ExtResource("3_d7cki")
+autoplay = &"mushroom/idle"
+
+[node name="HealthBar" type="Node3D" parent="." unique_id=1416222813]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Back" type="MeshInstance3D" parent="HealthBar" unique_id=520361614]
+cast_shadow = 0
+mesh = SubResource("QuadMesh_00yxk")
+
+[node name="Fill" type="MeshInstance3D" parent="HealthBar" unique_id=118795700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.43, 0, 0.01)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_4i3a6")
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="." unique_id=71455458]
+stream = ExtResource("4_w6xrf")
+
+[node name="AttackSound" type="AudioStreamPlayer3D" parent="." unique_id=1587281028]
+stream = ExtResource("5_3vhen")
+volume_db = -4.0
+
+[node name="DeathSound" type="AudioStreamPlayer3D" parent="." unique_id=522398862]
+stream = ExtResource("6_sfyp1")
+volume_db = -2.0
+
+[node name="AttackCooldown" type="Timer" parent="." unique_id=965632437]
+wait_time = 1.2
+one_shot = true

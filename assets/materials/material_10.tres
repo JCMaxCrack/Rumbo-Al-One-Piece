@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/shaders/foliage_9.gdshader" id="1_tpnb3"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_tpnb3")
+shader_parameter/leaf = Color(0.17999999, 0.378, 0.126, 1)
