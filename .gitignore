@@ -4,7 +4,10 @@
 export_credentials.cfg
 
 # Exported builds
-/builds/
+/builds/**
+!/builds/.gdignore
+!/builds/*/
+!/builds/*/.gitkeep
 *.exe
 *.pck
 *.apk
