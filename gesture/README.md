@@ -25,7 +25,9 @@ python gesture/build_tracker.py
 ```
 
 This writes `gesture_bin/hand_tracker_windows.zip` (~200 MB, not kept in git). The Windows export
-preset already includes `gesture_bin/hand_tracker_windows.zip` in the game. The first time a
+preset already includes `gesture_bin/hand_tracker_windows.zip` in the game data: the export makes
+`builds/windows/FindingTheOnePiece.exe` + `FindingTheOnePiece.pck` (keep them together; the data is
+not embedded in the .exe because Windows fails to embed such a big package). The first time a
 player turns gesture control on, the game unzips it into its data folder
 (`%APPDATA%\Godot\app_userdata\...\hand_tracker`) and starts it; it closes with the game. The same
 script builds `hand_tracker_linux.zip` / `hand_tracker_macos.zip` on those systems.
