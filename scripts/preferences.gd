@@ -20,7 +20,7 @@ const REMAPPABLE := [
 	["move_forward", "Forward"], ["move_back", "Backward"], ["move_left", "Left"], ["move_right", "Right"],
 	["sprint", "Run"], ["jump", "Jump / swim"], ["attack", "Punch"], ["interact", "Talk / use"],
 	["use_item", "Eat / use item"], ["next_item", "Switch item"], ["skill", "Skill"],
-	["next_skill", "Switch skill"], ["shop", "Skill shop"], ["map", "Map"], ["pause", "Pause"],
+	["next_skill", "Switch skill"], ["shop", "Skill shop"], ["map", "Map"], ["camera_view", "First / third person"], ["pause", "Pause"],
 ]
 
 var language := "en"

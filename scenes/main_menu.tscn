@@ -140,7 +140,7 @@ WASD / arrows: move  ·  Shift: run
 Space: jump (in the water: swim up)
 Left click / J: attack  ·  R: skill  ·  F: switch skill  ·  K: skill shop
 Q: eat  ·  Tab: switch item  ·  M: map
-E: talk / take the helm  ·  Mouse: camera  ·  Esc: pause
+E: talk / take the helm  ·  Mouse: camera  ·  V: first / third person  ·  Esc: pause
 
 On a phone: joystick on the left, drag on the right for the camera and use the buttons."
 autowrap_mode = 3

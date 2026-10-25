@@ -37,6 +37,10 @@ enum Controller { PLAYER_ONE, PLAYER_TWO, AI, NONE }
 @export var jump_velocity := 7.5
 @export var gravity := 22.0
 @export var mouse_sensitivity := 0.003
+## Height of the camera in first person.
+const EYE_HEIGHT := 1.55
+## Render layer of player 1's body in first person (player 2 uses the next one).
+const FIRST_PERSON_LAYER := 11
 @export var knockback_force := 9.0
 ## The Mixamo jump starts with a crouch: it is skipped so the animation matches the physics.
 @export var jump_anim_start := 0.12
@@ -87,6 +91,11 @@ var ai_move := Vector3.ZERO
 var ai_run := false
 var ai_jump := false
 var ai_attack := false
+## First person (action "camera_view": V / right stick click): the camera at the eyes and the
+## body hidden from that camera only (in co-op the other player still sees it); the character
+## always faces where it looks.
+var first_person := false
+var _third_person := {}
 ## Eating food or doing a skill: the character does not move or attack meanwhile.
 var eating := false
 var skill_active := ""
@@ -139,11 +148,35 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Rotates the camera (mouse, right stick or a finger on the touch screen).
 func look(rel: Vector2) -> void:
 	camera_pivot.rotation.y -= rel.x * mouse_sensitivity
-	spring_arm.rotation.x = clampf(spring_arm.rotation.x - rel.y * mouse_sensitivity, -1.1, 0.35)
+	var low := -1.35 if first_person else -1.1
+	var high := 1.2 if first_person else 0.35
+	spring_arm.rotation.x = clampf(spring_arm.rotation.x - rel.y * mouse_sensitivity, low, high)
+
+
+func toggle_view() -> void:
+	set_first_person(not first_person)
+
+
+func set_first_person(on: bool) -> void:
+	if _third_person.is_empty():
+		_third_person = {"length": spring_arm.spring_length, "x": spring_arm.position.x, "y": camera_pivot.position.y}
+	first_person = on
+	spring_arm.spring_length = 0.0 if on else float(_third_person.length)
+	spring_arm.position.x = 0.0 if on else float(_third_person.x)
+	camera_pivot.position.y = EYE_HEIGHT if on else float(_third_person.y)
+	if not on:
+		spring_arm.rotation.x = clampf(spring_arm.rotation.x, -1.1, 0.35)
+	# the body goes to a render layer of its own that this player's camera does not draw
+	var bit := FIRST_PERSON_LAYER + (1 if control == Controller.PLAYER_TWO else 0)
+	for v in find_children("*", "VisualInstance3D", true, false):
+		(v as VisualInstance3D).layers = (1 << (bit - 1)) if on else 1
+	camera.set_cull_mask_value(bit, not on)
 
 
 func _process(delta: float) -> void:
 	if is_human():
+		if Input.is_action_just_pressed(action("camera_view")):
+			toggle_view()
 		var stick := Input.get_vector(action("look_left"), action("look_right"), action("look_up"), action("look_down"))
 		if stick.length() > 0.1:
 			look(stick * 900.0 * delta)
@@ -191,13 +224,15 @@ func _physics_process(delta: float) -> void:
 			move = move.normalized()
 		running = Input.is_action_pressed(action("sprint"))
 		jump_pressed = can_move and Input.is_action_just_pressed(action("jump"))
+		if first_person and not is_busy():
+			facing = forward
 	_update_swimming()
 	var speed := run_speed if running else walk_speed
 	if swimming:
 		speed = swim_sprint_speed if running else swim_speed
 	if is_attacking():
 		speed *= attack_move_factor
-	if move.length() > 0.05 and not is_attacking():
+	if move.length() > 0.05 and not is_attacking() and not first_person:
 		facing = move.normalized()
 	velocity.x = move.x * speed + knockback.x
 	velocity.z = move.z * speed + knockback.z

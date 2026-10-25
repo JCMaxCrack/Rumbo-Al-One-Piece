@@ -13,7 +13,7 @@ extends Node
 ## gamepad event of "jump" becomes an event of "p2_jump" for player 2's device, and so on.
 
 const ACTIONS := ["move_left", "move_right", "move_forward", "move_back", "look_left", "look_right", "look_up", "look_down",
-	"sprint", "jump", "attack", "interact", "pause", "map", "use_item", "next_item", "skill", "next_skill", "shop"]
+	"sprint", "jump", "attack", "interact", "pause", "map", "use_item", "next_item", "skill", "next_skill", "shop", "camera_view"]
 
 const CHARACTERS := ["luffy", "zoro", "usopp", "nami"]
 

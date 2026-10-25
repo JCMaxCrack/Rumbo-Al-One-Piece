@@ -134,7 +134,7 @@ Meat: %d / %d,Meat: %d / %d,Carne: %d / %d
 Lv. %d,Lv. %d,Nv. %d
 Lv. 1,Lv. 1,Nv. 1
 Tap “%s”,Tap “%s”,Toca «%s»
-%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s pause,%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s pause,%s mover  ·  %s correr  ·  %s saltar/nadar  ·  Clic/%s golpe  ·  %s hablar  ·  %s mapa  ·  %s pausa
+%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s view  ·  %s pause,%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s view  ·  %s pause,%s mover  ·  %s correr  ·  %s saltar/nadar  ·  Clic/%s golpe  ·  %s hablar  ·  %s mapa  ·  %s vista  ·  %s pausa
 %s/%s sail  ·  %s/%s helm  ·  %s full sail  ·  %s chart  ·  %s dock / let go,%s/%s sail  ·  %s/%s helm  ·  %s full sail  ·  %s chart  ·  %s dock / let go,%s/%s vela  ·  %s/%s timón  ·  %s a toda vela  ·  %s carta  ·  %s atracar / soltar
 %s eat  ·  %s switch,%s eat  ·  %s switch,%s comer  ·  %s cambiar
 %s use  ·  %s switch  ·  %s shop,%s use  ·  %s switch  ·  %s shop,%s usar  ·  %s cambiar  ·  %s tienda
@@ -342,7 +342,7 @@ WASD / arrows: move  ·  Shift: run
 Space: jump (in the water: swim up)
 Left click / J: attack  ·  R: skill  ·  F: switch skill  ·  K: skill shop
 Q: eat  ·  Tab: switch item  ·  M: map
-E: talk / take the helm  ·  Mouse: camera  ·  Esc: pause
+E: talk / take the helm  ·  Mouse: camera  ·  V: first / third person  ·  Esc: pause
 
 On a phone: joystick on the left, drag on the right for the camera and use the buttons.","Talk to Koby on every island: he gives you its mission.
 
@@ -350,7 +350,7 @@ WASD / arrows: move  ·  Shift: run
 Space: jump (in the water: swim up)
 Left click / J: attack  ·  R: skill  ·  F: switch skill  ·  K: skill shop
 Q: eat  ·  Tab: switch item  ·  M: map
-E: talk / take the helm  ·  Mouse: camera  ·  Esc: pause
+E: talk / take the helm  ·  Mouse: camera  ·  V: first / third person  ·  Esc: pause
 
 On a phone: joystick on the left, drag on the right for the camera and use the buttons.","Habla con Koby en cada isla: te da su misión.
 
@@ -358,7 +358,7 @@ WASD / flechas: mover  ·  Shift: correr
 Espacio: saltar (en el agua: subir nadando)
 Clic izquierdo / J: atacar  ·  R: habilidad  ·  F: cambiar habilidad  ·  K: tienda de habilidades
 Q: comer  ·  Tab: cambiar objeto  ·  M: mapa
-E: hablar / tomar el timón  ·  Mouse: cámara  ·  Esc: pausa
+E: hablar / tomar el timón  ·  Mouse: cámara  ·  V: primera / tercera persona  ·  Esc: pausa
 
 En el teléfono: joystick a la izquierda, arrastra a la derecha para la cámara y usa los botones."
 ONE PIECE,ONE PIECE,ONE PIECE
@@ -380,3 +380,4 @@ Unknown gesture,Unknown gesture,Gesto desconocido
 Gesture control (camera),Gesture control (camera),Control por gestos (cámara)
 Open palm: walk  ·  Hand to a side: turn  ·  Fist: punch  ·  Two fingers: jump  ·  Index finger: talk  ·  Thumb up: skill,Open palm: walk  ·  Hand to a side: turn  ·  Fist: punch  ·  Two fingers: jump  ·  Index finger: talk  ·  Thumb up: skill,Palma abierta: caminar  ·  Mano a un lado: girar  ·  Puño: golpe  ·  Dos dedos: saltar  ·  Dedo índice: hablar  ·  Pulgar arriba: habilidad
 Gesture control: the hand tracker failed (%s),Gesture control: the hand tracker failed (%s),Control por gestos: el detector de manos falló (%s)
+First / third person,First / third person,Primera / tercera persona

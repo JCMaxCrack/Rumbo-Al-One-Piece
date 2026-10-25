@@ -46,6 +46,8 @@ var minimap2: Minimap
 var _xp2: Control
 var _inventory2: Control
 var _skill_box2: Control
+## Crosshair in the middle of each player's view (first person).
+var _crosshairs: Array[Label] = []
 var _banner_tween: Tween
 
 
@@ -141,6 +143,30 @@ func set_split(on: bool, p2: Player) -> void:
 	_refresh_hints()
 
 
+## First person: a small crosshair in the middle of the view of that player.
+func set_crosshair(player: int, on: bool) -> void:
+	while _crosshairs.size() <= player:
+		var l := Label.new()
+		l.text = "+"
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		l.add_theme_font_size_override("font_size", 30)
+		l.add_theme_constant_override("outline_size", 6)
+		l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.8))
+		l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		l.size = Vector2(40, 40)
+		$Root.add_child(l)
+		_crosshairs.append(l)
+	var l := _crosshairs[player]
+	l.visible = on
+	if on:
+		var vs := get_viewport().get_visible_rect().size
+		var area := Rect2(Vector2.ZERO, vs)
+		if minimap2:
+			area = Rect2(Vector2(vs.x / 2.0 * player, 0.0), Vector2(vs.x / 2.0, vs.y))
+		l.position = area.get_center() - l.size / 2.0
+
+
 ## Taking the wheel of the Going Merry: the hints show the controls of the ship.
 func set_sailing(on: bool) -> void:
 	sailing = on
@@ -232,9 +258,9 @@ func set_boss_name(text: String) -> void:
 ## Texts with the keys (they change if the player changes the controls).
 func _refresh_hints() -> void:
 	var k := func(a: String) -> String: return Preferences.event_text(a, false)
-	var hint := tr("%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s pause") % [
+	var hint := tr("%s move  ·  %s run  ·  %s jump/swim  ·  Click/%s punch  ·  %s talk  ·  %s map  ·  %s view  ·  %s pause") % [
 		k.call("move_forward") + k.call("move_left") + k.call("move_back") + k.call("move_right"), k.call("sprint"), k.call("jump"),
-		k.call("attack"), k.call("interact"), k.call("map"), k.call("pause")]
+		k.call("attack"), k.call("interact"), k.call("map"), k.call("camera_view"), k.call("pause")]
 	if sailing:
 		hint = tr("%s/%s sail  ·  %s/%s helm  ·  %s full sail  ·  %s chart  ·  %s dock / let go") % [
 			k.call("move_forward"), k.call("move_back"), k.call("move_left"), k.call("move_right"), k.call("sprint"), k.call("use_item"), k.call("interact")]

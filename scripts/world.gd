@@ -451,6 +451,13 @@ func _process(delta: float) -> void:
 		var eq := GameState.hero(i).equipped
 		var spec := GameState.skill_spec(eq)
 		hud.set_skill(eq, hero_node(i).skill_cooldown(eq) / maxf(0.01, float(spec.get("cooldown", 1.0))), i)
+		# first person: the split screen views draw what the player's camera draws (not its own body)
+		var steering_view := ship.steering and i == 0
+		if i < _split_viewports.size():
+			var view_cam := _split_viewports[i].get_camera_3d()
+			if view_cam:
+				view_cam.cull_mask = ship.camera.cull_mask if steering_view else hero_node(i).camera.cull_mask
+		hud.set_crosshair(i, hero_node(i).first_person and not steering_view and not finished)
 	if DisplayServer.get_name() == "headless" or touch_controls.active:
 		return
 	var free_mouse := get_tree().paused or finished
