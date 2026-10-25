@@ -379,3 +379,4 @@ Thumb up: skill,Thumb up: skill,Pulgar arriba: habilidad
 Unknown gesture,Unknown gesture,Gesto desconocido
 Gesture control (camera),Gesture control (camera),Control por gestos (cámara)
 Open palm: walk  ·  Hand to a side: turn  ·  Fist: punch  ·  Two fingers: jump  ·  Index finger: talk  ·  Thumb up: skill,Open palm: walk  ·  Hand to a side: turn  ·  Fist: punch  ·  Two fingers: jump  ·  Index finger: talk  ·  Thumb up: skill,Palma abierta: caminar  ·  Mano a un lado: girar  ·  Puño: golpe  ·  Dos dedos: saltar  ·  Dedo índice: hablar  ·  Pulgar arriba: habilidad
+Gesture control: the hand tracker failed (%s),Gesture control: the hand tracker failed (%s),Control por gestos: el detector de manos falló (%s)

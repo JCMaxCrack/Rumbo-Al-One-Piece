@@ -5,17 +5,21 @@ sees to the game by UDP on this computer only (127.0.0.1), about 30 times per se
 
     {"status": "ok", "gesture": "open", "x": 0.62, "y": 0.41}
 
-    status:  "ok", or "no_camera" when the camera can not be opened (it keeps trying).
+    status:  "ok", "no_camera" when the camera can not be opened (it keeps trying), or "error"
+             (with "message") when the tracker fails and closes; the error is also written to
+             hand_tracker_error.log in the temporary folder of the system.
     gesture: "none" (no hand), "open" (open palm), "fist", "point" (only the index finger),
              "victory" (index and middle fingers), "thumbs_up" or "other".
     x, y:    centre of the palm in the picture, 0..1, as in a mirror (x = 0 is the player's left).
 
-The game (scripts/gesture_control.gd) starts this program, sends it "ping" every second and
-"quit" when it closes. Without pings for PING_TIMEOUT seconds the tracker closes itself, so it
+The game (scripts/gesture_control.gd) starts this program with the port where it listens; the
+tracker sends from a free port that the system gives it, and the game answers to that port: it
+sends "ping" every second and "quit" when it closes (so two trackers or another program using a
+port never collide). Without pings for PING_TIMEOUT seconds the tracker closes itself, so it
 never stays open after the game.
 
 Usage:
-    hand_tracker [--port 4242] [--listen 4243] [--camera 0] [--preview]
+    hand_tracker [--port 4242] [--listen 0] [--camera 0] [--preview]
     hand_tracker --image photo.jpg     # prints the gesture of a photo and exits (for testing)
     hand_tracker --loop-image photo.jpg  # uses a photo instead of the camera (for testing)
 
@@ -28,7 +32,9 @@ import math
 import os
 import socket
 import sys
+import tempfile
 import time
+import traceback
 
 import cv2
 import mediapipe as mp
@@ -83,18 +89,11 @@ def classify(lm):
 class Tracker:
     def __init__(self, args):
         self.args = args
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        # a tracker that the game just closed may still be letting go of the port
-        for attempt in range(50):
-            try:
-                self.sock.bind(("127.0.0.1", args.listen))
-                break
-            except OSError:
-                if attempt == 49:
-                    raise
-                time.sleep(0.1)
-        self.sock.setblocking(False)
         self.target = ("127.0.0.1", args.port)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # port 0: any free port (the game answers to the port the messages come from)
+        self.sock.bind(("127.0.0.1", args.listen))
+        self.sock.setblocking(False)
         options = vision.HandLandmarkerOptions(
             base_options=BaseOptions(model_asset_path=resource(os.path.join("models", "hand_landmarker.task"))),
             running_mode=vision.RunningMode.VIDEO,
@@ -112,6 +111,7 @@ class Tracker:
         self.gesture = "none"
 
     def send(self, data):
+        data["session"] = self.args.session
         try:
             self.sock.sendto(json.dumps(data).encode(), self.target)
         except OSError:
@@ -227,8 +227,9 @@ def gesture_of_image(path):
 def main():
     parser = argparse.ArgumentParser(description="Hand gesture tracker for Finding the One Piece")
     parser.add_argument("--port", type=int, default=4242, help="UDP port of the game (where gestures are sent)")
-    parser.add_argument("--listen", type=int, default=4243, help="UDP port where the game's pings arrive")
+    parser.add_argument("--listen", type=int, default=0, help="UDP port where the game's pings arrive (0 = any free port)")
     parser.add_argument("--camera", type=int, default=0, help="index of the camera")
+    parser.add_argument("--session", default="", help="id given by the game: it only listens to its own tracker")
     parser.add_argument("--preview", action="store_true", help="show the camera with the hand (to test it)")
     parser.add_argument("--image", help="print the gesture of a photo and exit")
     parser.add_argument("--loop-image", help="use a photo instead of the camera")
@@ -236,7 +237,26 @@ def main():
     if args.image:
         print(gesture_of_image(args.image))
         return
-    Tracker(args).run()
+    try:
+        Tracker(args).run()
+    except Exception as e:  # noqa: BLE001 - any failure is reported to the game instead of a crash window
+        report_error(args.port, args.session, e)
+        sys.exit(1)
+
+
+def report_error(port, session, error):
+    """Tells the game what went wrong and keeps the details in a log file."""
+    try:
+        with open(os.path.join(tempfile.gettempdir(), "hand_tracker_error.log"), "w", encoding="utf8") as f:
+            f.write(traceback.format_exc())
+    except OSError:
+        pass
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.sendto(json.dumps({"status": "error", "message": str(error)[:200], "session": session, "gesture": "none", "x": 0.5, "y": 0.5}).encode(), ("127.0.0.1", port))
+        sock.close()
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":

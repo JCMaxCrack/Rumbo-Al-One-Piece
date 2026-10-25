@@ -7,9 +7,10 @@ extends Node
 ## of the game (user://hand_tracker/) and started from there. In the editor, without that zip, the
 ## Python script is started directly (Python with mediapipe and opencv-python must be installed).
 ##
-## The tracker sends the gesture by UDP to 127.0.0.1:PORT about 30 times per second; the game
-## sends it "ping" every second to LISTEN_PORT (without pings it closes itself) and "quit" when
-## it closes. Gestures become the normal input actions of player 1, so they work like the
+## The tracker sends the gesture by UDP to 127.0.0.1:PORT (or any free port, if that one is taken)
+## about 30 times per second, from a free port of its own; the game answers to that port: "ping"
+## every second (without pings it closes itself) and "quit" when it closes. So an old tracker
+## that is still open, or another program, never blocks a port. Gestures become the normal input actions of player 1, so they work like the
 ## keyboard or the gamepad everywhere:
 ##   open palm        -> walk forward (sail with the ship); hand high in the picture -> run
 ##   hand left/right  -> turn the camera (the helm while sailing)
@@ -21,7 +22,7 @@ extends Node
 
 signal status_changed(text: String)
 
-enum Status { OFF, STARTING, READY, NO_CAMERA, UNAVAILABLE, NOT_RESPONDING }
+enum Status { OFF, STARTING, READY, NO_CAMERA, UNAVAILABLE, NOT_RESPONDING, FAILED }
 
 const STATUS_TEXT := {
 	Status.OFF: "Gesture control: off",
@@ -30,13 +31,14 @@ const STATUS_TEXT := {
 	Status.NO_CAMERA: "Gesture control: no camera found",
 	Status.UNAVAILABLE: "Gesture control is not included in this version of the game",
 	Status.NOT_RESPONDING: "Gesture control: the hand tracker does not respond",
+	Status.FAILED: "Gesture control: the hand tracker failed (%s)",
 }
 const GESTURE_TEXT := {
 	"none": "No hand", "open": "Open palm: walk", "fist": "Fist: punch", "victory": "Two fingers: jump",
 	"point": "Index finger: talk", "thumbs_up": "Thumb up: skill", "other": "Unknown gesture",
 }
+## Port where the game listens (any free one if it is taken).
 const PORT := 4242
-const LISTEN_PORT := 4243
 const INSTALL_DIR := "user://hand_tracker"
 ## Seconds without news from the tracker before its input is let go / it counts as not responding.
 const SILENCE := 0.6
@@ -51,6 +53,11 @@ var status: int = Status.OFF
 var extra_args := PackedStringArray()
 var gesture := "none"
 var _udp: PacketPeerUDP
+## Port of the tracker (learnt from its messages; 0 = none yet).
+var _tracker_port := 0
+var _error := ""
+## Id of this start: messages of an older tracker that is still open are ignored.
+var _session := ""
 var _pid := -1
 var _thread: Thread
 var _ping := 0.0
@@ -87,6 +94,8 @@ func is_running() -> bool:
 
 
 func status_text() -> String:
+	if status == Status.FAILED:
+		return tr(STATUS_TEXT[status]) % _error
 	return tr(STATUS_TEXT[status])
 
 
@@ -106,11 +115,12 @@ func start() -> void:
 		_set_status(Status.UNAVAILABLE)
 		return
 	_udp = PacketPeerUDP.new()
-	if _udp.bind(PORT, "127.0.0.1") != OK:
+	if _udp.bind(PORT, "127.0.0.1") != OK and _udp.bind(0, "127.0.0.1") != OK:
 		_udp = null
 		_set_status(Status.NOT_RESPONDING)
 		return
-	_udp.set_dest_address("127.0.0.1", LISTEN_PORT)
+	_tracker_port = 0
+	_session = str(randi())
 	_since_start = 0.0
 	_since_message = 0.0
 	_set_status(Status.STARTING)
@@ -128,7 +138,8 @@ func start() -> void:
 
 func stop() -> void:
 	if _udp:
-		_udp.put_packet("quit".to_utf8_buffer())
+		if _tracker_port > 0:
+			_udp.put_packet("quit".to_utf8_buffer())
 		_udp.close()
 		_udp = null
 	if _pid > 0:
@@ -157,7 +168,7 @@ func _notification(what: int) -> void:
 
 
 func _args() -> PackedStringArray:
-	return PackedStringArray(["--port", str(PORT), "--listen", str(LISTEN_PORT)]) + extra_args
+	return PackedStringArray(["--port", str(_udp.get_local_port()), "--session", _session]) + extra_args
 
 
 ## The tracker built for this system, inside the game (only in exports that include it).
@@ -241,17 +252,26 @@ func _process(delta: float) -> void:
 	_since_start += delta
 	_since_message += delta
 	_ping -= delta
-	if _ping <= 0.0:
+	if _ping <= 0.0 and _tracker_port > 0:
 		_ping = 1.0
 		_udp.put_packet("ping".to_utf8_buffer())
 	var last: Dictionary = {}
 	while _udp.get_available_packet_count() > 0:
 		var data: Variant = JSON.parse_string(_udp.get_packet().get_string_from_utf8())
-		if data is Dictionary:
+		var from := _udp.get_packet_port()
+		if data is Dictionary and str(data.get("session", "")) == _session:
 			last = data
+			if from != _tracker_port and data.get("status") != "error":
+				_tracker_port = from
+				_udp.set_dest_address("127.0.0.1", from)
 	if not last.is_empty():
 		_since_message = 0.0
-		if last.get("status") == "no_camera":
+		if last.get("status") == "error":
+			_error = str(last.get("message", ""))
+			_release_all()
+			gesture = "none"
+			_set_status(Status.FAILED)
+		elif last.get("status") == "no_camera":
 			_set_status(Status.NO_CAMERA)
 			_apply("none", 0.5, 0.5, delta)
 		elif last.get("status") == "ok":
