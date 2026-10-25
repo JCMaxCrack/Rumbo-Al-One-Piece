@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctt2bghoojfkr"
-path="res://.godot/imported/nami_1.png-ffd486101fed3a9a7f852dd678578e2f.ctex"
+uid="uid://baklkohtc26j6"
+path="res://.godot/imported/nami_MI_P003_E001_Hair_CS01_baseColor.png-3004f9d59b5799b5f97f6ebdad0925d2.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "c333bb87a890c50910c30ff50a49d480"
+"md5": "44aa166cd51a88fe11efafdefb612614"
 }
 
 [deps]
 
-source_file="res://assets/models/characters/nami/nami_1.png"
-dest_files=["res://.godot/imported/nami_1.png-ffd486101fed3a9a7f852dd678578e2f.ctex"]
+source_file="res://assets/models/characters/nami/nami_MI_P003_E001_Hair_CS01_baseColor.png"
+dest_files=["res://.godot/imported/nami_MI_P003_E001_Hair_CS01_baseColor.png-3004f9d59b5799b5f97f6ebdad0925d2.ctex"]
 
 [params]
 

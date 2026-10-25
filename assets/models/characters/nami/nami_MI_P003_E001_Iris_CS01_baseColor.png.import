@@ -2,19 +2,19 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1jbm7kvk50w4"
-path="res://.godot/imported/nami_2.png-3306ca080924f6ac1d19a76d27f1a06e.ctex"
+uid="uid://b3qqopiy3ggd2"
+path="res://.godot/imported/nami_MI_P003_E001_Iris_CS01_baseColor.png-512ca4e22a3dc1926ed12142ba8557cb.ctex"
 metadata={
 "vram_texture": false
 }
 generator_parameters={
-"md5": "a24d29070a520a4348013a6cb62b3791"
+"md5": "98821dac000f22d3fd4ce9d1dd6a2124"
 }
 
 [deps]
 
-source_file="res://assets/models/characters/nami/nami_2.png"
-dest_files=["res://.godot/imported/nami_2.png-3306ca080924f6ac1d19a76d27f1a06e.ctex"]
+source_file="res://assets/models/characters/nami/nami_MI_P003_E001_Iris_CS01_baseColor.png"
+dest_files=["res://.godot/imported/nami_MI_P003_E001_Iris_CS01_baseColor.png-512ca4e22a3dc1926ed12142ba8557cb.ctex"]
 
 [params]
 

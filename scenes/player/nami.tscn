@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_y7u37"]
-[ext_resource type="PackedScene" path="res://assets/models/characters/nami/nami.fbx" id="2_7l77f"]
+[ext_resource type="PackedScene" path="res://assets/models/characters/nami/nami.glb" id="2_7l77f"]
 [ext_resource type="AnimationLibrary" path="res://assets/animations/nami_animations.res" id="3_umhec"]
 [ext_resource type="AudioStream" path="res://assets/audio/hurt.wav" id="4_yq34g"]
 [ext_resource type="AudioStream" path="res://assets/audio/splash.wav" id="5_paeie"]
@@ -35,7 +35,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("CapsuleShape3D_pyym4")
 
 [node name="Model" parent="." unique_id=437929640 instance=ExtResource("2_7l77f")]
-transform = Transform3D(0.99846363, 0, 0, 0, 0.99846363, 0, 0, 0, 0.99846363, 0, 0.01012643, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=853466169]
 root_node = NodePath("../Model")
