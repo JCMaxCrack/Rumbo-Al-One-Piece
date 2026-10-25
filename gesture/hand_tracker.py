@@ -129,7 +129,8 @@ class Tracker:
             self.last_ping = time.monotonic()
         now = time.monotonic()
         if self.last_ping is None:
-            return now - self.started < FIRST_PING_TIMEOUT
+            # alone with --preview (no game) it runs until Esc
+            return self.args.preview or now - self.started < FIRST_PING_TIMEOUT
         return now - self.last_ping < PING_TIMEOUT
 
     def open_camera(self):
@@ -199,6 +200,7 @@ class Tracker:
         cv2.putText(img, gesture, (12, 36), cv2.FONT_HERSHEY_SIMPLEX, 1.1, (40, 255, 40), 2)
         cv2.imshow("Hand tracker", img)
         if cv2.waitKey(1) & 0xFF == 27:
+            self.args.preview = False
             self.last_ping = 0.0
 
     def close(self):
